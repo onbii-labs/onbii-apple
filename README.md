@@ -43,6 +43,12 @@ The spec repository is included as a submodule at [`docs/spec`](docs/spec).
 git submodule update --init --recursive
 ```
 
+## License
+
+Source code in this repository is licensed under the Mozilla Public License 2.0 unless otherwise noted. See [`LICENSE`](LICENSE).
+
+The specification in [`docs/spec`](docs/spec) is licensed separately.
+
 ## Docs
 
 Apple-specific implementation direction belongs in [`docs`](docs).
