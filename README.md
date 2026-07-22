@@ -1,33 +1,16 @@
 # Onbii Apple
 
-Apple implementation proving ground for Onbii Milestone 1: **I Am Not Losing This**.
+Apple-family implementation work for Onbii.
 
-This repository is for the first Apple-family capture surfaces and shared implementation code. It should stay aligned with the Onbii specification included at [`docs/spec`](docs/spec).
+This repository contains the macOS, iOS, and watchOS implementation surfaces, shared Apple platform packages, extensions, tools, and implementation notes for Onbii.
 
-## Milestone 1 Focus
+The shared Onbii specification is included at [`docs/spec`](docs/spec). Product direction, principles, object model, bundle model, provenance, linking, and roadmap live there.
 
-The first useful Apple implementation should help a person trust that an important recording, memo, or conversation has been captured into something they own.
+## Current Status
 
-Initial surfaces:
+This repository is just getting started.
 
-- macOS start/stop capture for meetings or desktop audio where practical;
-- macOS import of existing audio files;
-- Apple Watch start/stop recording and transfer;
-- simple iPhone record/import/receive flow.
-
-Each surface should feed the same Onbii object flow:
-
-```text
-capture or import
-  -> preserve original recording
-  -> create one manageable .onbii bundle
-  -> create basic transcript
-  -> represent rough speaker turns
-  -> create human-readable Markdown facet
-  -> record title, date, location where available, source, people, and provenance
-  -> store in user-controlled archive
-  -> allow ordinary inspection or lightweight preview
-```
+The initial work is focused on the Apple proving ground for the first useful Onbii experience. See the spec roadmap for the current milestone context: [`docs/spec/docs/ROADMAP.md`](docs/spec/docs/ROADMAP.md).
 
 ## Repository Shape
 
@@ -54,8 +37,14 @@ Tools/
 
 ## Spec
 
-The spec repository is included as a submodule at `docs/spec`.
+The spec repository is included as a submodule at [`docs/spec`](docs/spec).
 
 ```sh
 git submodule update --init --recursive
 ```
+
+## Docs
+
+Apple-specific implementation direction belongs in [`docs`](docs).
+
+The spec should remain the source for shared product and format decisions. This repository should hold Apple-specific architecture, app target notes, platform decisions, and implementation details.
