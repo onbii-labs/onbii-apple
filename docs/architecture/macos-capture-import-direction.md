@@ -30,7 +30,7 @@ original file.
 The first UI can be one window with:
 
 - Import Audio;
-- Start Capture, initially unavailable until the capture adapter exists;
+- Start Capture and a visibly active Stop Capture control;
 - the chosen archive location;
 - an explicit progress/error state;
 - Reveal in Finder after success.
@@ -41,10 +41,17 @@ Live capture is the next acquisition path and remains separate from import.
 Recording must be explicit and visibly active. There is no hidden retrospective
 audio buffer.
 
-The first capture prototype should prove microphone recording before promising
-meeting/system-audio capture. Desktop/system audio needs a separate technical
-spike around ScreenCaptureKit, app/audio filtering, permissions, consent, and
-the behavior of major meeting applications.
+The first capture prototype records microphone input through `OnbiiCapture`.
+The permission request follows an explicit user action, and the UI remains
+visibly active until the user stops recording. The captured file is staged in
+the app container and sent through the same bundle-writing pipeline as an
+import. It is deleted only after the completed object has preserved it; on
+failure, the UI reports the retained staging path.
+
+This proves the explicit recording boundary but does not promise meeting or
+system-audio capture. Desktop/system audio needs a separate technical spike
+around ScreenCaptureKit, app/audio filtering, permissions, consent, and the
+behavior of major meeting applications.
 
 Both capture paths should converge after acquisition:
 
@@ -84,12 +91,12 @@ The app has the provisional development bundle identifier
 only to locations the user selects. This identifier is not a commitment to the
 eventual distribution identity.
 
-The app consumes `OnbiiArchive` from the sibling local Swift package rooted at
-`Packages/`, which in turn depends on `OnbiiCore`. Keeping the package outside
-the app project avoids an ambiguous nested-project/package workspace in Xcode.
+The app consumes `OnbiiArchive` and `OnbiiCapture` from the sibling local Swift
+package rooted at `Packages/`. `OnbiiArchive` depends on `OnbiiCore`, while
+`OnbiiCapture` remains an acquisition boundary. Keeping the package outside the
+app project avoids an ambiguous nested-project/package workspace in Xcode.
 Later work should add:
 
-- `OnbiiCapture` for explicit live acquisition;
 - `OnbiiTranscription` for replaceable transcription providers.
 
 Development builds are signed ad hoc to run locally. The project enables the
@@ -101,12 +108,13 @@ Distribution signing remains open.
 The development shell now provides archive-folder selection, audio import
 through `OnbiiBundleWriter`, progress and error state, collision-safe bundle
 names, Finder reveal, and a validated inspector for newly imported packages or
-packages opened from Finder.
+packages opened from Finder. It also provides explicit, visibly active
+microphone capture that converges on the same bundle creation and inspection
+path.
 
 Next:
 
 1. Record the distributable app identity and signing decisions.
-2. Add a visible microphone capture prototype.
-3. Run a ScreenCaptureKit feasibility spike before choosing the first
+2. Run a ScreenCaptureKit feasibility spike before choosing the first
    meeting/system-audio capture promise.
-4. Add on-device transcription as a separate processing stage.
+3. Add on-device transcription as a separate processing stage.

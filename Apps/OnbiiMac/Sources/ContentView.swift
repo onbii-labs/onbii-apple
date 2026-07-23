@@ -26,7 +26,11 @@ struct ContentView: View {
                     Button(model.archiveURL == nil ? "Choose…" : "Change…") {
                         model.chooseArchive()
                     }
-                    .disabled(model.isImporting)
+                    .disabled(
+                        model.isImporting
+                            || model.isPreparingCapture
+                            || model.isCapturing
+                    )
                 }
                 .padding(.vertical, 4)
             }
@@ -39,15 +43,35 @@ struct ContentView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .disabled(model.archiveURL == nil || model.isImporting)
+                .disabled(
+                    model.archiveURL == nil
+                        || model.isImporting
+                        || model.isPreparingCapture
+                        || model.isCapturing
+                )
 
-                Button {
-                    // Live capture is intentionally a separate acquisition path.
-                } label: {
-                    Label("Start Capture", systemImage: "record.circle")
+                if model.isCapturing {
+                    Button {
+                        model.stopCapture()
+                    } label: {
+                        Label("Stop Capture", systemImage: "stop.circle.fill")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
+                    .controlSize(.large)
+                } else {
+                    Button {
+                        model.startCapture()
+                    } label: {
+                        Label("Start Capture", systemImage: "record.circle")
+                    }
+                    .controlSize(.large)
+                    .disabled(
+                        model.archiveURL == nil
+                            || model.isImporting
+                            || model.isPreparingCapture
+                    )
                 }
-                .controlSize(.large)
-                .disabled(true)
 
                 if model.isImporting {
                     ProgressView()
@@ -75,12 +99,26 @@ struct ContentView: View {
     private var statusView: some View {
         switch model.state {
         case .idle:
-            Text("Choose an archive folder, then import an existing audio file.")
+            Text("Choose an archive folder, then import audio or start capture.")
                 .foregroundStyle(.secondary)
 
         case .importing(let filename):
             Label("Preserving \(filename)…", systemImage: "waveform")
                 .foregroundStyle(.secondary)
+
+        case .preparingCapture:
+            Label("Requesting microphone access…", systemImage: "mic")
+                .foregroundStyle(.secondary)
+
+        case .capturing:
+            HStack(spacing: 8) {
+                Image(systemName: "record.circle.fill")
+                    .foregroundStyle(.red)
+                Text("Recording \(model.captureDurationText)")
+                    .monospacedDigit()
+                Text("Microphone capture is visibly active.")
+                    .foregroundStyle(.secondary)
+            }
 
         case .completed(let bundleURL):
             HStack {

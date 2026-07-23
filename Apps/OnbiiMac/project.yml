@@ -22,6 +22,8 @@ targets:
     dependencies:
       - package: OnbiiApple
         product: OnbiiArchive
+      - package: OnbiiApple
+        product: OnbiiCapture
     settings:
       base:
         PRODUCT_NAME: Onbii

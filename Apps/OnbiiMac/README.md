@@ -11,12 +11,19 @@ xcodegen generate
 
 Open `OnbiiMac.xcodeproj` and run the `OnbiiMacApp` scheme.
 
-The app lets the user choose an archive folder, import an existing audio file
-through `OnbiiArchive`, and reveal the completed `.onbii` bundle in Finder.
-The selected archive is retained across launches using a security-scoped
-bookmark. Imported packages are inspected in the app, and packages opened from
-Finder use the same validated inspector.
+The app lets the user choose an archive folder, import an existing audio file,
+or explicitly start and stop a microphone recording. Both acquisition paths
+create a `.onbii` bundle through `OnbiiArchive`. The selected archive is
+retained across launches using a security-scoped bookmark. Completed packages
+can be revealed in Finder and inspected in the app; packages opened from Finder
+use the same validated inspector.
 
-Explicit live capture follows as a separate capture-adapter path. The agreed
-direction is documented in [macOS Capture And Import
+The first recording prompts for microphone permission and remains visibly
+active until stopped. The captured source is staged inside the app sandbox,
+removed only after it has been preserved in a completed bundle, and retained
+with its path reported if bundle creation fails.
+
+This prototype records microphone input only. Meeting or desktop system audio
+still requires the separate ScreenCaptureKit feasibility work described in
+[macOS Capture And Import
 Direction](../../docs/architecture/macos-capture-import-direction.md).

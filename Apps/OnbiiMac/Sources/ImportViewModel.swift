@@ -2,6 +2,7 @@ import AppKit
 import Foundation
 import Observation
 import OnbiiArchive
+import OnbiiCapture
 import UniformTypeIdentifiers
 
 @MainActor
@@ -12,14 +13,21 @@ final class ImportViewModel {
     enum State: Equatable {
         case idle
         case importing(filename: String)
+        case preparingCapture
+        case capturing
         case completed(bundleURL: URL)
         case opened(bundleURL: URL)
         case failed(message: String)
     }
 
+    private let microphoneRecorder = OnbiiMicrophoneRecorder()
+    private var durationTask: Task<Void, Never>?
+
     var archiveURL: URL?
     private(set) var selectedBundle: OnbiiBundle?
     private(set) var state: State = .idle
+    private(set) var isCapturing = false
+    private(set) var captureDuration: TimeInterval = 0
 
     var isImporting: Bool {
         if case .importing = state {
@@ -29,8 +37,21 @@ final class ImportViewModel {
         }
     }
 
+    var isPreparingCapture: Bool {
+        if case .preparingCapture = state {
+            true
+        } else {
+            false
+        }
+    }
+
     var archiveDisplayName: String {
         archiveURL?.path(percentEncoded: false) ?? "No archive selected"
+    }
+
+    var captureDurationText: String {
+        let seconds = Int(captureDuration.rounded(.down))
+        return String(format: "%02d:%02d", seconds / 60, seconds % 60)
     }
 
     init() {
@@ -90,6 +111,61 @@ final class ImportViewModel {
         }
     }
 
+    func startCapture() {
+        guard archiveURL != nil else {
+            state = .failed(message: "Choose an archive folder before recording.")
+            return
+        }
+        guard !isPreparingCapture, !isCapturing else {
+            return
+        }
+
+        state = .preparingCapture
+        Task {
+            guard await microphoneRecorder.requestPermission() else {
+                state = .failed(
+                    message: "Microphone access is required for explicit capture."
+                )
+                return
+            }
+
+            do {
+                let captureURL = try makeCaptureURL()
+                try microphoneRecorder.startRecording(to: captureURL)
+                captureDuration = 0
+                isCapturing = true
+                state = .capturing
+                beginDurationUpdates()
+            } catch {
+                state = .failed(message: error.localizedDescription)
+            }
+        }
+    }
+
+    func stopCapture() {
+        let finalDuration = microphoneRecorder.duration
+
+        guard let captureURL = microphoneRecorder.stopRecording() else {
+            return
+        }
+
+        captureDuration = finalDuration
+        isCapturing = false
+        durationTask?.cancel()
+        durationTask = nil
+
+        let title = "Recording \(Date().formatted(date: .abbreviated, time: .shortened))"
+        Task {
+            await performImport(
+                of: captureURL,
+                title: title,
+                mediaType: "audio/mp4",
+                sourceAgentName: "macOS microphone capture",
+                removeSourceAfterImport: true
+            )
+        }
+    }
+
     func openBundle(_ bundleURL: URL) {
         Task {
             await performOpen(of: bundleURL)
@@ -103,21 +179,30 @@ final class ImportViewModel {
         NSWorkspace.shared.activateFileViewerSelecting([bundleURL])
     }
 
-    private func performImport(of sourceURL: URL) async {
+    private func performImport(
+        of sourceURL: URL,
+        title explicitTitle: String? = nil,
+        mediaType explicitMediaType: String? = nil,
+        sourceAgentName: String = "macOS file import",
+        removeSourceAfterImport: Bool = false
+    ) async {
         guard let archiveURL else {
             state = .failed(message: "The selected archive is no longer available.")
             return
         }
 
-        let title = sourceURL.deletingPathExtension().lastPathComponent
+        let title = explicitTitle
+            ?? sourceURL.deletingPathExtension().lastPathComponent
         let destinationURL = uniqueDestination(for: title, in: archiveURL)
-        let mediaType = UTType(filenameExtension: sourceURL.pathExtension)?
-            .preferredMIMEType ?? "application/octet-stream"
+        let mediaType = explicitMediaType
+            ?? UTType(filenameExtension: sourceURL.pathExtension)?.preferredMIMEType
+            ?? "application/octet-stream"
         let request = OnbiiImportRequest(
             sourceAudioURL: sourceURL,
             destinationBundleURL: destinationURL,
             title: title,
-            mediaType: mediaType
+            mediaType: mediaType,
+            sourceAgentName: sourceAgentName
         )
 
         state = .importing(filename: sourceURL.lastPathComponent)
@@ -140,8 +225,17 @@ final class ImportViewModel {
             }.value
             selectedBundle = bundle
             state = .completed(bundleURL: destinationURL)
+
+            if removeSourceAfterImport {
+                try? FileManager.default.removeItem(at: sourceURL)
+            }
         } catch {
-            state = .failed(message: error.localizedDescription)
+            let recoveryMessage = removeSourceAfterImport
+                ? " The captured audio remains at \(sourceURL.path)."
+                : ""
+            state = .failed(
+                message: error.localizedDescription + recoveryMessage
+            )
         }
     }
 
@@ -217,6 +311,35 @@ final class ImportViewModel {
             relativeTo: nil
         )
         UserDefaults.standard.set(bookmarkData, forKey: Self.archiveBookmarkKey)
+    }
+
+    private func makeCaptureURL() throws -> URL {
+        let captureDirectory = try FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true
+        ).appendingPathComponent("Captures", isDirectory: true)
+        try FileManager.default.createDirectory(
+            at: captureDirectory,
+            withIntermediateDirectories: true
+        )
+        return captureDirectory.appendingPathComponent(
+            "capture-\(UUID().uuidString.lowercased()).m4a"
+        )
+    }
+
+    private func beginDurationUpdates() {
+        durationTask?.cancel()
+        durationTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(200))
+                guard !Task.isCancelled, let self else {
+                    return
+                }
+                captureDuration = microphoneRecorder.duration
+            }
+        }
     }
 
     private func uniqueDestination(for title: String, in archiveURL: URL) -> URL {

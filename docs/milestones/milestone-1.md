@@ -27,9 +27,13 @@ The first slice establishes:
 - explicit import and rendering provenance;
 - a SwiftUI macOS development app with archive selection, audio import, progress
   and error state, and Finder reveal;
+- explicit, visibly active microphone start/stop capture through a separate
+  `OnbiiCapture` boundary, converging on the same bundle writer;
 - validated in-app inspection for imported packages and packages opened from
   Finder;
-- macOS audio import as the first vertical slice, followed by explicit capture.
+- preservation of staged microphone audio before its temporary source is
+  removed, with failure recovery reporting;
+- macOS audio import and microphone recording as the first acquisition slices.
 
 See the [Milestone 1 Bundle Profile](../architecture/milestone-1-bundle-profile.md)
 and [macOS Capture And Import

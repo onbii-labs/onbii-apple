@@ -12,6 +12,7 @@ let package = Package(
     products: [
         .library(name: "OnbiiCore", targets: ["OnbiiCore"]),
         .library(name: "OnbiiArchive", targets: ["OnbiiArchive"]),
+        .library(name: "OnbiiCapture", targets: ["OnbiiCapture"]),
     ],
     targets: [
         .target(
@@ -22,6 +23,10 @@ let package = Package(
             name: "OnbiiArchive",
             dependencies: ["OnbiiCore"],
             path: "OnbiiArchive/Sources"
+        ),
+        .target(
+            name: "OnbiiCapture",
+            path: "OnbiiCapture/Sources"
         ),
         .testTarget(
             name: "OnbiiCoreTests",
