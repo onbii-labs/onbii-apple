@@ -100,13 +100,13 @@ Distribution signing remains open.
 
 The development shell now provides archive-folder selection, audio import
 through `OnbiiBundleWriter`, progress and error state, collision-safe bundle
-names, and Finder reveal.
+names, Finder reveal, and a validated inspector for newly imported packages or
+packages opened from Finder.
 
 Next:
 
-1. Add a bundle reader and in-app inspector.
-2. Record the distributable app identity and signing decisions.
-3. Add a visible microphone capture prototype.
-4. Run a ScreenCaptureKit feasibility spike before choosing the first
+1. Record the distributable app identity and signing decisions.
+2. Add a visible microphone capture prototype.
+3. Run a ScreenCaptureKit feasibility spike before choosing the first
    meeting/system-audio capture promise.
-5. Add on-device transcription as a separate processing stage.
+4. Add on-device transcription as a separate processing stage.

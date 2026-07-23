@@ -41,6 +41,10 @@ The writer stages the complete directory beside its destination and moves it
 into place after the manifest validates. It refuses to replace an existing
 bundle.
 
+The reader validates the manifest and confirms every declared resource exists
+before presenting the object. A malformed manifest or incomplete bundle is
+reported as an error rather than partially presented as trustworthy.
+
 JSON is used because it is inspectable, deterministic to encode, and supported
 without dependencies. This does not decide the future shared manifest format.
 

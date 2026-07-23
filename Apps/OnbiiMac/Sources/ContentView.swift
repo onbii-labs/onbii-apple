@@ -1,3 +1,4 @@
+import OnbiiArchive
 import SwiftUI
 
 struct ContentView: View {
@@ -56,9 +57,18 @@ struct ContentView: View {
 
             statusView
 
+            if let bundle = model.selectedBundle {
+                BundleInspectorView(bundle: bundle) {
+                    model.revealSelectedBundle()
+                }
+            }
+
             Spacer()
         }
         .padding(28)
+        .onOpenURL { url in
+            model.openBundle(url)
+        }
     }
 
     @ViewBuilder
@@ -83,14 +93,85 @@ struct ContentView: View {
                 Spacer()
 
                 Button("Reveal in Finder") {
-                    model.revealLastBundle()
+                    model.revealSelectedBundle()
                 }
             }
+
+        case .opened(let bundleURL):
+            Label(
+                "\(bundleURL.lastPathComponent) is open for inspection.",
+                systemImage: "doc.text.magnifyingglass"
+            )
+            .foregroundStyle(.secondary)
 
         case .failed(let message):
             Label(message, systemImage: "exclamationmark.triangle.fill")
                 .foregroundStyle(.red)
                 .textSelection(.enabled)
+        }
+    }
+}
+
+private struct BundleInspectorView: View {
+    let bundle: OnbiiBundle
+    let reveal: () -> Void
+
+    var body: some View {
+        GroupBox("Knowledge Object") {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text(bundle.manifest.title)
+                        .font(.title3.weight(.semibold))
+                    Spacer()
+                    Button("Reveal in Finder", action: reveal)
+                }
+
+                Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 6) {
+                    GridRow {
+                        Text("Type")
+                            .foregroundStyle(.secondary)
+                        Text(bundle.manifest.objectType)
+                    }
+                    GridRow {
+                        Text("Created")
+                            .foregroundStyle(.secondary)
+                        Text(
+                            bundle.manifest.createdAt.formatted(
+                                date: .abbreviated,
+                                time: .shortened
+                            )
+                        )
+                    }
+                    GridRow {
+                        Text("Object ID")
+                            .foregroundStyle(.secondary)
+                        Text(bundle.manifest.objectID.rawValue)
+                            .textSelection(.enabled)
+                    }
+                }
+
+                Divider()
+
+                Text("Resources")
+                    .font(.headline)
+
+                ForEach(bundle.manifest.resources, id: \.id) { resource in
+                    HStack(spacing: 10) {
+                        Text(resource.role.rawValue.capitalized)
+                            .font(.caption.weight(.medium))
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 3)
+                            .background(.quaternary, in: Capsule())
+
+                        Text(resource.path)
+                            .font(.system(.body, design: .monospaced))
+                            .textSelection(.enabled)
+
+                        Spacer()
+                    }
+                }
+            }
+            .padding(.vertical, 4)
         }
     }
 }

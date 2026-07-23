@@ -13,10 +13,12 @@ final class ImportViewModel {
         case idle
         case importing(filename: String)
         case completed(bundleURL: URL)
+        case opened(bundleURL: URL)
         case failed(message: String)
     }
 
     var archiveURL: URL?
+    private(set) var selectedBundle: OnbiiBundle?
     private(set) var state: State = .idle
 
     var isImporting: Bool {
@@ -88,8 +90,14 @@ final class ImportViewModel {
         }
     }
 
-    func revealLastBundle() {
-        guard case .completed(let bundleURL) = state else {
+    func openBundle(_ bundleURL: URL) {
+        Task {
+            await performOpen(of: bundleURL)
+        }
+    }
+
+    func revealSelectedBundle() {
+        guard let bundleURL = selectedBundle?.url else {
             return
         }
         NSWorkspace.shared.activateFileViewerSelecting([bundleURL])
@@ -126,11 +134,33 @@ final class ImportViewModel {
         }
 
         do {
-            _ = try await Task.detached(priority: .userInitiated) {
+            let bundle = try await Task.detached(priority: .userInitiated) {
                 try OnbiiBundleWriter().write(request)
+                return try OnbiiBundleReader().read(at: destinationURL)
             }.value
+            selectedBundle = bundle
             state = .completed(bundleURL: destinationURL)
         } catch {
+            state = .failed(message: error.localizedDescription)
+        }
+    }
+
+    private func performOpen(of bundleURL: URL) async {
+        let hasAccess = bundleURL.startAccessingSecurityScopedResource()
+        defer {
+            if hasAccess {
+                bundleURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        do {
+            let bundle = try await Task.detached(priority: .userInitiated) {
+                try OnbiiBundleReader().read(at: bundleURL)
+            }.value
+            selectedBundle = bundle
+            state = .opened(bundleURL: bundleURL)
+        } catch {
+            selectedBundle = nil
             state = .failed(message: error.localizedDescription)
         }
     }

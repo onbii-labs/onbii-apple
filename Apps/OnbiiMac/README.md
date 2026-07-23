@@ -14,7 +14,8 @@ Open `OnbiiMac.xcodeproj` and run the `OnbiiMacApp` scheme.
 The app lets the user choose an archive folder, import an existing audio file
 through `OnbiiArchive`, and reveal the completed `.onbii` bundle in Finder.
 The selected archive is retained across launches using a security-scoped
-bookmark.
+bookmark. Imported packages are inspected in the app, and packages opened from
+Finder use the same validated inspector.
 
 Explicit live capture follows as a separate capture-adapter path. The agreed
 direction is documented in [macOS Capture And Import
