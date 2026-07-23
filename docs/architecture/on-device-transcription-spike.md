@@ -32,6 +32,9 @@ Speaker labels describe the captured source, not an inferred person:
 - `microphone`
 - `recording` for a single imported or captured source
 
+These labels are track attribution only. They do not satisfy the Milestone 1
+rough-speaker-turn criterion and must not be presented as diarization.
+
 The merged text timeline conservatively suppresses probable speaker echo from
 the microphone track only when at least three consecutive normalized words
 also occur on the system-audio track within a narrow timing window. Short

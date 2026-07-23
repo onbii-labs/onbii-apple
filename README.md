@@ -1,5 +1,21 @@
 # Onbii Apple
 
+## Open in Xcode
+
+Open `OnbiiApple.xcworkspace`.
+
+This is the single development entry point for the Apple implementation. It
+contains:
+
+- `OnbiiMacApp`, the macOS producer and inspector;
+- `OnbiiIOSApp`, the iPhone producer;
+- the shared Swift packages;
+- the Watch app when that surface is added.
+
+The `.xcodeproj` files under `Apps/` are generated implementation details. Do
+not open them directly. Regenerate a platform project from its directory with
+`xcodegen generate`, then return to the root workspace.
+
 Apple-family implementation work for Onbii.
 
 This repository contains the macOS, iOS, and watchOS implementation surfaces, shared Apple platform packages, extensions, tools, and implementation notes for Onbii.

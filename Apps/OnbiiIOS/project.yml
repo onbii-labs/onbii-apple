@@ -1,0 +1,46 @@
+name: OnbiiIOS
+
+options:
+  minimumXcodeGenVersion: 2.46.0
+  deploymentTarget:
+    iOS: "17.0"
+
+packages:
+  OnbiiApple:
+    path: ../../Packages
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+
+targets:
+  OnbiiIOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    dependencies:
+      - package: OnbiiApple
+        product: OnbiiArchive
+      - package: OnbiiApple
+        product: OnbiiCapture
+    settings:
+      base:
+        PRODUCT_NAME: Onbii
+        PRODUCT_BUNDLE_IDENTIFIER: org.onbii.OnbiiIOS.dev
+        PRODUCT_MODULE_NAME: OnbiiIOS
+        MARKETING_VERSION: 0.1.0
+        CURRENT_PROJECT_VERSION: 1
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: Info.plist
+        CODE_SIGN_STYLE: Automatic
+
+schemes:
+  OnbiiIOSApp:
+    build:
+      targets:
+        OnbiiIOS: all
+    run:
+      config: Debug
+    archive:
+      config: Release

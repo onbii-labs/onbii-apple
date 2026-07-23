@@ -40,6 +40,16 @@ public final class OnbiiMicrophoneRecorder {
             throw OnbiiMicrophoneRecorderError.alreadyRecording
         }
 
+        #if os(iOS)
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setCategory(
+            .playAndRecord,
+            mode: .spokenAudio,
+            options: [.defaultToSpeaker]
+        )
+        try audioSession.setActive(true)
+        #endif
+
         let settings: [String: Any] = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 44_100,
@@ -52,6 +62,9 @@ public final class OnbiiMicrophoneRecorder {
         )
 
         guard recorder.prepareToRecord(), recorder.record() else {
+            #if os(iOS)
+            try? AVAudioSession.sharedInstance().setActive(false)
+            #endif
             throw OnbiiMicrophoneRecorderError.couldNotStart
         }
 
@@ -66,6 +79,12 @@ public final class OnbiiMicrophoneRecorder {
 
         audioRecorder.stop()
         self.audioRecorder = nil
+        #if os(iOS)
+        try? AVAudioSession.sharedInstance().setActive(
+            false,
+            options: .notifyOthersOnDeactivation
+        )
+        #endif
         return audioRecorder.url
     }
 }

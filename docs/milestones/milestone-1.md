@@ -34,6 +34,29 @@ The first slice establishes:
 - preservation of staged microphone audio before its temporary source is
   removed, with failure recovery reporting;
 - macOS audio import and microphone recording as the first acquisition slices.
+- one-action macOS call capture preserving system output and microphone as
+  separate source tracks;
+- explicit on-device English transcription with timestamped JSON and Markdown
+  artefacts, conservative cross-track echo suppression, and atomic bundle
+  enrichment;
+- a compile-verified iPhone producer shell for explicit microphone capture,
+  Files audio import, local Files-visible bundle storage, and package sharing.
+
+## Known Milestone Gaps
+
+- Source-role labels such as `Microphone` and `System audio` are track
+  attribution, not speaker turns. Rough speaker turns and diarization remain
+  unmet.
+- The iPhone flow still requires physical-device validation.
+- Apple Watch record/stop and transfer are not implemented.
+- Location and known-people metadata are not yet captured.
+- Longer desktop sessions, timing drift, and additional audio routes need
+  broader validation.
+
+After rudimentary iPhone and Watch parity, multilingual transcription,
+mid-sentence language changes, and genuine “who said what, when” speaker
+attribution are the next core processing priorities. They are not treated as
+Milestone 1 polish on the English-only Apple Speech spike.
 
 See the [Milestone 1 Bundle Profile](../architecture/milestone-1-bundle-profile.md)
 and [macOS Capture And Import

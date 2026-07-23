@@ -96,13 +96,12 @@ The app has the provisional development bundle identifier
 only to locations the user selects. This identifier is not a commitment to the
 eventual distribution identity.
 
-The app consumes `OnbiiArchive` and `OnbiiCapture` from the sibling local Swift
-package rooted at `Packages/`. `OnbiiArchive` depends on `OnbiiCore`, while
-`OnbiiCapture` remains an acquisition boundary. Keeping the package outside the
-app project avoids an ambiguous nested-project/package workspace in Xcode.
-Later work should add:
-
-- `OnbiiTranscription` for replaceable transcription providers.
+The app consumes `OnbiiArchive`, `OnbiiCapture`, and `OnbiiTranscription` from
+the sibling local Swift package rooted at `Packages/`. `OnbiiArchive` depends
+on `OnbiiCore`, while `OnbiiCapture` remains an acquisition boundary and
+`OnbiiTranscription` remains a replaceable processing boundary. Keeping the
+package outside the app project avoids an ambiguous nested-project/package
+workspace in Xcode.
 
 Development builds are signed ad hoc to run locally. The project enables the
 hardened runtime, which requires a real signing identity for distribution.
@@ -121,13 +120,13 @@ path. It also implements a one-action dual-source call-capture prototype that
 preserves the global system-output mix and default microphone as separate source
 resources.
 
-Next:
+Remaining validation:
 
 1. Validate the dual-source session with real meeting applications and common
    audio output routes.
 2. Validate timing alignment, repeated capture, and longer sessions.
-3. Add a derived aligned mix or multi-track transcription input.
-4. Add on-device transcription as a separate processing stage.
+3. Determine the post-Milestone 1 engine path for multilingual transcription
+   and genuine speaker diarization.
 
 Application-specific filtering, device selection, and proactive triggers are
 deferred. A later trigger can observe when a configured meeting application
