@@ -16,22 +16,22 @@ let package = Package(
     targets: [
         .target(
             name: "OnbiiCore",
-            path: "Packages/OnbiiCore/Sources"
+            path: "OnbiiCore/Sources"
         ),
         .target(
             name: "OnbiiArchive",
             dependencies: ["OnbiiCore"],
-            path: "Packages/OnbiiArchive/Sources"
+            path: "OnbiiArchive/Sources"
         ),
         .testTarget(
             name: "OnbiiCoreTests",
             dependencies: ["OnbiiCore"],
-            path: "Packages/OnbiiCore/Tests"
+            path: "OnbiiCore/Tests"
         ),
         .testTarget(
             name: "OnbiiArchiveTests",
             dependencies: ["OnbiiArchive", "OnbiiCore"],
-            path: "Packages/OnbiiArchive/Tests"
+            path: "OnbiiArchive/Tests"
         ),
     ]
 )

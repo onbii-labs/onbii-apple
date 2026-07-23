@@ -31,6 +31,12 @@ Conversation.onbii/
     recording.m4a
 ```
 
+The macOS app exports `org.onbii.bundle` as a package type for the `.onbii`
+extension. Finder therefore presents the directory as one knowledge object.
+People can still inspect its ordinary files using **Show Package Contents**.
+This Finder presentation does not decide whether the eventual cross-platform
+container is directory-backed, ZIP-backed, or supports both.
+
 The writer stages the complete directory beside its destination and moves it
 into place after the manifest validates. It refuses to replace an existing
 bundle.

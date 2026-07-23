@@ -25,6 +25,8 @@ The first slice establishes:
 - `OnbiiArchive`, containing a staged, non-overwriting directory bundle writer;
 - preservation of imported source audio plus an inspectable Markdown facet;
 - explicit import and rendering provenance;
+- a SwiftUI macOS development app with archive selection, audio import, progress
+  and error state, and Finder reveal;
 - macOS audio import as the first vertical slice, followed by explicit capture.
 
 See the [Milestone 1 Bundle Profile](../architecture/milestone-1-bundle-profile.md)

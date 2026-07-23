@@ -20,7 +20,7 @@ provisional Apple implementation profile, not a final shared specification:
 Run the package tests with:
 
 ```sh
-swift test
+swift test --package-path Packages
 ```
 
 ## Repository Shape

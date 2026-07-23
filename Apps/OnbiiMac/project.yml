@@ -1,0 +1,46 @@
+name: OnbiiMac
+
+options:
+  minimumXcodeGenVersion: 2.46.0
+  deploymentTarget:
+    macOS: "14.0"
+
+packages:
+  OnbiiApple:
+    path: ../../Packages
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+
+targets:
+  OnbiiMac:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources
+    dependencies:
+      - package: OnbiiApple
+        product: OnbiiArchive
+    settings:
+      base:
+        PRODUCT_NAME: Onbii
+        PRODUCT_BUNDLE_IDENTIFIER: org.onbii.OnbiiMac.dev
+        PRODUCT_MODULE_NAME: OnbiiMac
+        MARKETING_VERSION: 0.1.0
+        CURRENT_PROJECT_VERSION: 1
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: Info.plist
+        CODE_SIGN_ENTITLEMENTS: OnbiiMac.entitlements
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_HARDENED_RUNTIME: true
+
+schemes:
+  OnbiiMacApp:
+    build:
+      targets:
+        OnbiiMac: all
+    run:
+      config: Debug
+    archive:
+      config: Release

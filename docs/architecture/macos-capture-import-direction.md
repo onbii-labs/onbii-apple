@@ -21,10 +21,11 @@ choose audio file
   -> reveal the completed object in Finder
 ```
 
-The app should use a system open panel for the source and a user-selected local
-or iCloud Drive folder for the archive. It should remember access using
-security-scoped bookmarks where sandboxing requires it. Import must copy the
-source; it must not move or modify the user's original file.
+The app uses system open panels for the source and a user-selected local or
+iCloud Drive folder for the archive. It remembers archive access across
+launches using a security-scoped bookmark and refreshes the bookmark when it
+becomes stale. Import copies the source; it does not move or modify the user's
+original file.
 
 The first UI can be one window with:
 
@@ -73,25 +74,39 @@ Processing failure must leave the preserved source bundle intact and retryable.
 Reprocessing must add or supersede derived resources rather than silently
 overwrite human edits.
 
-## Target And Dependency Direction
+## Current Development Target
 
-The future `OnbiiMac` Xcode app target should depend on:
+`OnbiiMac` is a native macOS 14 SwiftUI application. Its Xcode project is
+generated from a checked-in XcodeGen specification.
 
-- `OnbiiCore` for the logical model;
-- `OnbiiArchive` for bundle writing and reading;
-- a later `OnbiiCapture` target for explicit live acquisition;
-- a later `OnbiiTranscription` target for replaceable transcription providers.
+The app has the provisional development bundle identifier
+`org.onbii.OnbiiMac.dev`. It uses the App Sandbox and grants read/write access
+only to locations the user selects. This identifier is not a commitment to the
+eventual distribution identity.
 
-The first app target should not be generated until its signing identity,
-sandbox model, entitlements, and minimum deployment target are recorded. The
-Swift libraries and import flow can be validated independently in the meantime.
+The app consumes `OnbiiArchive` from the sibling local Swift package rooted at
+`Packages/`, which in turn depends on `OnbiiCore`. Keeping the package outside
+the app project avoids an ambiguous nested-project/package workspace in Xcode.
+Later work should add:
+
+- `OnbiiCapture` for explicit live acquisition;
+- `OnbiiTranscription` for replaceable transcription providers.
+
+Development builds are signed ad hoc to run locally. The project enables the
+hardened runtime, which requires a real signing identity for distribution.
+Distribution signing remains open.
 
 ## Immediate Follow-Up
 
-1. Add an Xcode macOS app shell and archive-folder selection.
-2. Wire audio import to `OnbiiImportRequest` and `OnbiiBundleWriter`.
-3. Add a bundle reader/inspector and Finder reveal.
-4. Add a visible microphone capture prototype.
-5. Run a ScreenCaptureKit feasibility spike before choosing the first
+The development shell now provides archive-folder selection, audio import
+through `OnbiiBundleWriter`, progress and error state, collision-safe bundle
+names, and Finder reveal.
+
+Next:
+
+1. Add a bundle reader and in-app inspector.
+2. Record the distributable app identity and signing decisions.
+3. Add a visible microphone capture prototype.
+4. Run a ScreenCaptureKit feasibility spike before choosing the first
    meeting/system-audio capture promise.
-6. Add on-device transcription as a separate processing stage.
+5. Add on-device transcription as a separate processing stage.
