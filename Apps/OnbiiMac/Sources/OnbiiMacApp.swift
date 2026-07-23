@@ -5,8 +5,8 @@ struct OnbiiMacApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .frame(minWidth: 620, minHeight: 560)
+                .frame(minWidth: 680, minHeight: 660)
         }
-        .defaultSize(width: 700, height: 620)
+        .defaultSize(width: 760, height: 720)
     }
 }

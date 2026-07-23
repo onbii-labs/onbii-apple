@@ -50,8 +50,8 @@ failure, the UI reports the retained staging path.
 
 This proves the explicit recording boundary but does not promise meeting or
 system-audio capture. Desktop/system audio needs a separate technical spike
-around ScreenCaptureKit, app/audio filtering, permissions, consent, and the
-behavior of major meeting applications.
+around Core Audio process taps, app/audio filtering, permissions, consent, and
+the behavior of major meeting applications.
 
 Both capture paths should converge after acquisition:
 
@@ -63,6 +63,12 @@ explicit recording -/
 
 Capture adapters acquire live media. Source adapters normalize the acquired
 file and metadata. Neither owns transcription or durable storage.
+
+Meeting capture has two live inputs rather than one: remote participants arrive
+through the meeting application's audio output, while the local participant
+arrives through the microphone. The first real meeting-capture session must
+acquire both concurrently, preserve them as separate source resources, and
+treat any combined mix as derived data.
 
 ## Processing
 
@@ -101,7 +107,9 @@ Later work should add:
 
 Development builds are signed ad hoc to run locally. The project enables the
 hardened runtime, which requires a real signing identity for distribution.
-Distribution signing remains open.
+The stable development identity and the remaining distribution choices are
+recorded in [macOS App Identity And
+Signing](macos-app-identity-and-signing.md).
 
 ## Immediate Follow-Up
 
@@ -110,11 +118,13 @@ through `OnbiiBundleWriter`, progress and error state, collision-safe bundle
 names, Finder reveal, and a validated inspector for newly imported packages or
 packages opened from Finder. It also provides explicit, visibly active
 microphone capture that converges on the same bundle creation and inspection
-path.
+path. A bounded Core Audio process-tap probe now tests whether audible system
+output can be received without saving it.
 
 Next:
 
-1. Record the distributable app identity and signing decisions.
-2. Run a ScreenCaptureKit feasibility spike before choosing the first
-   meeting/system-audio capture promise.
+1. Add application selection and simultaneous microphone/application-output
+   capture, preserving both source tracks.
+2. Validate the dual-source session with real meeting applications and common
+   audio output routes.
 3. Add on-device transcription as a separate processing stage.

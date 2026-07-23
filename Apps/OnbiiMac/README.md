@@ -24,6 +24,9 @@ removed only after it has been preserved in a completed bundle, and retained
 with its path reported if bundle creation fails.
 
 This prototype records microphone input only. Meeting or desktop system audio
-still requires the separate ScreenCaptureKit feasibility work described in
-[macOS Capture And Import
-Direction](../../docs/architecture/macos-capture-import-direction.md).
+is not yet a supported recording path. The app includes a bounded Core Audio
+process-tap probe that reports whether audible system output arrives, but
+deliberately does not save it. It does not capture or present a screen-sharing
+picker. Its scope and validation criteria are documented in the
+[Core Audio System-Audio
+Spike](../../docs/architecture/core-audio-system-audio-spike.md).

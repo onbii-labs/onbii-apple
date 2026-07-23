@@ -30,6 +30,7 @@ struct ContentView: View {
                         model.isImporting
                             || model.isPreparingCapture
                             || model.isCapturing
+                            || model.isSystemAudioProbeActive
                     )
                 }
                 .padding(.vertical, 4)
@@ -48,6 +49,7 @@ struct ContentView: View {
                         || model.isImporting
                         || model.isPreparingCapture
                         || model.isCapturing
+                        || model.isSystemAudioProbeActive
                 )
 
                 if model.isCapturing {
@@ -70,6 +72,7 @@ struct ContentView: View {
                         model.archiveURL == nil
                             || model.isImporting
                             || model.isPreparingCapture
+                            || model.isSystemAudioProbeActive
                     )
                 }
 
@@ -80,6 +83,35 @@ struct ContentView: View {
             }
 
             statusView
+
+            GroupBox("Remote/Application Audio Feasibility") {
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(model.systemAudioProbeStatus)
+                        Text("Remote-audio leg only — microphone capture is separate.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+
+                    if model.isSystemAudioProbeActive {
+                        Button("Stop Probe") {
+                            model.stopSystemAudioProbe()
+                        }
+                    } else {
+                        Button("Probe Application Audio") {
+                            model.startSystemAudioProbe()
+                        }
+                        .disabled(
+                            model.isImporting
+                                || model.isPreparingCapture
+                                || model.isCapturing
+                        )
+                    }
+                }
+                .padding(.vertical, 4)
+            }
 
             if let bundle = model.selectedBundle {
                 BundleInspectorView(bundle: bundle) {

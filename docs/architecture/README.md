@@ -6,10 +6,13 @@ Current implementation direction:
 
 - [Milestone 1 Bundle Profile](milestone-1-bundle-profile.md)
 - [macOS Capture And Import Direction](macos-capture-import-direction.md)
+- [macOS App Identity And Signing](macos-app-identity-and-signing.md)
+- [Core Audio System-Audio Spike](core-audio-system-audio-spike.md)
 
 Open questions still to answer here:
 
-- Which macOS audio capture path is practical for the first meeting-oriented prototype?
+- Does the Core Audio system-audio probe work reliably for the first
+  meeting applications tested?
 - What should the start/stop capture surface feel like on macOS?
 - Should the first transcript path use Apple on-device capabilities directly, and where should future third-party or server processing settings live?
 - How should Apple Watch recordings transfer into the Onbii object flow?

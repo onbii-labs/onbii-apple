@@ -21,6 +21,7 @@ final class ImportViewModel {
     }
 
     private let microphoneRecorder = OnbiiMicrophoneRecorder()
+    private let systemAudioProbe = OnbiiSystemAudioProbe()
     private var durationTask: Task<Void, Never>?
 
     var archiveURL: URL?
@@ -28,6 +29,7 @@ final class ImportViewModel {
     private(set) var state: State = .idle
     private(set) var isCapturing = false
     private(set) var captureDuration: TimeInterval = 0
+    private(set) var systemAudioProbeEvent: OnbiiSystemAudioProbeEvent = .idle
 
     var isImporting: Bool {
         if case .importing = state {
@@ -42,6 +44,32 @@ final class ImportViewModel {
             true
         } else {
             false
+        }
+    }
+
+    var isSystemAudioProbeActive: Bool {
+        switch systemAudioProbeEvent {
+        case .starting, .listening, .audioDetected:
+            true
+        case .idle, .stopped, .failed:
+            false
+        }
+    }
+
+    var systemAudioProbeStatus: String {
+        switch systemAudioProbeEvent {
+        case .idle:
+            "Not running."
+        case .starting:
+            "Starting the Core Audio application-output tap…"
+        case .listening:
+            "Listening for remote/application audio. Play audio in another app."
+        case .audioDetected:
+            "Audible application output is reaching the Core Audio tap."
+        case .stopped:
+            "Probe stopped."
+        case .failed(let message):
+            "Probe failed: \(message)"
         }
     }
 
@@ -140,6 +168,20 @@ final class ImportViewModel {
                 state = .failed(message: error.localizedDescription)
             }
         }
+    }
+
+    func startSystemAudioProbe() {
+        guard !isImporting, !isPreparingCapture, !isCapturing else {
+            return
+        }
+
+        systemAudioProbe.begin { [weak self] event in
+            self?.systemAudioProbeEvent = event
+        }
+    }
+
+    func stopSystemAudioProbe() {
+        systemAudioProbe.stop()
     }
 
     func stopCapture() {
