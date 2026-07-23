@@ -45,6 +45,8 @@
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Onbii records audio only when you explicitly start capture, so the recording can be preserved in your archive.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Onbii uses Apple’s Speech framework only when you choose Transcribe. Every request requires the on-device recognizer and cannot fall back to server recognition.</string>
 	<key>NSAudioCaptureUsageDescription</key>
 	<string>Onbii captures system audio only when you explicitly start capture, so conversations can be preserved in your archive.</string>
 	<key>UTExportedTypeDeclarations</key>

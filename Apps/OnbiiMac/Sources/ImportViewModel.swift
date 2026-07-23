@@ -3,6 +3,7 @@ import Foundation
 import Observation
 import OnbiiArchive
 import OnbiiCapture
+import OnbiiTranscription
 import UniformTypeIdentifiers
 
 @MainActor
@@ -20,7 +21,9 @@ final class ImportViewModel {
         case importing(filename: String)
         case preparingCapture
         case capturing
+        case transcribing(message: String)
         case completed(bundleURL: URL)
+        case transcribed(bundleURL: URL)
         case opened(bundleURL: URL)
         case failed(message: String)
     }
@@ -51,6 +54,27 @@ final class ImportViewModel {
         } else {
             false
         }
+    }
+
+    var isTranscribing: Bool {
+        if case .transcribing = state {
+            true
+        } else {
+            false
+        }
+    }
+
+    var canTranscribeSelectedBundle: Bool {
+        guard let selectedBundle else {
+            return false
+        }
+        let hasAudioSource = selectedBundle.manifest.resources.contains {
+            $0.role == .source && $0.mediaType.hasPrefix("audio/")
+        }
+        let alreadyHasTranscript = selectedBundle.manifest.resources.contains {
+            $0.id == "derived-transcript" || $0.id == "transcript-markdown"
+        }
+        return hasAudioSource && !alreadyHasTranscript
     }
 
     var archiveDisplayName: String {
@@ -234,6 +258,44 @@ final class ImportViewModel {
         NSWorkspace.shared.activateFileViewerSelecting([bundleURL])
     }
 
+    func transcribeSelectedBundle() {
+        guard let bundle = selectedBundle else {
+            state = .failed(message: "Open an Onbii bundle before transcribing.")
+            return
+        }
+        guard canTranscribeSelectedBundle else {
+            state = .failed(
+                message: "This object has no untranscribed source audio."
+            )
+            return
+        }
+        guard !isCapturing, !isImporting, !isPreparingCapture, !isTranscribing else {
+            return
+        }
+
+        state = .transcribing(message: "Requesting speech recognition access…")
+        Task {
+            let authorization: OnbiiSpeechAuthorization
+            if AppleOnDeviceTranscriber.authorization == .notDetermined {
+                guard await confirmGenericSpeechPermissionWording() else {
+                    state = .idle
+                    return
+                }
+                authorization = await AppleOnDeviceTranscriber.requestAuthorization()
+            } else {
+                authorization = AppleOnDeviceTranscriber.authorization
+            }
+            guard authorization == .authorized else {
+                state = .failed(
+                    message: "Speech recognition permission is required to transcribe."
+                )
+                return
+            }
+
+            await performTranscription(of: bundle)
+        }
+    }
+
     private func performImport(
         of sourceURL: URL,
         title explicitTitle: String? = nil,
@@ -292,6 +354,122 @@ final class ImportViewModel {
                 : ""
             state = .failed(
                 message: error.localizedDescription + recoveryMessage
+            )
+        }
+    }
+
+    private func performTranscription(of bundle: OnbiiBundle) async {
+        let sourceResources = bundle.manifest.resources.filter {
+            $0.role == .source && $0.mediaType.hasPrefix("audio/")
+        }
+        guard !sourceResources.isEmpty else {
+            state = .failed(message: "This object contains no source audio.")
+            return
+        }
+
+        let hasBundleAccess = bundle.url.startAccessingSecurityScopedResource()
+        let hasArchiveAccess = archiveURL?.startAccessingSecurityScopedResource() ?? false
+        defer {
+            if hasBundleAccess {
+                bundle.url.stopAccessingSecurityScopedResource()
+            }
+            if hasArchiveAccess {
+                archiveURL?.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        do {
+            let transcriber = AppleOnDeviceTranscriber()
+            let firstStart = sourceResources.compactMap(\.captureStartedAt).min()
+            var tracks = [OnbiiTrackTranscript]()
+            var timelineInputs = [
+                (transcript: OnbiiTrackTranscript, offset: TimeInterval)
+            ]()
+
+            for (index, resource) in sourceResources.enumerated() {
+                state = .transcribing(
+                    message: "Transcribing track \(index + 1) of "
+                        + "\(sourceResources.count) on this Mac…"
+                )
+                let role = transcriptRole(for: resource.id)
+                let transcript = try await transcriber.transcribe(
+                    audioURL: bundle.url(for: resource),
+                    sourceResourceID: resource.id,
+                    sourceRole: role
+                )
+                let offset = if let firstStart, let resourceStart = resource.captureStartedAt {
+                    max(0.0, resourceStart.timeIntervalSince(firstStart))
+                } else {
+                    0.0
+                }
+                tracks.append(transcript)
+                timelineInputs.append((transcript, offset: offset))
+            }
+            guard tracks.contains(where: { !$0.segments.isEmpty }) else {
+                throw AppleOnDeviceTranscriberError.noSpeechDetected
+            }
+
+            let generatedAt = Date()
+            let document = OnbiiTranscriptDocument(
+                generatedAt: generatedAt,
+                tracks: tracks,
+                timeline: OnbiiTranscriptTimeline.merge(timelineInputs)
+            )
+            state = .transcribing(message: "Attaching transcript to the object…")
+            let processingDirectory = try makeProcessingDirectory()
+            defer {
+                try? FileManager.default.removeItem(at: processingDirectory)
+            }
+
+            let jsonURL = processingDirectory.appendingPathComponent("transcript.json")
+            let markdownURL = processingDirectory.appendingPathComponent("transcript.md")
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            encoder.outputFormatting = [
+                .prettyPrinted,
+                .sortedKeys,
+                .withoutEscapingSlashes,
+            ]
+            try encoder.encode(document).write(to: jsonURL, options: .atomic)
+            try Data(
+                OnbiiTranscriptMarkdown.render(
+                    document,
+                    title: bundle.manifest.title
+                ).utf8
+            ).write(to: markdownURL, options: .atomic)
+
+            let request = OnbiiBundleEnrichmentRequest(
+                bundleURL: bundle.url,
+                artifacts: [
+                    OnbiiBundleArtifact(
+                        sourceURL: jsonURL,
+                        resourceID: "derived-transcript",
+                        role: .derived,
+                        path: "derived/transcript.json",
+                        mediaType: "application/json"
+                    ),
+                    OnbiiBundleArtifact(
+                        sourceURL: markdownURL,
+                        resourceID: "transcript-markdown",
+                        role: .humanReadable,
+                        path: "transcript.md",
+                        mediaType: "text/markdown; charset=utf-8"
+                    ),
+                ],
+                action: "transcribed",
+                occurredAt: generatedAt,
+                agent: .init(kind: "software", name: "Apple Speech on-device"),
+                inputResourceIDs: sourceResources.map(\.id)
+            )
+            let enriched = try await Task.detached(priority: .userInitiated) {
+                try OnbiiBundleEnricher().enrich(request)
+            }.value
+            selectedBundle = enriched
+            state = .transcribed(bundleURL: bundle.url)
+        } catch {
+            state = .failed(
+                message: error.localizedDescription
+                    + " The source recordings were not changed."
             )
         }
     }
@@ -426,6 +604,27 @@ final class ImportViewModel {
         return await panel.begin()
     }
 
+    private func confirmGenericSpeechPermissionWording() async -> Bool {
+        let alert = NSAlert()
+        alert.messageText = "About macOS Speech Permission"
+        alert.informativeText =
+            "macOS uses a generic permission message that may say audio is sent "
+            + "to Apple. Onbii requires the on-device recognizer for every request. "
+            + "If it is unavailable, transcription stops instead of using a server."
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Continue")
+        alert.addButton(withTitle: "Cancel")
+
+        if let window = NSApp.keyWindow ?? NSApp.mainWindow {
+            return await withCheckedContinuation { continuation in
+                alert.beginSheetModal(for: window) { response in
+                    continuation.resume(returning: response == .alertFirstButtonReturn)
+                }
+            }
+        }
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+
     private func restoreArchive() {
         guard let bookmarkData = UserDefaults.standard.data(
             forKey: Self.archiveBookmarkKey
@@ -512,6 +711,33 @@ final class ImportViewModel {
             captureDirectory.appendingPathComponent("system-audio.caf"),
             captureDirectory.appendingPathComponent("microphone-audio.m4a")
         )
+    }
+
+    private func makeProcessingDirectory() throws -> URL {
+        let directory = try FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true
+        )
+        .appendingPathComponent("Processing", isDirectory: true)
+        .appendingPathComponent(UUID().uuidString.lowercased(), isDirectory: true)
+        try FileManager.default.createDirectory(
+            at: directory,
+            withIntermediateDirectories: true
+        )
+        return directory
+    }
+
+    private func transcriptRole(for resourceID: String) -> String {
+        switch resourceID {
+        case "source-system-audio":
+            "system-audio"
+        case "source-microphone-audio":
+            "microphone"
+        default:
+            "recording"
+        }
     }
 
     private func beginDurationUpdates() {

@@ -30,6 +30,7 @@ struct ContentView: View {
                         model.isImporting
                             || model.isPreparingCapture
                             || model.isCapturing
+                            || model.isTranscribing
                     )
                 }
                 .padding(.vertical, 4)
@@ -43,12 +44,13 @@ struct ContentView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .disabled(
-                    model.archiveURL == nil
-                        || model.isImporting
-                        || model.isPreparingCapture
-                        || model.isCapturing
-                )
+                    .disabled(
+                        model.archiveURL == nil
+                            || model.isImporting
+                            || model.isPreparingCapture
+                            || model.isCapturing
+                            || model.isTranscribing
+                    )
 
                 if model.isCapturing, model.captureKind == .microphone {
                     Button {
@@ -69,8 +71,9 @@ struct ContentView: View {
                     .disabled(
                         model.archiveURL == nil
                             || model.isImporting
-                            || model.isPreparingCapture
-                            || model.isCapturing
+                        || model.isPreparingCapture
+                        || model.isCapturing
+                        || model.isTranscribing
                     )
                 }
 
@@ -118,6 +121,7 @@ struct ContentView: View {
                                 || model.isImporting
                                 || model.isPreparingCapture
                                 || model.isCapturing
+                                || model.isTranscribing
                         )
                     }
                 }
@@ -125,9 +129,12 @@ struct ContentView: View {
             }
 
             if let bundle = model.selectedBundle {
-                BundleInspectorView(bundle: bundle) {
-                    model.revealSelectedBundle()
-                }
+                BundleInspectorView(
+                    bundle: bundle,
+                    reveal: model.revealSelectedBundle,
+                    transcribe: model.transcribeSelectedBundle
+                )
+                .environment(\.isEnabled, !model.isTranscribing)
             }
 
             Spacer()
@@ -163,6 +170,14 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
+        case .transcribing(let message):
+            HStack(spacing: 8) {
+                ProgressView()
+                    .controlSize(.small)
+                Text(message)
+                    .foregroundStyle(.secondary)
+            }
+
         case .completed(let bundleURL):
             HStack {
                 Label(
@@ -177,6 +192,13 @@ struct ContentView: View {
                     model.revealSelectedBundle()
                 }
             }
+
+        case .transcribed(let bundleURL):
+            Label(
+                "\(bundleURL.lastPathComponent) now contains an on-device transcript.",
+                systemImage: "text.badge.checkmark"
+            )
+            .foregroundStyle(.green)
 
         case .opened(let bundleURL):
             Label(
@@ -207,6 +229,7 @@ struct ContentView: View {
 private struct BundleInspectorView: View {
     let bundle: OnbiiBundle
     let reveal: () -> Void
+    let transcribe: () -> Void
 
     var body: some View {
         GroupBox("Knowledge Object") {
@@ -215,6 +238,11 @@ private struct BundleInspectorView: View {
                     Text(bundle.manifest.title)
                         .font(.title3.weight(.semibold))
                     Spacer()
+                    if !bundle.manifest.resources.contains(where: {
+                        $0.id == "derived-transcript"
+                    }) {
+                        Button("Transcribe On Device", action: transcribe)
+                    }
                     Button("Reveal in Finder", action: reveal)
                 }
 

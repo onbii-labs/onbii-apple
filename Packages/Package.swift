@@ -13,6 +13,7 @@ let package = Package(
         .library(name: "OnbiiCore", targets: ["OnbiiCore"]),
         .library(name: "OnbiiArchive", targets: ["OnbiiArchive"]),
         .library(name: "OnbiiCapture", targets: ["OnbiiCapture"]),
+        .library(name: "OnbiiTranscription", targets: ["OnbiiTranscription"]),
     ],
     targets: [
         .target(
@@ -28,6 +29,10 @@ let package = Package(
             name: "OnbiiCapture",
             path: "OnbiiCapture/Sources"
         ),
+        .target(
+            name: "OnbiiTranscription",
+            path: "OnbiiTranscription/Sources"
+        ),
         .testTarget(
             name: "OnbiiCoreTests",
             dependencies: ["OnbiiCore"],
@@ -37,6 +42,11 @@ let package = Package(
             name: "OnbiiArchiveTests",
             dependencies: ["OnbiiArchive", "OnbiiCore"],
             path: "OnbiiArchive/Tests"
+        ),
+        .testTarget(
+            name: "OnbiiTranscriptionTests",
+            dependencies: ["OnbiiTranscription"],
+            path: "OnbiiTranscription/Tests"
         ),
     ]
 )
