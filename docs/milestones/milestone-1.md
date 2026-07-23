@@ -17,6 +17,20 @@ The Apple proving ground should implement the first capture-certainty loop for O
 - User-controlled archive storage.
 - Ordinary inspection or lightweight preview.
 
+## Current Implementation Slice
+
+The first slice establishes:
+
+- `OnbiiCore`, containing the draft logical manifest and validation;
+- `OnbiiArchive`, containing a staged, non-overwriting directory bundle writer;
+- preservation of imported source audio plus an inspectable Markdown facet;
+- explicit import and rendering provenance;
+- macOS audio import as the first vertical slice, followed by explicit capture.
+
+See the [Milestone 1 Bundle Profile](../architecture/milestone-1-bundle-profile.md)
+and [macOS Capture And Import
+Direction](../architecture/macos-capture-import-direction.md).
+
 ## Spec Context
 
 See [`../spec/docs/MILESTONE_1_BREAKDOWN.md`](../spec/docs/MILESTONE_1_BREAKDOWN.md) and [`../spec/docs/IMPLEMENTATION_ARCHITECTURE.md`](../spec/docs/IMPLEMENTATION_ARCHITECTURE.md).

@@ -12,6 +12,17 @@ This repository is just getting started.
 
 The initial work is focused on the Apple proving ground for the first useful Onbii experience. See the spec roadmap for the current milestone context: [`docs/spec/docs/ROADMAP.md`](docs/spec/docs/ROADMAP.md).
 
+The first implementation includes Swift libraries for the draft logical object
+model and directory-backed `.onbii` bundles. The choices are documented as a
+provisional Apple implementation profile, not a final shared specification:
+[`docs/architecture/milestone-1-bundle-profile.md`](docs/architecture/milestone-1-bundle-profile.md).
+
+Run the package tests with:
+
+```sh
+swift test
+```
+
 ## Repository Shape
 
 ```text
