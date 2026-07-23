@@ -48,10 +48,9 @@ the app container and sent through the same bundle-writing pipeline as an
 import. It is deleted only after the completed object has preserved it; on
 failure, the UI reports the retained staging path.
 
-This proves the explicit recording boundary but does not promise meeting or
-system-audio capture. Desktop/system audio needs a separate technical spike
-around Core Audio process taps, app/audio filtering, permissions, consent, and
-the behavior of major meeting applications.
+This proves the explicit recording boundary. A second prototype uses a global
+Core Audio system-output tap for the remote audio leg, while retaining the
+default microphone recorder for the local leg.
 
 Both capture paths should converge after acquisition:
 
@@ -118,13 +117,18 @@ through `OnbiiBundleWriter`, progress and error state, collision-safe bundle
 names, Finder reveal, and a validated inspector for newly imported packages or
 packages opened from Finder. It also provides explicit, visibly active
 microphone capture that converges on the same bundle creation and inspection
-path. A bounded Core Audio process-tap probe now tests whether audible system
-output can be received without saving it.
+path. It also implements a one-action dual-source call-capture prototype that
+preserves the global system-output mix and default microphone as separate source
+resources.
 
 Next:
 
-1. Add application selection and simultaneous microphone/application-output
-   capture, preserving both source tracks.
-2. Validate the dual-source session with real meeting applications and common
+1. Validate the dual-source session with real meeting applications and common
    audio output routes.
-3. Add on-device transcription as a separate processing stage.
+2. Validate timing alignment, repeated capture, and longer sessions.
+3. Add a derived aligned mix or multi-track transcription input.
+4. Add on-device transcription as a separate processing stage.
+
+Application-specific filtering, device selection, and proactive triggers are
+deferred. A later trigger can observe when a configured meeting application
+starts audio I/O and offer capture without changing the explicit-consent rule.

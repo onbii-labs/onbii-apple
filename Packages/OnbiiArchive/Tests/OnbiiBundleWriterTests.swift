@@ -73,6 +73,80 @@ func writerDoesNotReplaceExistingBundle() throws {
     }
 }
 
+@Test
+func capturePreservesMultipleSourceTracks() throws {
+    let temporaryDirectory = try makeTemporaryDirectory()
+    defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
+
+    let systemAudioURL = temporaryDirectory.appendingPathComponent("system.caf")
+    let microphoneURL = temporaryDirectory.appendingPathComponent("microphone.m4a")
+    try Data("system audio".utf8).write(to: systemAudioURL)
+    try Data("microphone audio".utf8).write(to: microphoneURL)
+
+    let bundleURL = temporaryDirectory.appendingPathComponent("Call.onbii")
+    let request = OnbiiImportRequest(
+        sources: [
+            OnbiiSourceFile(
+                resourceID: "source-system-audio",
+                sourceURL: systemAudioURL,
+                storedFilename: "system-audio.caf",
+                mediaType: "audio/x-caf",
+                captureStartedAt: Date(timeIntervalSince1970: 1),
+                durationSeconds: 30
+            ),
+            OnbiiSourceFile(
+                resourceID: "source-microphone-audio",
+                sourceURL: microphoneURL,
+                storedFilename: "microphone-audio.m4a",
+                mediaType: "audio/mp4",
+                captureStartedAt: Date(timeIntervalSince1970: 1.1),
+                durationSeconds: 29.9
+            ),
+        ],
+        destinationBundleURL: bundleURL,
+        objectID: .init(rawValue: "call-1"),
+        title: "Call",
+        createdAt: Date(timeIntervalSince1970: 0),
+        sourceAction: "captured",
+        sourceAgentName: "macOS dual-source capture"
+    )
+
+    let manifest = try OnbiiBundleWriter().write(request)
+
+    #expect(manifest.resources.filter { $0.role == .source }.count == 2)
+    #expect(
+        manifest.resources.first {
+            $0.id == "source-system-audio"
+        }?.captureStartedAt == Date(timeIntervalSince1970: 1)
+    )
+    #expect(
+        manifest.resources.first {
+            $0.id == "source-microphone-audio"
+        }?.durationSeconds == 29.9
+    )
+    #expect(manifest.provenance.first?.action == "captured")
+    #expect(
+        Set(manifest.provenance.first?.outputResourceIDs ?? []) == [
+            "source-system-audio",
+            "source-microphone-audio",
+        ]
+    )
+    #expect(
+        try Data(
+            contentsOf: bundleURL.appendingPathComponent(
+                "source/system-audio.caf"
+            )
+        ) == Data("system audio".utf8)
+    )
+    #expect(
+        try Data(
+            contentsOf: bundleURL.appendingPathComponent(
+                "source/microphone-audio.m4a"
+            )
+        ) == Data("microphone audio".utf8)
+    )
+}
+
 private func makeTemporaryDirectory() throws -> URL {
     let url = FileManager.default.temporaryDirectory
         .appendingPathComponent(UUID().uuidString, isDirectory: true)

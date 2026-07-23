@@ -76,6 +76,8 @@ public struct OnbiiResource: Codable, Equatable, Sendable {
     public var mediaType: String
     public var byteCount: Int64?
     public var originalFilename: String?
+    public var captureStartedAt: Date?
+    public var durationSeconds: Double?
 
     public init(
         id: String,
@@ -83,7 +85,9 @@ public struct OnbiiResource: Codable, Equatable, Sendable {
         path: String,
         mediaType: String,
         byteCount: Int64? = nil,
-        originalFilename: String? = nil
+        originalFilename: String? = nil,
+        captureStartedAt: Date? = nil,
+        durationSeconds: Double? = nil
     ) {
         self.id = id
         self.role = role
@@ -91,6 +95,8 @@ public struct OnbiiResource: Codable, Equatable, Sendable {
         self.mediaType = mediaType
         self.byteCount = byteCount
         self.originalFilename = originalFilename
+        self.captureStartedAt = captureStartedAt
+        self.durationSeconds = durationSeconds
     }
 }
 

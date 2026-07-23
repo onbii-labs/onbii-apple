@@ -30,7 +30,6 @@ struct ContentView: View {
                         model.isImporting
                             || model.isPreparingCapture
                             || model.isCapturing
-                            || model.isSystemAudioProbeActive
                     )
                 }
                 .padding(.vertical, 4)
@@ -49,10 +48,9 @@ struct ContentView: View {
                         || model.isImporting
                         || model.isPreparingCapture
                         || model.isCapturing
-                        || model.isSystemAudioProbeActive
                 )
 
-                if model.isCapturing {
+                if model.isCapturing, model.captureKind == .microphone {
                     Button {
                         model.stopCapture()
                     } label: {
@@ -72,7 +70,7 @@ struct ContentView: View {
                         model.archiveURL == nil
                             || model.isImporting
                             || model.isPreparingCapture
-                            || model.isSystemAudioProbeActive
+                            || model.isCapturing
                     )
                 }
 
@@ -84,27 +82,40 @@ struct ContentView: View {
 
             statusView
 
-            GroupBox("Remote/Application Audio Feasibility") {
-                HStack(spacing: 12) {
+            GroupBox("Call Capture") {
+                HStack(spacing: 16) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(model.systemAudioProbeStatus)
-                        Text("Remote-audio leg only — microphone capture is separate.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        Text("Record everything currently audible on the Mac")
+                        Text(
+                            "System output and the default microphone are preserved "
+                                + "as separate source tracks."
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     }
 
                     Spacer()
 
-                    if model.isSystemAudioProbeActive {
-                        Button("Stop Probe") {
-                            model.stopSystemAudioProbe()
+                    if model.isCapturing,
+                       case .call = model.captureKind
+                    {
+                        Button {
+                            model.stopCapture()
+                        } label: {
+                            Label("Stop Call Capture", systemImage: "stop.circle.fill")
                         }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.red)
                     } else {
-                        Button("Probe Application Audio") {
-                            model.startSystemAudioProbe()
+                        Button {
+                            model.startCallCapture()
+                        } label: {
+                            Label("Start Call Capture", systemImage: "person.2.wave.2")
                         }
+                        .buttonStyle(.borderedProminent)
                         .disabled(
-                            model.isImporting
+                            model.archiveURL == nil
+                                || model.isImporting
                                 || model.isPreparingCapture
                                 || model.isCapturing
                         )
@@ -139,7 +150,7 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
 
         case .preparingCapture:
-            Label("Requesting microphone access…", systemImage: "mic")
+            Label("Preparing audio capture…", systemImage: "waveform")
                 .foregroundStyle(.secondary)
 
         case .capturing:
@@ -148,7 +159,7 @@ struct ContentView: View {
                     .foregroundStyle(.red)
                 Text("Recording \(model.captureDurationText)")
                     .monospacedDigit()
-                Text("Microphone capture is visibly active.")
+                Text(captureDescription)
                     .foregroundStyle(.secondary)
             }
 
@@ -178,6 +189,17 @@ struct ContentView: View {
             Label(message, systemImage: "exclamationmark.triangle.fill")
                 .foregroundStyle(.red)
                 .textSelection(.enabled)
+        }
+    }
+
+    private var captureDescription: String {
+        switch model.captureKind {
+        case .microphone:
+            "Microphone capture is visibly active."
+        case .call:
+            "System output and default microphone capture are visibly active."
+        case nil:
+            "Audio capture is visibly active."
         }
     }
 }

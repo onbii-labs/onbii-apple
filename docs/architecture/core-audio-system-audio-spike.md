@@ -1,6 +1,7 @@
 # Core Audio System-Audio Spike
 
-Status: Core API feasibility validated; meeting-session validation pending
+Status: Core API feasibility validated; dual-source prototype implemented,
+device validation pending
 
 Date: 2026-07-23
 
@@ -41,14 +42,16 @@ local participant   -> microphone input   -> microphone capture
 ```
 
 The process tap validates the remote/application-output leg. The existing
-microphone recorder validates the local leg independently. Onbii has not yet
-validated that both can run for the same session with aligned timing.
+microphone recorder validates the local leg independently. The development app
+now starts both in one explicit session and preserves the two resulting source
+tracks with their individual start times and durations. That combined path has
+not yet been validated on-device or for aligned long-session timing.
 
 The first real call-capture path should acquire both concurrently and preserve
 them as distinct source tracks. A convenience mix may be added as a derived
 resource with provenance; it should not replace the original tracks.
 
-## Probe
+## Probe And Recorder
 
 The macOS development app exposes a clearly labelled
 **Probe Application Audio** control. It:
@@ -62,6 +65,17 @@ The macOS development app exposes a clearly labelled
 
 The app includes `NSAudioCaptureUsageDescription`. The first start should produce
 macOS's system-audio recording permission prompt.
+
+After the global probe passed, a short application-isolation experiment exposed
+the policy and usability cost of mapping audible streams to helper processes.
+Finder Preview audio, for example, is produced by `QuickLookUIService`, not
+Finder or a user-facing Preview selection. That filtering work is deliberately
+deferred.
+
+**Start Call Capture** therefore records the global stereo system-output mix to
+CAF and the current default microphone to M4A concurrently. Staging files are
+deleted only after both have been preserved inside a completed `.onbii`
+package.
 
 This follows Apple's
 [`Capturing system audio with Core Audio taps`](https://developer.apple.com/documentation/coreaudio/capturing-system-audio-with-core-audio-taps)
@@ -98,6 +112,14 @@ application-specific isolation, simultaneous microphone capture, timing
 alignment, long sessions, alternate output routes, or individual meeting
 applications.
 
+The next validation pass should confirm:
+
+- sounds from multiple applications enter the system-audio source;
+- system output remains audible during capture;
+- the default microphone enters the microphone source;
+- both source files survive in one package; and
+- stopping tears down both recorders and permits a second capture.
+
 ## Non-Goals
 
 This spike does not:
@@ -124,7 +146,8 @@ Only the first two outcomes should lead to an audio writer and bundle-pipeline
 integration. That integration must then validate simultaneous microphone
 capture before it is described as call recording.
 
-Outcome: proceed to a bounded application-selection and dual-source capture
-prototype. Retain microphone and selected-application audio as separate source
-tracks; do not describe the result as supported meeting capture until the
-remaining validation matrix passes.
+Outcome: proceed with a bounded global-system-output and default-microphone
+capture prototype. Retain them as separate source tracks. Defer per-application
+filtering and application-triggered capture until a later feature, and do not
+describe the result as supported meeting capture until the remaining validation
+matrix passes.

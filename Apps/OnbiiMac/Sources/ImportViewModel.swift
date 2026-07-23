@@ -10,6 +10,11 @@ import UniformTypeIdentifiers
 final class ImportViewModel {
     private static let archiveBookmarkKey = "selectedArchiveBookmark"
 
+    enum CaptureKind: Equatable {
+        case microphone
+        case call
+    }
+
     enum State: Equatable {
         case idle
         case importing(filename: String)
@@ -21,15 +26,16 @@ final class ImportViewModel {
     }
 
     private let microphoneRecorder = OnbiiMicrophoneRecorder()
-    private let systemAudioProbe = OnbiiSystemAudioProbe()
+    private let dualCaptureSession = OnbiiDualAudioCaptureSession()
     private var durationTask: Task<Void, Never>?
+    private var dualCaptureDirectory: URL?
 
     var archiveURL: URL?
     private(set) var selectedBundle: OnbiiBundle?
     private(set) var state: State = .idle
     private(set) var isCapturing = false
     private(set) var captureDuration: TimeInterval = 0
-    private(set) var systemAudioProbeEvent: OnbiiSystemAudioProbeEvent = .idle
+    private(set) var captureKind: CaptureKind?
 
     var isImporting: Bool {
         if case .importing = state {
@@ -44,32 +50,6 @@ final class ImportViewModel {
             true
         } else {
             false
-        }
-    }
-
-    var isSystemAudioProbeActive: Bool {
-        switch systemAudioProbeEvent {
-        case .starting, .listening, .audioDetected:
-            true
-        case .idle, .stopped, .failed:
-            false
-        }
-    }
-
-    var systemAudioProbeStatus: String {
-        switch systemAudioProbeEvent {
-        case .idle:
-            "Not running."
-        case .starting:
-            "Starting the Core Audio application-output tap…"
-        case .listening:
-            "Listening for remote/application audio. Play audio in another app."
-        case .audioDetected:
-            "Audible application output is reaching the Core Audio tap."
-        case .stopped:
-            "Probe stopped."
-        case .failed(let message):
-            "Probe failed: \(message)"
         }
     }
 
@@ -161,6 +141,7 @@ final class ImportViewModel {
                 let captureURL = try makeCaptureURL()
                 try microphoneRecorder.startRecording(to: captureURL)
                 captureDuration = 0
+                captureKind = .microphone
                 isCapturing = true
                 state = .capturing
                 beginDurationUpdates()
@@ -170,21 +151,51 @@ final class ImportViewModel {
         }
     }
 
-    func startSystemAudioProbe() {
-        guard !isImporting, !isPreparingCapture, !isCapturing else {
+    func startCallCapture() {
+        guard archiveURL != nil else {
+            state = .failed(message: "Choose an archive folder before recording.")
+            return
+        }
+        guard !isPreparingCapture, !isCapturing else {
             return
         }
 
-        systemAudioProbe.begin { [weak self] event in
-            self?.systemAudioProbeEvent = event
+        state = .preparingCapture
+        Task {
+            guard await dualCaptureSession.requestMicrophonePermission() else {
+                state = .failed(
+                    message: "Microphone access is required to capture your side of the call."
+                )
+                return
+            }
+
+            do {
+                let locations = try makeDualCaptureLocations()
+                dualCaptureDirectory = locations.directory
+                try dualCaptureSession.start(
+                    systemAudioURL: locations.systemAudio,
+                    microphoneAudioURL: locations.microphoneAudio
+                )
+                captureDuration = 0
+                captureKind = .call
+                isCapturing = true
+                state = .capturing
+                beginDurationUpdates()
+            } catch {
+                let recoveryMessage = dualCaptureDirectory.map {
+                    " Any partial capture files remain at \($0.path)."
+                } ?? ""
+                state = .failed(message: error.localizedDescription + recoveryMessage)
+            }
         }
     }
 
-    func stopSystemAudioProbe() {
-        systemAudioProbe.stop()
-    }
-
     func stopCapture() {
+        if case .call = captureKind {
+            stopCallCapture()
+            return
+        }
+
         let finalDuration = microphoneRecorder.duration
 
         guard let captureURL = microphoneRecorder.stopRecording() else {
@@ -193,6 +204,7 @@ final class ImportViewModel {
 
         captureDuration = finalDuration
         isCapturing = false
+        captureKind = nil
         durationTask?.cancel()
         durationTask = nil
 
@@ -202,6 +214,7 @@ final class ImportViewModel {
                 of: captureURL,
                 title: title,
                 mediaType: "audio/mp4",
+                sourceAction: "captured",
                 sourceAgentName: "macOS microphone capture",
                 removeSourceAfterImport: true
             )
@@ -225,6 +238,7 @@ final class ImportViewModel {
         of sourceURL: URL,
         title explicitTitle: String? = nil,
         mediaType explicitMediaType: String? = nil,
+        sourceAction: String = "imported",
         sourceAgentName: String = "macOS file import",
         removeSourceAfterImport: Bool = false
     ) async {
@@ -244,6 +258,7 @@ final class ImportViewModel {
             destinationBundleURL: destinationURL,
             title: title,
             mediaType: mediaType,
+            sourceAction: sourceAction,
             sourceAgentName: sourceAgentName
         )
 
@@ -278,6 +293,107 @@ final class ImportViewModel {
             state = .failed(
                 message: error.localizedDescription + recoveryMessage
             )
+        }
+    }
+
+    private func stopCallCapture() {
+        let recoveryDirectory = dualCaptureDirectory
+
+        do {
+            let result = try dualCaptureSession.stop()
+            captureDuration = result.systemAudio.duration
+            isCapturing = false
+            captureKind = nil
+            durationTask?.cancel()
+            durationTask = nil
+            dualCaptureDirectory = nil
+
+            let title =
+                "Call " + Date().formatted(date: .abbreviated, time: .shortened)
+            Task {
+                await performCallCaptureImport(
+                    result,
+                    title: title,
+                    cleanupDirectory: recoveryDirectory
+                )
+            }
+        } catch {
+            isCapturing = false
+            captureKind = nil
+            durationTask?.cancel()
+            durationTask = nil
+            dualCaptureDirectory = nil
+            let recoveryMessage = recoveryDirectory.map {
+                " Partial capture files remain at \($0.path)."
+            } ?? ""
+            state = .failed(message: error.localizedDescription + recoveryMessage)
+        }
+    }
+
+    private func performCallCaptureImport(
+        _ result: OnbiiDualAudioCaptureResult,
+        title: String,
+        cleanupDirectory: URL?
+    ) async {
+        guard let archiveURL else {
+            state = .failed(message: "The selected archive is no longer available.")
+            return
+        }
+
+        let destinationURL = uniqueDestination(for: title, in: archiveURL)
+        let request = OnbiiImportRequest(
+            sources: [
+                OnbiiSourceFile(
+                    resourceID: "source-system-audio",
+                    sourceURL: result.systemAudio.url,
+                    storedFilename: "system-audio.caf",
+                    mediaType: "audio/x-caf",
+                    captureStartedAt: result.systemAudio.startedAt,
+                    durationSeconds: result.systemAudio.duration
+                ),
+                OnbiiSourceFile(
+                    resourceID: "source-microphone-audio",
+                    sourceURL: result.microphoneAudio.url,
+                    storedFilename: "microphone-audio.m4a",
+                    mediaType: "audio/mp4",
+                    captureStartedAt: result.microphoneAudio.startedAt,
+                    durationSeconds: result.microphoneAudio.duration
+                ),
+            ],
+            destinationBundleURL: destinationURL,
+            title: title,
+            createdAt: min(
+                result.systemAudio.startedAt,
+                result.microphoneAudio.startedAt
+            ),
+            sourceAction: "captured",
+            sourceAgentName: "macOS dual-source call capture"
+        )
+
+        state = .importing(filename: "system audio and microphone")
+        let hasArchiveAccess = archiveURL.startAccessingSecurityScopedResource()
+        defer {
+            if hasArchiveAccess {
+                archiveURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        do {
+            let bundle = try await Task.detached(priority: .userInitiated) {
+                try OnbiiBundleWriter().write(request)
+                return try OnbiiBundleReader().read(at: destinationURL)
+            }.value
+            selectedBundle = bundle
+            state = .completed(bundleURL: destinationURL)
+
+            if let cleanupDirectory {
+                try? FileManager.default.removeItem(at: cleanupDirectory)
+            }
+        } catch {
+            let recoveryMessage = cleanupDirectory.map {
+                " The captured source tracks remain at \($0.path)."
+            } ?? ""
+            state = .failed(message: error.localizedDescription + recoveryMessage)
         }
     }
 
@@ -371,6 +487,33 @@ final class ImportViewModel {
         )
     }
 
+    private func makeDualCaptureLocations() throws -> (
+        directory: URL,
+        systemAudio: URL,
+        microphoneAudio: URL
+    ) {
+        let captureDirectory = try FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true
+        )
+        .appendingPathComponent("Captures", isDirectory: true)
+        .appendingPathComponent(
+            "call-\(UUID().uuidString.lowercased())",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(
+            at: captureDirectory,
+            withIntermediateDirectories: true
+        )
+        return (
+            captureDirectory,
+            captureDirectory.appendingPathComponent("system-audio.caf"),
+            captureDirectory.appendingPathComponent("microphone-audio.m4a")
+        )
+    }
+
     private func beginDurationUpdates() {
         durationTask?.cancel()
         durationTask = Task { [weak self] in
@@ -379,7 +522,11 @@ final class ImportViewModel {
                 guard !Task.isCancelled, let self else {
                     return
                 }
-                captureDuration = microphoneRecorder.duration
+                captureDuration = if case .call = captureKind {
+                    dualCaptureSession.duration
+                } else {
+                    microphoneRecorder.duration
+                }
             }
         }
     }

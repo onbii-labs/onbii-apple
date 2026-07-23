@@ -24,11 +24,22 @@ libraries. A source adapter hands normalized input to `OnbiiArchive`.
 The initial Apple implementation writes a directory with an `.onbii` extension:
 
 ```text
-Conversation.onbii/
+Imported Recording.onbii/
   manifest.json
   content.md
   source/
     recording.m4a
+```
+
+Call capture preserves the two independently acquired originals:
+
+```text
+Conversation.onbii/
+  manifest.json
+  content.md
+  source/
+    system-audio.caf
+    microphone-audio.m4a
 ```
 
 The macOS app exports `org.onbii.bundle` as a package type for the `.onbii`
@@ -55,6 +66,7 @@ The `0.1.0-draft` manifest records:
 - an opaque stable object identity;
 - object type, title, and creation time;
 - explicit resource IDs, roles, paths, media types, sizes, and original names;
+- optional capture start and duration metadata on live source resources;
 - provenance events with actions, agents, inputs, outputs, and timestamps.
 
 Resource paths must be safe bundle-relative paths. Provenance may only refer to
@@ -76,6 +88,24 @@ File import:
 
 The placeholder Markdown is deliberately not presented as a transcript.
 Transcription will later add a derived resource and its own provenance event.
+
+## Initial Call-Capture Result
+
+The dual-source prototype records the global system-output mix through a Core
+Audio tap while recording the default microphone independently. The writer
+stores both files under `source/`, records each source's start time and duration,
+and links both to one `captured` provenance event.
+
+The files are not mixed during capture. This keeps the remote/application leg
+and local microphone leg available for later alignment, transcription, and
+speaker-turn work. Their timing metadata is sufficient for the first prototype;
+sample-clock drift and long-session alignment remain to be validated.
+
+A later processing stage should produce an aligned transcription input as a
+derived resource. Most transcription engines will benefit from a conventional
+mixdown; a multi-track container remains an option for providers that can use
+channel separation. Either form must retain provenance back to both originals
+and must not replace them.
 
 ## Deferred Questions
 

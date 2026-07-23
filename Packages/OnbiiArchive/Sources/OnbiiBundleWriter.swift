@@ -3,6 +3,9 @@ import OnbiiCore
 
 public enum OnbiiBundleWriterError: Error, Equatable, Sendable {
     case sourceIsNotARegularFile(String)
+    case noSources
+    case invalidStoredFilename(String)
+    case duplicateStoredFilename(String)
     case destinationIsNotOnbiiBundle(String)
     case destinationAlreadyExists(String)
 }
@@ -12,6 +15,12 @@ extension OnbiiBundleWriterError: LocalizedError {
         switch self {
         case let .sourceIsNotARegularFile(path):
             "The import source is not a regular file: \(path)"
+        case .noSources:
+            "At least one source file is required."
+        case let .invalidStoredFilename(filename):
+            "The stored source filename is invalid: \(filename)"
+        case let .duplicateStoredFilename(filename):
+            "The stored source filename occurs more than once: \(filename)"
         case let .destinationIsNotOnbiiBundle(path):
             "The bundle destination must use the .onbii extension: \(path)"
         case let .destinationAlreadyExists(path):
@@ -52,27 +61,36 @@ public struct OnbiiBundleWriter: Sendable {
             withIntermediateDirectories: true
         )
 
-        let sourceExtension = request.sourceAudioURL.pathExtension
-        let storedFilename = sourceExtension.isEmpty ? "recording" : "recording.\(sourceExtension)"
-        let storedSourceURL = sourceDirectory.appendingPathComponent(storedFilename)
-        try fileManager.copyItem(at: request.sourceAudioURL, to: storedSourceURL)
+        var sourceResources = [OnbiiResource]()
+        for source in request.sources {
+            let storedSourceURL = sourceDirectory.appendingPathComponent(
+                source.storedFilename
+            )
+            try fileManager.copyItem(at: source.sourceURL, to: storedSourceURL)
+
+            let attributes = try fileManager.attributesOfItem(
+                atPath: storedSourceURL.path
+            )
+            sourceResources.append(
+                OnbiiResource(
+                    id: source.resourceID,
+                    role: .source,
+                    path: "source/\(source.storedFilename)",
+                    mediaType: source.mediaType,
+                    byteCount: (attributes[.size] as? NSNumber)?.int64Value,
+                    originalFilename: source.sourceURL.lastPathComponent,
+                    captureStartedAt: source.captureStartedAt,
+                    durationSeconds: source.durationSeconds
+                )
+            )
+        }
 
         let contentURL = stagingURL.appendingPathComponent("content.md")
-        let content = Self.initialMarkdown(for: request, storedSourcePath: "source/\(storedFilename)")
+        let content = Self.initialMarkdown(for: request)
         try Data(content.utf8).write(to: contentURL, options: .atomic)
 
-        let attributes = try fileManager.attributesOfItem(atPath: storedSourceURL.path)
-        let sourceByteCount = (attributes[.size] as? NSNumber)?.int64Value
         let contentByteCount = Int64(Data(content.utf8).count)
 
-        let sourceResource = OnbiiResource(
-            id: "source-recording",
-            role: .source,
-            path: "source/\(storedFilename)",
-            mediaType: request.mediaType,
-            byteCount: sourceByteCount,
-            originalFilename: request.sourceAudioURL.lastPathComponent
-        )
         let contentResource = OnbiiResource(
             id: "content-markdown",
             role: .humanReadable,
@@ -90,19 +108,19 @@ public struct OnbiiBundleWriter: Sendable {
             objectType: request.objectType,
             title: request.title,
             createdAt: request.createdAt,
-            resources: [sourceResource, contentResource],
+            resources: sourceResources + [contentResource],
             provenance: [
                 OnbiiProvenanceEvent(
-                    action: "imported",
+                    action: request.sourceAction,
                     occurredAt: request.createdAt,
                     agent: .init(kind: "source-adapter", name: request.sourceAgentName),
-                    outputResourceIDs: [sourceResource.id]
+                    outputResourceIDs: sourceResources.map(\.id)
                 ),
                 OnbiiProvenanceEvent(
                     action: "rendered",
                     occurredAt: request.createdAt,
                     agent: writerAgent,
-                    inputResourceIDs: [sourceResource.id],
+                    inputResourceIDs: sourceResources.map(\.id),
                     outputResourceIDs: [contentResource.id]
                 ),
             ]
@@ -126,22 +144,44 @@ public struct OnbiiBundleWriter: Sendable {
         _ request: OnbiiImportRequest,
         fileManager: FileManager
     ) throws {
-        var isDirectory: ObjCBool = false
-        guard fileManager.fileExists(
-            atPath: request.sourceAudioURL.path,
-            isDirectory: &isDirectory
-        ), !isDirectory.boolValue else {
-            throw OnbiiBundleWriterError.sourceIsNotARegularFile(
-                request.sourceAudioURL.path
-            )
+        guard !request.sources.isEmpty else {
+            throw OnbiiBundleWriterError.noSources
         }
-        let sourceAttributes = try fileManager.attributesOfItem(
-            atPath: request.sourceAudioURL.path
-        )
-        guard sourceAttributes[.type] as? FileAttributeType == .typeRegular else {
-            throw OnbiiBundleWriterError.sourceIsNotARegularFile(
-                request.sourceAudioURL.path
+
+        var storedFilenames = Set<String>()
+        for source in request.sources {
+            var isDirectory: ObjCBool = false
+            guard fileManager.fileExists(
+                atPath: source.sourceURL.path,
+                isDirectory: &isDirectory
+            ), !isDirectory.boolValue else {
+                throw OnbiiBundleWriterError.sourceIsNotARegularFile(
+                    source.sourceURL.path
+                )
+            }
+            let sourceAttributes = try fileManager.attributesOfItem(
+                atPath: source.sourceURL.path
             )
+            guard sourceAttributes[.type] as? FileAttributeType == .typeRegular else {
+                throw OnbiiBundleWriterError.sourceIsNotARegularFile(
+                    source.sourceURL.path
+                )
+            }
+
+            guard !source.storedFilename.isEmpty,
+                  source.storedFilename == (source.storedFilename as NSString)
+                    .lastPathComponent,
+                  source.storedFilename != ".",
+                  source.storedFilename != ".." else {
+                throw OnbiiBundleWriterError.invalidStoredFilename(
+                    source.storedFilename
+                )
+            }
+            guard storedFilenames.insert(source.storedFilename).inserted else {
+                throw OnbiiBundleWriterError.duplicateStoredFilename(
+                    source.storedFilename
+                )
+            }
         }
 
         guard request.destinationBundleURL.pathExtension.lowercased() == "onbii" else {
@@ -157,21 +197,21 @@ public struct OnbiiBundleWriter: Sendable {
         }
     }
 
-    private static func initialMarkdown(
-        for request: OnbiiImportRequest,
-        storedSourcePath: String
-    ) -> String {
+    private static func initialMarkdown(for request: OnbiiImportRequest) -> String {
         let safeTitle = request.title
             .split(whereSeparator: \.isNewline)
             .joined(separator: " ")
         let date = request.createdAt.formatted(.iso8601)
+        let sourceLines = request.sources.map {
+            "- Source: `source/\($0.storedFilename)`"
+                + " (original: `\($0.sourceURL.lastPathComponent)`)"
+        }.joined(separator: "\n")
 
         return """
         # \(safeTitle)
 
         - Created: \(date)
-        - Source: `\(storedSourcePath)`
-        - Original filename: `\(request.sourceAudioURL.lastPathComponent)`
+        \(sourceLines)
 
         ## Transcript
 
