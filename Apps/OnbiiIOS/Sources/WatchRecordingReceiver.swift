@@ -38,7 +38,7 @@ final class WatchRecordingReceiver: NSObject, @unchecked Sendable {
             withIntermediateDirectories: true
         )
         let destinationURL = inboxURL.appendingPathComponent(
-            "watch-\(UUID().uuidString.lowercased()).wav"
+            "watch-\(UUID().uuidString.lowercased()).m4a"
         )
         try fileManager.moveItem(at: file.fileURL, to: destinationURL)
         return destinationURL
@@ -67,8 +67,8 @@ final class WatchRecordingReceiver: NSObject, @unchecked Sendable {
                 OnbiiSourceFile(
                     resourceID: "source-recording",
                     sourceURL: stagedURL,
-                    storedFilename: "recording.wav",
-                    mediaType: "audio/wav",
+                    storedFilename: "recording.m4a",
+                    mediaType: "audio/mp4",
                     captureStartedAt: metadata.captureStartedAt,
                     durationSeconds: metadata.durationSeconds
                 ),

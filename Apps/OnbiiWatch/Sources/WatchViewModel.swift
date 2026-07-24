@@ -24,7 +24,6 @@ final class WatchViewModel: NSObject {
     private var recordingStartedAt: Date?
     private var pendingURL: URL?
     private var pendingMetadata: OnbiiWatchRecordingMetadata?
-    private var isFinalizing = false
 
     private(set) var state: State = .connecting
     private(set) var duration: TimeInterval = 0
@@ -51,7 +50,7 @@ final class WatchViewModel: NSObject {
         if isRecording {
             return true
         }
-        return !isFinalizing && (state == .idle || state == .transferred)
+        return state == .idle || state == .transferred
     }
 
     var canRetryTransfer: Bool {
@@ -162,42 +161,23 @@ final class WatchViewModel: NSObject {
         durationTask?.cancel()
         durationTask = nil
 
-        // Halt capture immediately (cheap, main-thread safe) so nothing is
-        // recorded past this tap; the engine stop, file write, and audio
-        // session teardown then run off the main actor in finishCapture().
-        guard recorder.stopCapture() != nil else {
+        let finalDuration = recorder.duration
+        guard let finalizedURL = recorder.stopRecording() else {
             state = .failed("The Watch recording could not be saved.")
             WKInterfaceDevice.current().play(.failure)
             return
         }
-        let finalDuration = recorder.duration
 
         let startedAt = recordingStartedAt ?? Date()
         recordingStartedAt = nil
         duration = finalDuration
-        isFinalizing = true
-
-        Task { [weak self] in
-            guard let self else { return }
-            let recorder = self.recorder
-            let finalizedURL = await Task.detached(priority: .userInitiated) {
-                recorder.finishCapture()
-            }.value
-            guard let finalizedURL else {
-                isFinalizing = false
-                state = .failed("The Watch recording could not be saved.")
-                WKInterfaceDevice.current().play(.failure)
-                return
-            }
-            pendingURL = finalizedURL
-            pendingMetadata = OnbiiWatchRecordingMetadata(
-                captureStartedAt: startedAt,
-                durationSeconds: finalDuration
-            )
-            isFinalizing = false
-            WKInterfaceDevice.current().play(.success)
-            queuePendingTransfer()
-        }
+        pendingURL = finalizedURL
+        pendingMetadata = OnbiiWatchRecordingMetadata(
+            captureStartedAt: startedAt,
+            durationSeconds: finalDuration
+        )
+        WKInterfaceDevice.current().play(.success)
+        queuePendingTransfer()
     }
 
     func retryTransfer() {
@@ -233,7 +213,7 @@ final class WatchViewModel: NSObject {
             withIntermediateDirectories: true
         )
         return directory.appendingPathComponent(
-            "watch-\(UUID().uuidString.lowercased()).wav"
+            "watch-\(UUID().uuidString.lowercased()).m4a"
         )
     }
 

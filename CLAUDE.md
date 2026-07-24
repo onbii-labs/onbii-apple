@@ -187,4 +187,5 @@ fallback.
 `docs/architecture/` holds the implementation direction and its open questions —
 read the relevant note before making non-trivial changes to capture, signing,
 transcription, or the bundle format. Start from `docs/architecture/README.md`.
-Product/format decisions belong in the spec submodule, not here.
+Apple-specific decisions are logged ADR-style in `docs/decisions/`. Shared
+product/format decisions belong in the spec submodule, not here.
