@@ -11,6 +11,13 @@ public enum OnbiiSystemAudioProbeEvent: Equatable, Sendable {
     case failed(message: String)
 }
 
+/// Reports whether the system audio output is currently producing sound, via a
+/// Core Audio process tap.
+///
+/// Currently unreferenced: retained as a spike toward the deferred meeting-audio
+/// auto-capture trigger (observe when a configured meeting app starts audio I/O
+/// and offer capture). It is not part of the Milestone 1 capture path. See
+/// `docs/architecture/core-audio-system-audio-spike.md`.
 public final class OnbiiSystemAudioProbe: @unchecked Sendable {
     private typealias EventHandler =
         @MainActor @Sendable (OnbiiSystemAudioProbeEvent) -> Void

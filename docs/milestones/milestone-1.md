@@ -40,16 +40,26 @@ The first slice establishes:
   artefacts, conservative cross-track echo suppression, and atomic bundle
   enrichment;
 - a compile-verified iPhone producer shell for explicit microphone capture,
-  Files audio import, local Files-visible bundle storage, and package sharing.
+  Files audio import, local Files-visible bundle storage, and package sharing;
+- an Apple Watch companion with explicit record/stop, Watch Connectivity
+  transfer of the original recording, and retry when the iPhone is unreachable;
+- unified AAC (`.m4a`) capture across macOS, iPhone, and Watch (see spec
+  [Decision 0029](../spec/docs/decisions/0029-compact-audio-originals.md)).
 
 ## Known Milestone Gaps
 
 - Source-role labels such as `Microphone` and `System audio` are track
-  attribution, not speaker turns. Rough speaker turns and diarization remain
-  unmet.
-- The iPhone flow still requires physical-device validation.
-- Apple Watch record/stop and transfer are not implemented.
+  attribution, not speaker turns. Rough speaker turns remain unmet (true
+  diarization stays post-Milestone-1).
+- On-device transcription currently succeeds in English only; Dutch fails on
+  device. Multilingual is formally deferred, but Dutch is an essential
+  near-term need.
 - Location and known-people metadata are not yet captured.
+- The human-readable `content.md` still reads "Transcription pending" after a
+  successful transcription; the transcript lives in a separate `transcript.md`.
+- The iPhone and Apple Watch flows are implemented but still require
+  physical-device validation, including the Watch → iPhone transfer path and
+  iCloud appearance.
 - Longer desktop sessions, timing drift, and additional audio routes need
   broader validation.
 

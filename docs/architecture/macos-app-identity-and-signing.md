@@ -4,6 +4,20 @@ Status: Accepted for development; distribution channel remains open
 
 Date: 2026-07-23
 
+## Update (2026-07-24)
+
+The Yepyr Apple Developer team (`S52C3W4ZB8`) is now configured, and the app
+bundle identifier is **`com.yepyr.onbii`**, shared across macOS, iOS, and watchOS
+(watch: `com.yepyr.onbii.watchkitapp`). This is deliberate — a single vendor
+identity lets the App Store treat Onbii as one cross-platform app rather than
+separate products. It supersedes the `org.onbii.OnbiiMac[.dev]` identifiers in
+the Decision below.
+
+The exported format type remains **`org.onbii.bundle`** — a deliberately
+vendor-neutral namespace that matches the open spec and is independent of the
+app's `com.yepyr.*` identifier. The distribution channel (Mac App Store vs
+notarized Developer ID) remains open.
+
 ## Context
 
 The Milestone 1 macOS app needs a stable development identity so document-type
