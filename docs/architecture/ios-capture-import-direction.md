@@ -53,7 +53,7 @@ The provenance source agent distinguishes `iPhone microphone capture`,
 
 The embedded Watch companion records explicitly to a local AAC (`.m4a`) audio
 file in its own Documents directory, using the same recording settings as the
-iPhone and Mac (see [Decision 0001](../decisions/0001-apple-capture-audio-format.md)). On stop it queues the original file and minimal capture metadata
+iPhone and Mac (see [Decision 0029](../spec/docs/decisions/0029-compact-audio-originals.md)). On stop it queues the original file and minimal capture metadata
 with `WCSession.transferFile`. The source stays on the Watch until Watch
 Connectivity reports a successful transfer.
 

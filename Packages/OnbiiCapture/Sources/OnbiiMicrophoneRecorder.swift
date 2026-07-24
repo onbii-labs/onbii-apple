@@ -30,7 +30,7 @@ extension OnbiiMicrophoneRecorderError: LocalizedError {
 ///
 /// The same AAC settings are used on every Apple platform (iOS, macOS, watchOS)
 /// so captured source audio is uniform regardless of which device produced it.
-/// See `docs/decisions/0001-apple-capture-audio-format.md`.
+/// See `docs/spec/docs/decisions/0029-compact-audio-originals.md`.
 public final class OnbiiMicrophoneRecorder: @unchecked Sendable {
     private var audioRecorder: AVAudioRecorder?
 
