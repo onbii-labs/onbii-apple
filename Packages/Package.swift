@@ -5,8 +5,8 @@ import PackageDescription
 let package = Package(
     name: "OnbiiApple",
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17),
+        .macOS("26.0"),
+        .iOS("26.0"),
         .watchOS(.v10),
     ],
     products: [

@@ -3,7 +3,7 @@ name: OnbiiMac
 options:
   minimumXcodeGenVersion: 2.46.0
   deploymentTarget:
-    macOS: "14.0"
+    macOS: "26.0"
 
 packages:
   OnbiiApple:

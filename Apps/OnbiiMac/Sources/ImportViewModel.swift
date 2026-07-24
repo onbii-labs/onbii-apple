@@ -412,7 +412,10 @@ final class ImportViewModel {
                 timelineInputs.append((transcript, offset: offset))
             }
             guard tracks.contains(where: { !$0.segments.isEmpty }) else {
-                throw AppleOnDeviceTranscriberError.noSpeechDetected
+                state = .failed(
+                    message: "No speech was recognized in this recording."
+                )
+                return
             }
 
             let generatedAt = Date()

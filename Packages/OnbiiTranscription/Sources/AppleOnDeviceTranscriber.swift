@@ -1,5 +1,7 @@
 #if os(macOS) || os(iOS)
 @preconcurrency import Speech
+import AVFoundation
+import CoreMedia
 import Foundation
 
 public enum OnbiiSpeechAuthorization: Equatable, Sendable {
@@ -12,55 +14,34 @@ public enum OnbiiSpeechAuthorization: Equatable, Sendable {
 public enum AppleOnDeviceTranscriberError: Error, LocalizedError {
     case authorizationDenied
     case unsupportedLocale(String)
-    case recognizerUnavailable(String)
-    case onDeviceRecognitionUnavailable(String)
+    case modelUnavailable(String)
+    case audioUnreadable(String)
     case recognitionFailed(String)
-    case noSpeechDetected
-    case noFinalResult
 
     public var errorDescription: String? {
         switch self {
         case .authorizationDenied:
             "Speech recognition permission was not granted."
         case .unsupportedLocale(let identifier):
-            "Speech recognition is unavailable for locale \(identifier)."
-        case .recognizerUnavailable(let identifier):
-            "Speech recognition is temporarily unavailable for \(identifier)."
-        case .onDeviceRecognitionUnavailable(let identifier):
-            "On-device speech recognition is unavailable for \(identifier)."
+            "On-device transcription is not supported for \(identifier)."
+        case .modelUnavailable(let identifier):
+            "The on-device language model for \(identifier) could not be installed."
+        case .audioUnreadable(let message):
+            "The recording could not be read: \(message)"
         case .recognitionFailed(let message):
             "Speech recognition failed: \(message)"
-        case .noSpeechDetected:
-            "No speech was detected."
-        case .noFinalResult:
-            "Speech recognition ended without a final transcript."
         }
     }
 }
 
+/// On-device transcription built on the `SpeechAnalyzer` / `SpeechTranscriber`
+/// stack (macOS 26 / iOS 26+). Language models are installed on demand through
+/// `AssetInventory`, so callers never depend on a pre-installed dictation model.
+/// Fully on-device: audio never leaves the device.
 public final class AppleOnDeviceTranscriber: @unchecked Sendable {
-    private final class RecognitionOperation: @unchecked Sendable {
-        private let lock = NSLock()
-        private var completed = false
-        var task: SFSpeechRecognitionTask?
-
-        func complete(
-            _ result: Result<OnbiiTrackTranscript, any Error>,
-            continuation: CheckedContinuation<OnbiiTrackTranscript, any Error>
-        ) {
-            lock.lock()
-            guard !completed else {
-                lock.unlock()
-                return
-            }
-            completed = true
-            task = nil
-            lock.unlock()
-            continuation.resume(with: result)
-        }
-    }
-
     public init() {}
+
+    // MARK: Authorization
 
     public static var authorization: OnbiiSpeechAuthorization {
         map(SFSpeechRecognizer.authorizationStatus())
@@ -74,6 +55,42 @@ public final class AppleOnDeviceTranscriber: @unchecked Sendable {
         }
     }
 
+    // MARK: Language / model availability
+
+    /// Locales the on-device transcriber can handle on this device.
+    public static func supportedLocales() async -> [Locale] {
+        await SpeechTranscriber.supportedLocales
+    }
+
+    /// Locales whose on-device model is already downloaded.
+    public static func installedLocales() async -> [Locale] {
+        await SpeechTranscriber.installedLocales
+    }
+
+    public static func isModelInstalled(for locale: Locale) async -> Bool {
+        let target = locale.identifier(.bcp47)
+        let installed = await SpeechTranscriber.installedLocales
+        return installed.contains { $0.identifier(.bcp47) == target }
+    }
+
+    /// Ensures the on-device model for `locale` is installed, downloading it if
+    /// necessary. `progress` receives the fractionCompleted (0...1) during a
+    /// download. Throws if the locale is unsupported or the model cannot install.
+    public static func prepareModel(
+        for locale: Locale,
+        progress: (@Sendable (Double) -> Void)? = nil
+    ) async throws {
+        guard let supported = await SpeechTranscriber.supportedLocale(
+            equivalentTo: locale
+        ) else {
+            throw AppleOnDeviceTranscriberError.unsupportedLocale(locale.identifier)
+        }
+        let transcriber = Self.makeTranscriber(locale: supported)
+        try await installModelIfNeeded(for: transcriber, locale: supported, progress: progress)
+    }
+
+    // MARK: Transcription
+
     public func transcribe(
         audioURL: URL,
         sourceResourceID: String,
@@ -83,87 +100,124 @@ public final class AppleOnDeviceTranscriber: @unchecked Sendable {
         guard Self.authorization == .authorized else {
             throw AppleOnDeviceTranscriberError.authorizationDenied
         }
-        guard let recognizer = SFSpeechRecognizer(locale: locale) else {
+        guard let supported = await SpeechTranscriber.supportedLocale(
+            equivalentTo: locale
+        ) else {
+            throw AppleOnDeviceTranscriberError.unsupportedLocale(locale.identifier)
+        }
+
+        let transcriber = Self.makeTranscriber(locale: supported)
+        try await Self.installModelIfNeeded(for: transcriber, locale: supported)
+
+        let file: AVAudioFile
+        do {
+            file = try AVAudioFile(forReading: audioURL)
+        } catch {
+            throw AppleOnDeviceTranscriberError.audioUnreadable(
+                error.localizedDescription
+            )
+        }
+
+        let analyzer = SpeechAnalyzer(modules: [transcriber])
+        async let collected = Self.collect(
+            from: transcriber,
+            sourceRole: sourceRole
+        )
+        do {
+            _ = try await analyzer.analyzeSequence(from: file)
+            try await analyzer.finalizeAndFinishThroughEndOfInput()
+        } catch {
+            await analyzer.cancelAndFinishNow()
+            _ = try? await collected
+            throw AppleOnDeviceTranscriberError.recognitionFailed(
+                error.localizedDescription
+            )
+        }
+
+        let result = try await collected
+        return OnbiiTrackTranscript(
+            sourceResourceID: sourceResourceID,
+            sourceRole: sourceRole,
+            localeIdentifier: supported.identifier(.bcp47),
+            formattedText: result.text,
+            segments: result.segments
+        )
+    }
+
+    // MARK: Internals
+
+    private static func makeTranscriber(locale: Locale) -> SpeechTranscriber {
+        SpeechTranscriber(
+            locale: locale,
+            transcriptionOptions: [],
+            reportingOptions: [],
+            attributeOptions: [.audioTimeRange, .transcriptionConfidence]
+        )
+    }
+
+    private static func installModelIfNeeded(
+        for transcriber: SpeechTranscriber,
+        locale: Locale,
+        progress: (@Sendable (Double) -> Void)? = nil
+    ) async throws {
+        let status = await AssetInventory.status(forModules: [transcriber])
+        if status == .installed {
+            return
+        }
+        guard status != .unsupported else {
             throw AppleOnDeviceTranscriberError.unsupportedLocale(
-                locale.identifier
+                locale.identifier(.bcp47)
             )
         }
-        guard recognizer.isAvailable else {
-            throw AppleOnDeviceTranscriberError.recognizerUnavailable(
-                locale.identifier
-            )
+        guard let request = try await AssetInventory.assetInstallationRequest(
+            supporting: [transcriber]
+        ) else {
+            // Nothing to install (already available) — proceed.
+            return
         }
-        guard recognizer.supportsOnDeviceRecognition else {
-            throw AppleOnDeviceTranscriberError.onDeviceRecognitionUnavailable(
-                locale.identifier
-            )
+        let observation = progress.map { handler in
+            request.progress.observe(\.fractionCompleted, options: [.initial, .new]) { progress, _ in
+                handler(progress.fractionCompleted)
+            }
         }
+        defer { observation?.invalidate() }
+        try await request.downloadAndInstall()
+    }
 
-        let request = SFSpeechURLRecognitionRequest(url: audioURL)
-        request.shouldReportPartialResults = false
-        request.requiresOnDeviceRecognition = true
-        request.addsPunctuation = true
-        request.taskHint = .dictation
-
-        return try await withCheckedThrowingContinuation {
-            (continuation: CheckedContinuation<OnbiiTrackTranscript, any Error>) in
-            let operation = RecognitionOperation()
-            operation.task = recognizer.recognitionTask(with: request) {
-                result,
-                error in
-                if let error {
-                    if Self.isNoSpeechDetected(error) {
-                        operation.complete(
-                            .success(
-                                OnbiiTrackTranscript(
-                                    sourceResourceID: sourceResourceID,
-                                    sourceRole: sourceRole,
-                                    localeIdentifier: locale.identifier,
-                                    formattedText: "",
-                                    segments: []
-                                )
-                            ),
-                            continuation: continuation
-                        )
-                        return
-                    }
-                    operation.complete(
-                        .failure(
-                            AppleOnDeviceTranscriberError.recognitionFailed(
-                                error.localizedDescription
-                            )
-                        ),
-                        continuation: continuation
+    private static func collect(
+        from transcriber: SpeechTranscriber,
+        sourceRole: String
+    ) async throws -> (segments: [OnbiiTranscriptSegment], text: String) {
+        var segments = [OnbiiTranscriptSegment]()
+        var textParts = [String]()
+        for try await result in transcriber.results {
+            let attributed = result.text
+            let plain = String(attributed.characters)
+            if !plain.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                textParts.append(plain)
+            }
+            for run in attributed.runs {
+                guard let timeRange = run.audioTimeRange else {
+                    continue
+                }
+                let text = String(attributed[run.range].characters)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                if text.isEmpty {
+                    continue
+                }
+                let confidence = run.transcriptionConfidence.map { Float($0) }
+                segments.append(
+                    OnbiiTranscriptSegment(
+                        text: text,
+                        startSeconds: timeRange.start.seconds,
+                        durationSeconds: timeRange.duration.seconds,
+                        confidence: confidence,
+                        sourceRole: sourceRole
                     )
-                    return
-                }
-                guard let result, result.isFinal else {
-                    return
-                }
-
-                let transcription = result.bestTranscription
-                operation.complete(
-                    .success(
-                        OnbiiTrackTranscript(
-                            sourceResourceID: sourceResourceID,
-                            sourceRole: sourceRole,
-                            localeIdentifier: locale.identifier,
-                            formattedText: transcription.formattedString,
-                            segments: transcription.segments.map {
-                                OnbiiTranscriptSegment(
-                                    text: $0.substring,
-                                    startSeconds: $0.timestamp,
-                                    durationSeconds: $0.duration,
-                                    confidence: $0.confidence,
-                                    sourceRole: sourceRole
-                                )
-                            }
-                        )
-                    ),
-                    continuation: continuation
                 )
             }
         }
+        return (segments, textParts.joined(separator: " "))
     }
 
     private static func map(
@@ -181,16 +235,6 @@ public final class AppleOnDeviceTranscriber: @unchecked Sendable {
         @unknown default:
             .denied
         }
-    }
-
-    static func isNoSpeechDetected(_ error: any Error) -> Bool {
-        let error = error as NSError
-        return (
-            error.domain == "kAFAssistantErrorDomain"
-                && error.code == 1110
-        ) || error.localizedDescription.localizedCaseInsensitiveCompare(
-            "No speech detected"
-        ) == .orderedSame
     }
 }
 #endif

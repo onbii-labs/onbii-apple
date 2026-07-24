@@ -83,19 +83,6 @@ func markdownGroupsNearbyWordsBySpeaker() {
     #expect(markdown.contains("Source recordings remain unchanged."))
 }
 
-#if os(macOS) || os(iOS)
-@Test
-func legacyRecognizerClassifiesNoSpeechAsAnEmptyTrackCondition() {
-    let error = NSError(
-        domain: "kAFAssistantErrorDomain",
-        code: 1110,
-        userInfo: [NSLocalizedDescriptionKey: "No speech detected"]
-    )
-
-    #expect(AppleOnDeviceTranscriber.isNoSpeechDetected(error))
-}
-#endif
-
 private func track(
     role: String,
     words: [(text: String, time: TimeInterval)]
