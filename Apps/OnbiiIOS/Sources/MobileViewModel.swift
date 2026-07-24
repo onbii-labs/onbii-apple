@@ -72,7 +72,13 @@ final class MobileViewModel {
             do {
                 let url = try makeCaptureURL()
                 recordingStartedAt = Date()
-                try recorder.startRecording(to: url)
+                let recorder = self.recorder
+                // Activate the audio session off the main actor; setActive is
+                // synchronous and warns about UI unresponsiveness on the main
+                // thread.
+                try await Task.detached(priority: .userInitiated) {
+                    try recorder.startRecording(to: url)
+                }.value
                 duration = 0
                 state = .recording
                 beginDurationUpdates()
@@ -85,9 +91,6 @@ final class MobileViewModel {
 
     func stopRecording() {
         let finalDuration = recorder.duration
-        guard let sourceURL = recorder.stopRecording() else {
-            return
-        }
         let startedAt = recordingStartedAt ?? Date()
         recordingStartedAt = nil
         duration = finalDuration
@@ -95,6 +98,14 @@ final class MobileViewModel {
         durationTask = nil
 
         Task {
+            let recorder = self.recorder
+            // Stop + deactivate the audio session off the main actor.
+            let sourceURL = await Task.detached(priority: .userInitiated) {
+                recorder.stopRecording()
+            }.value
+            guard let sourceURL else {
+                return
+            }
             await preserve(
                 sourceURL,
                 title: OnbiiRecordingName(startedAt: startedAt).title,
