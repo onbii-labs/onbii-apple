@@ -32,6 +32,7 @@ final class ImportViewModel {
     private let dualCaptureSession = OnbiiDualAudioCaptureSession()
     private var durationTask: Task<Void, Never>?
     private var dualCaptureDirectory: URL?
+    private var recordingStartedAt: Date?
 
     var archiveURL: URL?
     private(set) var selectedBundle: OnbiiBundle?
@@ -163,13 +164,16 @@ final class ImportViewModel {
 
             do {
                 let captureURL = try makeCaptureURL()
+                let startedAt = Date()
                 try microphoneRecorder.startRecording(to: captureURL)
+                recordingStartedAt = startedAt
                 captureDuration = 0
                 captureKind = .microphone
                 isCapturing = true
                 state = .capturing
                 beginDurationUpdates()
             } catch {
+                recordingStartedAt = nil
                 state = .failed(message: error.localizedDescription)
             }
         }
@@ -227,12 +231,14 @@ final class ImportViewModel {
         }
 
         captureDuration = finalDuration
+        let startedAt = recordingStartedAt ?? Date()
+        recordingStartedAt = nil
         isCapturing = false
         captureKind = nil
         durationTask?.cancel()
         durationTask = nil
 
-        let title = "Recording \(Date().formatted(date: .abbreviated, time: .shortened))"
+        let title = OnbiiRecordingName(startedAt: startedAt).title
         Task {
             await performImport(
                 of: captureURL,
@@ -486,8 +492,11 @@ final class ImportViewModel {
             durationTask = nil
             dualCaptureDirectory = nil
 
-            let title =
-                "Call " + Date().formatted(date: .abbreviated, time: .shortened)
+            let startedAt = min(
+                result.systemAudio.startedAt,
+                result.microphoneAudio.startedAt
+            )
+            let title = OnbiiRecordingName(startedAt: startedAt).title
             Task {
                 await performCallCaptureImport(
                     result,

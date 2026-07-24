@@ -20,7 +20,7 @@
 		52801286B477F2050F9F36CB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		92A3FB2C964D600AB1CE259A /* ImportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportViewModel.swift; sourceTree = "<group>"; };
 		9D7ECE7B63B906066DA969EF /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Packages; path = ../../Packages; sourceTree = SOURCE_ROOT; };
-		D8507349F548EE05A973BC24 /* Onbii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Onbii.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8507349F548EE05A973BC24 /* OnbiiMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnbiiMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +58,7 @@
 		EEA050FB4630763780A48451 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D8507349F548EE05A973BC24 /* Onbii.app */,
+				D8507349F548EE05A973BC24 /* OnbiiMac.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -93,7 +93,7 @@
 				EB4390CDE262CEA947ACC7D9 /* OnbiiTranscription */,
 			);
 			productName = OnbiiMac;
-			productReference = D8507349F548EE05A973BC24 /* Onbii.app */;
+			productReference = D8507349F548EE05A973BC24 /* OnbiiMac.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -104,6 +104,12 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					7131E5621D43DFD06E629B0A = {
+						DevelopmentTeam = S52C3W4ZB8;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 890FBF129508DD50B273B11A /* Build configuration list for PBXProject "OnbiiMac" */;
 			developmentRegion = en;
@@ -146,10 +152,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OnbiiMac.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = S52C3W4ZB8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -162,7 +167,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii;
 				PRODUCT_MODULE_NAME = OnbiiMac;
 				PRODUCT_NAME = Onbii;
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -291,10 +295,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OnbiiMac.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = S52C3W4ZB8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -307,7 +310,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii;
 				PRODUCT_MODULE_NAME = OnbiiMac;
 				PRODUCT_NAME = Onbii;
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;

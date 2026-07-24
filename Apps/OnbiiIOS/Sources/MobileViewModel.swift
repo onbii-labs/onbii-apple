@@ -8,6 +8,7 @@ import UniformTypeIdentifiers
 @Observable
 final class MobileViewModel {
     enum State: Equatable {
+        case preparingArchive
         case idle
         case preparing
         case recording
@@ -19,10 +20,12 @@ final class MobileViewModel {
     private let recorder = OnbiiMicrophoneRecorder()
     private var durationTask: Task<Void, Never>?
     private var recordingStartedAt: Date?
+    private var archiveURL: URL?
 
-    private(set) var state: State = .idle
+    private(set) var state: State = .preparingArchive
     private(set) var duration: TimeInterval = 0
     private(set) var objects = [OnbiiBundle]()
+    private(set) var archiveDescription = "Connecting to iCloud Drive…"
     var showsImporter = false
 
     var isRecording: Bool {
@@ -31,7 +34,7 @@ final class MobileViewModel {
 
     var isBusy: Bool {
         switch state {
-        case .preparing, .recording, .preserving:
+        case .preparingArchive, .preparing, .recording, .preserving:
             true
         default:
             false
@@ -44,7 +47,9 @@ final class MobileViewModel {
     }
 
     init() {
-        reloadObjects()
+        Task {
+            await prepareArchive()
+        }
     }
 
     func startRecording() {
@@ -85,8 +90,7 @@ final class MobileViewModel {
         Task {
             await preserve(
                 sourceURL,
-                title: "Recording "
-                    + startedAt.formatted(date: .abbreviated, time: .shortened),
+                title: OnbiiRecordingName(startedAt: startedAt).title,
                 mediaType: "audio/mp4",
                 action: "captured",
                 agent: "iPhone microphone capture",
@@ -136,7 +140,9 @@ final class MobileViewModel {
         }
 
         do {
-            let archiveURL = try archiveDirectory()
+            guard let archiveURL else {
+                throw OnbiiCloudArchiveError.iCloudUnavailable
+            }
             let destinationURL = uniqueDestination(for: title, in: archiveURL)
             let sourceExtension = sourceURL.pathExtension
             let storedFilename = sourceExtension.isEmpty
@@ -176,15 +182,47 @@ final class MobileViewModel {
         }
     }
 
-    private func reloadObjects() {
+    private func prepareArchive() async {
         do {
-            let archiveURL = try archiveDirectory()
-            let urls = try FileManager.default.contentsOfDirectory(
-                at: archiveURL,
-                includingPropertiesForKeys: [.contentModificationDateKey],
-                options: [.skipsHiddenFiles]
-            )
-            objects = urls
+            archiveURL = try await Task.detached(priority: .userInitiated) {
+                try OnbiiCloudArchive().directoryURL()
+            }.value
+            archiveDescription = "iCloud Drive → Onbii → Onbii Archive"
+        } catch {
+            do {
+                archiveURL = try localArchiveDirectory()
+                archiveDescription =
+                    "On My iPhone → Onbii → Onbii Archive (iCloud unavailable)"
+            } catch {
+                state = .failed(error.localizedDescription)
+                return
+            }
+        }
+
+        reloadObjects()
+        state = .idle
+    }
+
+    private func reloadObjects() {
+        guard let archiveURL else {
+            return
+        }
+
+        do {
+            var archiveURLs = [archiveURL]
+            let localURL = try localArchiveDirectory()
+            if localURL.standardizedFileURL != archiveURL.standardizedFileURL {
+                archiveURLs.append(localURL)
+            }
+
+            objects = archiveURLs
+                .flatMap { directory in
+                    (try? FileManager.default.contentsOfDirectory(
+                        at: directory,
+                        includingPropertiesForKeys: [.contentModificationDateKey],
+                        options: [.skipsHiddenFiles]
+                    )) ?? []
+                }
                 .filter { $0.pathExtension.lowercased() == "onbii" }
                 .compactMap { try? OnbiiBundleReader().read(at: $0) }
                 .sorted { $0.manifest.createdAt > $1.manifest.createdAt }
@@ -193,7 +231,7 @@ final class MobileViewModel {
         }
     }
 
-    private func archiveDirectory() throws -> URL {
+    private func localArchiveDirectory() throws -> URL {
         let documents = try FileManager.default.url(
             for: .documentDirectory,
             in: .userDomainMask,

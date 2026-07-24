@@ -36,10 +36,7 @@ struct MobileContentView: View {
                 } header: {
                     Text("Capture")
                 } footer: {
-                    Text(
-                        "Objects are stored locally in Files under "
-                            + "On My iPhone → Onbii → Onbii Archive."
-                    )
+                    Text("New objects are stored in \(model.archiveDescription).")
                 }
 
                 statusSection
@@ -88,6 +85,13 @@ struct MobileContentView: View {
     @ViewBuilder
     private var statusSection: some View {
         switch model.state {
+        case .preparingArchive:
+            Section {
+                HStack {
+                    ProgressView()
+                    Text("Connecting to iCloud Drive…")
+                }
+            }
         case .idle:
             EmptyView()
         case .preparing:

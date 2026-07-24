@@ -34,6 +34,13 @@ struct ContentView: View {
                     )
                 }
                 .padding(.vertical, 4)
+
+                Text(
+                    "To share objects with iPhone, choose "
+                        + "iCloud Drive → Onbii → Onbii Archive."
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
 
             HStack(spacing: 12) {
@@ -149,7 +156,11 @@ struct ContentView: View {
     private var statusView: some View {
         switch model.state {
         case .idle:
-            Text("Choose an archive folder, then import audio or start capture.")
+            Text(
+                model.archiveURL == nil
+                    ? "Choose an archive folder, then import audio or start capture."
+                    : "Import audio or start capture."
+            )
                 .foregroundStyle(.secondary)
 
         case .importing(let filename):

@@ -4,6 +4,37 @@ import OnbiiCore
 import Testing
 
 @Test
+func recordingNameSortsChronologicallyByFilename() throws {
+    let timeZone = try #require(TimeZone(secondsFromGMT: 0))
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = timeZone
+    let earlier = try #require(
+        calendar.date(
+            from: DateComponents(
+                year: 2026,
+                month: 7,
+                day: 24,
+                hour: 11,
+                minute: 20
+            )
+        )
+    )
+    let later = earlier.addingTimeInterval(60)
+
+    let earlierName = OnbiiRecordingName(
+        startedAt: earlier,
+        timeZone: timeZone
+    )
+    let laterName = OnbiiRecordingName(
+        startedAt: later,
+        timeZone: timeZone
+    )
+
+    #expect(earlierName.bundleFilename == "20260724-1120 Recording.onbii")
+    #expect(earlierName.bundleFilename < laterName.bundleFilename)
+}
+
+@Test
 func importCreatesInspectableBundleAndPreservesSource() throws {
     let temporaryDirectory = try makeTemporaryDirectory()
     defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
