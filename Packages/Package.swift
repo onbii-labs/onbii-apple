@@ -48,5 +48,10 @@ let package = Package(
             dependencies: ["OnbiiTranscription"],
             path: "OnbiiTranscription/Tests"
         ),
+        .testTarget(
+            name: "OnbiiCaptureTests",
+            dependencies: ["OnbiiCapture"],
+            path: "OnbiiCapture/Tests"
+        ),
     ]
 )

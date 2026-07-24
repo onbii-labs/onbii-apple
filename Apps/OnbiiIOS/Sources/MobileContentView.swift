@@ -80,6 +80,13 @@ struct MobileContentView: View {
         ) { result in
             model.importAudio(result)
         }
+        .onReceive(
+            NotificationCenter.default.publisher(
+                for: .onbiiWatchRecordingReceived
+            )
+        ) { notification in
+            model.watchRecordingReceived(notification)
+        }
     }
 
     @ViewBuilder

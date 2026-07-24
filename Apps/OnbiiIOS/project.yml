@@ -24,6 +24,7 @@ targets:
         product: OnbiiArchive
       - package: OnbiiApple
         product: OnbiiCapture
+      - target: OnbiiWatch
     settings:
       base:
         DEVELOPMENT_TEAM: S52C3W4ZB8
@@ -43,11 +44,44 @@ targets:
         Release:
           CODE_SIGN_STYLE: Automatic
 
+  OnbiiWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: ../OnbiiWatch/Sources
+    dependencies:
+      - package: OnbiiApple
+        product: OnbiiCapture
+    settings:
+      base:
+        DEVELOPMENT_TEAM: S52C3W4ZB8
+        PRODUCT_NAME: OnbiiWatch
+        PRODUCT_BUNDLE_IDENTIFIER: com.yepyr.onbii.watchkitapp
+        PRODUCT_MODULE_NAME: OnbiiWatch
+        MARKETING_VERSION: 0.1.0
+        CURRENT_PROJECT_VERSION: 1
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_KEY_CFBundleDisplayName: Onbii
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: Onbii records audio only after you tap Record, then transfers the original recording to your iPhone.
+        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.yepyr.onbii
+        INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp: false
+        CODE_SIGN_STYLE: Automatic
+
 schemes:
   OnbiiIOSApp:
     build:
       targets:
         OnbiiIOS: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+
+  OnbiiWatchApp:
+    build:
+      targets:
+        OnbiiWatch: all
     run:
       config: Debug
     archive:

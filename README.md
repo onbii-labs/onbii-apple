@@ -8,9 +8,10 @@ This is the single development entry point for the Apple implementation. It
 contains:
 
 - `OnbiiMacApp`, the macOS producer and inspector;
-- `OnbiiIOSApp`, the iPhone producer;
+- `OnbiiIOSApp`, the iPhone producer and Watch receiver;
+- `OnbiiWatchApp`, the embedded Watch capture companion;
 - the shared Swift packages;
-- the Watch app when that surface is added.
+- the Apple-specific architecture notes.
 
 The `.xcodeproj` files under `Apps/` are generated implementation details. Do
 not open them directly. Regenerate a platform project from its directory with

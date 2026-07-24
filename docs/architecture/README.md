@@ -17,8 +17,6 @@ Open questions still to answer here:
   meeting applications tested?
 - What should the start/stop capture surface feel like on macOS?
 - Should the first transcript path use Apple on-device capabilities directly, and where should future third-party or server processing settings live?
-- How should Apple Watch recordings transfer into the Onbii object flow?
-- What should the simple iPhone record/import/receive flow include?
 - Where should the user's first Onbii archive live by default on Apple platforms?
 - What permissions, entitlements, and user-facing consent flows are required for capture, location, and transcription?
 - How should human corrections be represented before full versioning is designed?

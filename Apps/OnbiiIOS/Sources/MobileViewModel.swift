@@ -121,6 +121,17 @@ final class MobileViewModel {
         }
     }
 
+    func watchRecordingReceived(_ notification: Notification) {
+        if let errorMessage = notification.userInfo?["errorMessage"] as? String {
+            state = .failed(errorMessage)
+            return
+        }
+        reloadObjects()
+        if let bundleURL = notification.userInfo?["bundleURL"] as? URL {
+            state = .completed(bundleURL.lastPathComponent)
+        }
+    }
+
     private func preserve(
         _ sourceURL: URL,
         title: String,

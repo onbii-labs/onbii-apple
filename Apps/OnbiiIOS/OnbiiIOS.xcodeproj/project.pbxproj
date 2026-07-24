@@ -7,22 +7,65 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3095FB2300C9079775B8F074 /* OnbiiWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7837BC1BB46426003C207CEC /* OnbiiWatchApp.swift */; };
 		3A352AAC2DC87E685E7F869F /* MobileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */; };
+		4AF0E6BBA232BFA11FA1A22F /* WatchRecordingReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */; };
+		578F4AD3AC93EEB80C315B58 /* WatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7583FFAB7781BE9676EBE5 /* WatchViewModel.swift */; };
+		63502158B6243A6A9DADA1C1 /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = F34DA394F7B4AA0C37377E25 /* OnbiiCapture */; };
+		6734D1A1DC35F235A2881264 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AABAAEBB8C0F6B75BBFE71F /* WatchContentView.swift */; };
 		7118FFBD07163A199AB9101C /* OnbiiIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150AA60AB772C3D311284402 /* OnbiiIOSApp.swift */; };
+		7612B9AE1E9DFD49E81B0BEC /* OnbiiWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 27D86F3915B6DEBA3F9EF4A2 /* OnbiiWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8A678FEBA88CE5439CD1C640 /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = 06A2A0B4D62AF8412EDDF849 /* OnbiiCapture */; };
 		DC23A4612169788C81F7A159 /* OnbiiArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 1E9F0BD521D5D66DFD988E03 /* OnbiiArchive */; };
 		FB75A29753B4674186A533BD /* MobileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23422C155771BC610732E1B /* MobileContentView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		60EACA9A5EDD6EED235ECD22 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EC6CC5FD7E936DE765BEACDF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 628EF94B2830912AE0548DDD;
+			remoteInfo = OnbiiWatch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2813B633D736E82E3A430EBC /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				7612B9AE1E9DFD49E81B0BEC /* OnbiiWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		150AA60AB772C3D311284402 /* OnbiiIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbiiIOSApp.swift; sourceTree = "<group>"; };
 		1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileViewModel.swift; sourceTree = "<group>"; };
-		5D776147F91F0F8B65720A25 /* OnbiiIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OnbiiIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		27D86F3915B6DEBA3F9EF4A2 /* OnbiiWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnbiiWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AABAAEBB8C0F6B75BBFE71F /* WatchContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentView.swift; sourceTree = "<group>"; };
+		51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRecordingReceiver.swift; sourceTree = "<group>"; };
+		5D776147F91F0F8B65720A25 /* Onbii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Onbii.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7837BC1BB46426003C207CEC /* OnbiiWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbiiWatchApp.swift; sourceTree = "<group>"; };
 		F23422C155771BC610732E1B /* MobileContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileContentView.swift; sourceTree = "<group>"; };
 		F414C7BC4150126A51166468 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Packages; path = ../../Packages; sourceTree = SOURCE_ROOT; };
+		FA7583FFAB7781BE9676EBE5 /* WatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3CEB4E99EF54EE0BE6A0A1C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63502158B6243A6A9DADA1C1 /* OnbiiCapture in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D51C717A86B6BDA0FD605641 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -40,6 +83,7 @@
 			children = (
 				BEC821B6273463F2D7CC6A23 /* Packages */,
 				51C149A69DCB6C83BE94C82C /* Sources */,
+				802C818C853FD3A87081D744 /* Sources */,
 				2AEB037CD9AECFC0F9D2C386 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -47,7 +91,8 @@
 		2AEB037CD9AECFC0F9D2C386 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5D776147F91F0F8B65720A25 /* OnbiiIOS.app */,
+				5D776147F91F0F8B65720A25 /* Onbii.app */,
+				27D86F3915B6DEBA3F9EF4A2 /* OnbiiWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,8 +103,20 @@
 				F23422C155771BC610732E1B /* MobileContentView.swift */,
 				1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */,
 				150AA60AB772C3D311284402 /* OnbiiIOSApp.swift */,
+				51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		802C818C853FD3A87081D744 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				7837BC1BB46426003C207CEC /* OnbiiWatchApp.swift */,
+				3AABAAEBB8C0F6B75BBFE71F /* WatchContentView.swift */,
+				FA7583FFAB7781BE9676EBE5 /* WatchViewModel.swift */,
+			);
+			name = Sources;
+			path = ../OnbiiWatch/Sources;
 			sourceTree = "<group>";
 		};
 		BEC821B6273463F2D7CC6A23 /* Packages */ = {
@@ -79,10 +136,12 @@
 			buildPhases = (
 				F4809F1351799C7341063E59 /* Sources */,
 				D51C717A86B6BDA0FD605641 /* Frameworks */,
+				2813B633D736E82E3A430EBC /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FD2F90BBB2EB3DD6D05C4D6E /* PBXTargetDependency */,
 			);
 			name = OnbiiIOS;
 			packageProductDependencies = (
@@ -90,7 +149,26 @@
 				06A2A0B4D62AF8412EDDF849 /* OnbiiCapture */,
 			);
 			productName = OnbiiIOS;
-			productReference = 5D776147F91F0F8B65720A25 /* OnbiiIOS.app */;
+			productReference = 5D776147F91F0F8B65720A25 /* Onbii.app */;
+			productType = "com.apple.product-type.application";
+		};
+		628EF94B2830912AE0548DDD /* OnbiiWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2C1E942DD7B00F128276CF51 /* Build configuration list for PBXNativeTarget "OnbiiWatch" */;
+			buildPhases = (
+				2C75E78579AA75C8D664B8FB /* Sources */,
+				3CEB4E99EF54EE0BE6A0A1C3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OnbiiWatch;
+			packageProductDependencies = (
+				F34DA394F7B4AA0C37377E25 /* OnbiiCapture */,
+			);
+			productName = OnbiiWatch;
+			productReference = 27D86F3915B6DEBA3F9EF4A2 /* OnbiiWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -104,6 +182,10 @@
 				TargetAttributes = {
 					2D67C82A91088663ED30D967 = {
 						DevelopmentTeam = S52C3W4ZB8;
+					};
+					628EF94B2830912AE0548DDD = {
+						DevelopmentTeam = S52C3W4ZB8;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -125,11 +207,22 @@
 			projectRoot = "";
 			targets = (
 				2D67C82A91088663ED30D967 /* OnbiiIOS */,
+				628EF94B2830912AE0548DDD /* OnbiiWatch */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2C75E78579AA75C8D664B8FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3095FB2300C9079775B8F074 /* OnbiiWatchApp.swift in Sources */,
+				6734D1A1DC35F235A2881264 /* WatchContentView.swift in Sources */,
+				578F4AD3AC93EEB80C315B58 /* WatchViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F4809F1351799C7341063E59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,10 +230,19 @@
 				FB75A29753B4674186A533BD /* MobileContentView.swift in Sources */,
 				3A352AAC2DC87E685E7F869F /* MobileViewModel.swift in Sources */,
 				7118FFBD07163A199AB9101C /* OnbiiIOSApp.swift in Sources */,
+				4AF0E6BBA232BFA11FA1A22F /* WatchRecordingReceiver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FD2F90BBB2EB3DD6D05C4D6E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 628EF94B2830912AE0548DDD /* OnbiiWatch */;
+			targetProxy = 60EACA9A5EDD6EED235ECD22 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		02484D0E896F8B0B6479D84B /* Debug */ = {
@@ -199,7 +301,6 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
@@ -212,9 +313,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OnbiiIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = S52C3W4ZB8;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = S52C3W4ZB8;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -226,6 +329,7 @@
 				PRODUCT_MODULE_NAME = OnbiiIOS;
 				PRODUCT_NAME = Onbii;
 				PROVISIONING_PROFILE_SPECIFIER = "Onbii development";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Onbii development";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -280,12 +384,34 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
+		};
+		7DEEB3138639A2D5E899BD2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S52C3W4ZB8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Onbii;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Onbii records audio only after you tap Record, then transfers the original recording to your iPhone.";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.yepyr.onbii;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii.watchkitapp;
+				PRODUCT_MODULE_NAME = OnbiiWatch;
+				PRODUCT_NAME = OnbiiWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
 		};
 		B775315766AFC510174CBCBE /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -311,9 +437,41 @@
 			};
 			name = Release;
 		};
+		E0781B2C2A1D67087D99AF97 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S52C3W4ZB8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Onbii;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Onbii records audio only after you tap Record, then transfers the original recording to your iPhone.";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.yepyr.onbii;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii.watchkitapp;
+				PRODUCT_MODULE_NAME = OnbiiWatch;
+				PRODUCT_NAME = OnbiiWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2C1E942DD7B00F128276CF51 /* Build configuration list for PBXNativeTarget "OnbiiWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DEEB3138639A2D5E899BD2B /* Debug */,
+				E0781B2C2A1D67087D99AF97 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		41DD61A10729E30144A27AE0 /* Build configuration list for PBXNativeTarget "OnbiiIOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -349,6 +507,10 @@
 		1E9F0BD521D5D66DFD988E03 /* OnbiiArchive */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OnbiiArchive;
+		};
+		F34DA394F7B4AA0C37377E25 /* OnbiiCapture */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OnbiiCapture;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
