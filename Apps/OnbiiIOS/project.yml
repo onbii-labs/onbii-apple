@@ -26,14 +26,21 @@ targets:
         product: OnbiiCapture
     settings:
       base:
+        DEVELOPMENT_TEAM: S52C3W4ZB8
         PRODUCT_NAME: Onbii
-        PRODUCT_BUNDLE_IDENTIFIER: org.onbii.OnbiiIOS.dev
+        PRODUCT_BUNDLE_IDENTIFIER: com.yepyr.onbii
         PRODUCT_MODULE_NAME: OnbiiIOS
         MARKETING_VERSION: 0.1.0
         CURRENT_PROJECT_VERSION: 1
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_FILE: Info.plist
-        CODE_SIGN_STYLE: Automatic
+      configs:
+        Debug:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: Apple Development
+          PROVISIONING_PROFILE_SPECIFIER: Onbii development
+        Release:
+          CODE_SIGN_STYLE: Automatic
 
 schemes:
   OnbiiIOSApp:

@@ -17,7 +17,7 @@
 /* Begin PBXFileReference section */
 		150AA60AB772C3D311284402 /* OnbiiIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbiiIOSApp.swift; sourceTree = "<group>"; };
 		1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileViewModel.swift; sourceTree = "<group>"; };
-		5D776147F91F0F8B65720A25 /* OnbiiIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OnbiiIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D776147F91F0F8B65720A25 /* Onbii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Onbii.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F23422C155771BC610732E1B /* MobileContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileContentView.swift; sourceTree = "<group>"; };
 		F414C7BC4150126A51166468 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Packages; path = ../../Packages; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -47,7 +47,7 @@
 		2AEB037CD9AECFC0F9D2C386 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5D776147F91F0F8B65720A25 /* OnbiiIOS.app */,
+				5D776147F91F0F8B65720A25 /* Onbii.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -90,7 +90,7 @@
 				06A2A0B4D62AF8412EDDF849 /* OnbiiCapture */,
 			);
 			productName = OnbiiIOS;
-			productReference = 5D776147F91F0F8B65720A25 /* OnbiiIOS.app */;
+			productReference = 5D776147F91F0F8B65720A25 /* Onbii.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -101,11 +101,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-					2D67C82A91088663ED30D967 = {
-						ProvisioningStyle = Automatic;
-					};
-				};
 			};
 			buildConfigurationList = 8942C2FFF2CAE1BA6466F00C /* Build configuration list for PBXProject "OnbiiIOS" */;
 			developmentRegion = en;
@@ -211,8 +206,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = S52C3W4ZB8;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -220,9 +217,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.onbii.OnbiiIOS.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii;
 				PRODUCT_MODULE_NAME = OnbiiIOS;
 				PRODUCT_NAME = Onbii;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Onbii development";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -289,8 +288,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = S52C3W4ZB8;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -298,9 +299,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.onbii.OnbiiIOS.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii;
 				PRODUCT_MODULE_NAME = OnbiiIOS;
 				PRODUCT_NAME = Onbii;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Onbii development";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
