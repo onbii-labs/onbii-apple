@@ -24,6 +24,8 @@ targets:
         product: OnbiiArchive
       - package: OnbiiApple
         product: OnbiiCapture
+      - package: OnbiiApple
+        product: OnbiiTranscription
       - target: OnbiiWatch
     settings:
       base:

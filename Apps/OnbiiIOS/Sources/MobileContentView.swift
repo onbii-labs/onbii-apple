@@ -1,3 +1,4 @@
+import OnbiiTranscription
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -49,6 +50,21 @@ struct MobileContentView: View {
                             description: Text("Record or import audio to create one.")
                         )
                     } else {
+                        if !model.availableLanguages.isEmpty {
+                            Picker(
+                                "Transcription language",
+                                selection: Bindable(model).selectedLanguageID
+                            ) {
+                                ForEach(model.availableLanguages) { language in
+                                    Text(
+                                        language.isInstalled
+                                            ? language.displayName
+                                            : "\(language.displayName) — download"
+                                    )
+                                    .tag(language.id)
+                                }
+                            }
+                        }
                         ForEach(model.objects, id: \.manifest.objectID) { bundle in
                             HStack {
                                 VStack(alignment: .leading, spacing: 4) {
@@ -63,6 +79,15 @@ struct MobileContentView: View {
                                     .foregroundStyle(.secondary)
                                 }
                                 Spacer()
+                                if !model.hasTranscript(bundle) {
+                                    Button {
+                                        model.transcribe(bundle)
+                                    } label: {
+                                        Image(systemName: "text.viewfinder")
+                                    }
+                                    .buttonStyle(.borderless)
+                                    .disabled(model.isBusy)
+                                }
                                 ShareLink(item: bundle.url) {
                                     Image(systemName: "square.and.arrow.up")
                                 }
@@ -118,6 +143,13 @@ struct MobileContentView: View {
                 HStack {
                     ProgressView()
                     Text("Preserving the original recording…")
+                }
+            }
+        case .transcribing(let message):
+            Section {
+                HStack {
+                    ProgressView()
+                    Text(message)
                 }
             }
         case .completed(let filename):

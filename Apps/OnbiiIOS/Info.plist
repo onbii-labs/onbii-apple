@@ -53,6 +53,8 @@
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Onbii records audio only after you tap Record, so it can preserve the recording as an object you control.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Onbii transcribes your recordings entirely on this device after you tap Transcribe. Audio is never sent to a server.</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchScreen</key>

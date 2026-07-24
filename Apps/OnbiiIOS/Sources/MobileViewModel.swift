@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import OnbiiArchive
 import OnbiiCapture
+import OnbiiTranscription
 import UniformTypeIdentifiers
 
 @MainActor
@@ -13,6 +14,7 @@ final class MobileViewModel {
         case preparing
         case recording
         case preserving
+        case transcribing(String)
         case completed(String)
         case failed(String)
     }
@@ -27,6 +29,8 @@ final class MobileViewModel {
     private(set) var objects = [OnbiiBundle]()
     private(set) var archiveDescription = "Connecting to iCloud Drive…"
     var showsImporter = false
+    private(set) var availableLanguages = [OnbiiTranscriptionLanguage]()
+    var selectedLanguageID = ""
 
     var isRecording: Bool {
         state == .recording
@@ -34,7 +38,7 @@ final class MobileViewModel {
 
     var isBusy: Bool {
         switch state {
-        case .preparingArchive, .preparing, .recording, .preserving:
+        case .preparingArchive, .preparing, .recording, .preserving, .transcribing:
             true
         default:
             false
@@ -49,6 +53,9 @@ final class MobileViewModel {
     init() {
         Task {
             await prepareArchive()
+        }
+        Task {
+            await loadLanguages()
         }
     }
 
@@ -129,6 +136,188 @@ final class MobileViewModel {
         reloadObjects()
         if let bundleURL = notification.userInfo?["bundleURL"] as? URL {
             state = .completed(bundleURL.lastPathComponent)
+        }
+    }
+
+    var selectedTranscriptionLocale: Locale {
+        availableLanguages.first { $0.id == selectedLanguageID }?.locale ?? .current
+    }
+
+    func hasTranscript(_ bundle: OnbiiBundle) -> Bool {
+        bundle.manifest.resources.contains { $0.id == "derived-transcript" }
+    }
+
+    func transcribe(_ bundle: OnbiiBundle) {
+        guard !isBusy else {
+            return
+        }
+        let sources = bundle.manifest.resources.filter {
+            $0.role == .source && $0.mediaType.hasPrefix("audio/")
+        }
+        guard !sources.isEmpty else {
+            state = .failed("This object has no source audio to transcribe.")
+            return
+        }
+        state = .transcribing("Requesting speech recognition access…")
+        Task {
+            let authorization: OnbiiSpeechAuthorization =
+                AppleOnDeviceTranscriber.authorization == .notDetermined
+                    ? await AppleOnDeviceTranscriber.requestAuthorization()
+                    : AppleOnDeviceTranscriber.authorization
+            guard authorization == .authorized else {
+                state = .failed(
+                    "Speech recognition permission is required to transcribe."
+                )
+                return
+            }
+            await performTranscription(of: bundle)
+        }
+    }
+
+    private func languageDisplayName(for locale: Locale) -> String {
+        availableLanguages.first { $0.id == locale.identifier(.bcp47) }?.displayName
+            ?? Locale.current.localizedString(forIdentifier: locale.identifier)
+            ?? locale.identifier
+    }
+
+    private func loadLanguages() async {
+        let languages = await AppleOnDeviceTranscriber.availableLanguages()
+        availableLanguages = languages
+        if selectedLanguageID.isEmpty
+            || !languages.contains(where: { $0.id == selectedLanguageID }) {
+            selectedLanguageID = AppleOnDeviceTranscriber
+                .preferredLanguage(among: languages)?.id ?? ""
+        }
+    }
+
+    private func performTranscription(of bundle: OnbiiBundle) async {
+        let sources = bundle.manifest.resources.filter {
+            $0.role == .source && $0.mediaType.hasPrefix("audio/")
+        }
+        let hasAccess = bundle.url.startAccessingSecurityScopedResource()
+        defer {
+            if hasAccess {
+                bundle.url.stopAccessingSecurityScopedResource()
+            }
+        }
+        do {
+            let locale = selectedTranscriptionLocale
+            if !(await AppleOnDeviceTranscriber.isModelInstalled(for: locale)) {
+                let name = languageDisplayName(for: locale)
+                state = .transcribing("Downloading the \(name) language model…")
+                try await AppleOnDeviceTranscriber.prepareModel(for: locale) { fraction in
+                    Task { @MainActor [weak self] in
+                        self?.state = .transcribing(
+                            "Downloading the \(name) language model… "
+                                + "\(Int(fraction * 100))%"
+                        )
+                    }
+                }
+                await loadLanguages()
+            }
+
+            let transcriber = AppleOnDeviceTranscriber()
+            let firstStart = sources.compactMap(\.captureStartedAt).min()
+            var tracks = [OnbiiTrackTranscript]()
+            var timelineInputs = [
+                (transcript: OnbiiTrackTranscript, offset: TimeInterval)
+            ]()
+            for (index, resource) in sources.enumerated() {
+                state = .transcribing(
+                    "Transcribing on this iPhone… (\(index + 1)/\(sources.count))"
+                )
+                let transcript = try await transcriber.transcribe(
+                    audioURL: bundle.url(for: resource),
+                    sourceResourceID: resource.id,
+                    sourceRole: "recording",
+                    locale: locale
+                )
+                let offset: TimeInterval = if let firstStart,
+                    let started = resource.captureStartedAt {
+                    max(0, started.timeIntervalSince(firstStart))
+                } else {
+                    0
+                }
+                tracks.append(transcript)
+                timelineInputs.append((transcript, offset: offset))
+            }
+            guard tracks.contains(where: { !$0.segments.isEmpty }) else {
+                state = .failed("No speech was recognized in this recording.")
+                return
+            }
+
+            let generatedAt = Date()
+            let document = OnbiiTranscriptDocument(
+                generatedAt: generatedAt,
+                tracks: tracks,
+                timeline: OnbiiTranscriptTimeline.merge(timelineInputs)
+            )
+            state = .transcribing("Attaching transcript to the object…")
+            let processingDirectory = FileManager.default.temporaryDirectory
+                .appendingPathComponent(
+                    "Transcribing-\(UUID().uuidString)",
+                    isDirectory: true
+                )
+            try FileManager.default.createDirectory(
+                at: processingDirectory,
+                withIntermediateDirectories: true
+            )
+            defer {
+                try? FileManager.default.removeItem(at: processingDirectory)
+            }
+            let jsonURL = processingDirectory.appendingPathComponent("transcript.json")
+            let markdownURL = processingDirectory
+                .appendingPathComponent("transcript.md")
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            encoder.outputFormatting = [
+                .prettyPrinted, .sortedKeys, .withoutEscapingSlashes,
+            ]
+            try encoder.encode(document).write(to: jsonURL, options: .atomic)
+            try Data(
+                OnbiiTranscriptMarkdown.render(
+                    document,
+                    title: bundle.manifest.title
+                ).utf8
+            ).write(to: markdownURL, options: .atomic)
+
+            let request = OnbiiBundleEnrichmentRequest(
+                bundleURL: bundle.url,
+                artifacts: [
+                    OnbiiBundleArtifact(
+                        sourceURL: jsonURL,
+                        resourceID: "derived-transcript",
+                        role: .derived,
+                        path: "derived/transcript.json",
+                        mediaType: "application/json"
+                    ),
+                    OnbiiBundleArtifact(
+                        sourceURL: markdownURL,
+                        resourceID: "transcript-markdown",
+                        role: .humanReadable,
+                        path: "transcript.md",
+                        mediaType: "text/markdown; charset=utf-8"
+                    ),
+                ],
+                action: "transcribed",
+                occurredAt: generatedAt,
+                agent: .init(kind: "software", name: "Apple Speech on-device"),
+                inputResourceIDs: sources.map(\.id)
+            )
+            let enriched = try await Task.detached(priority: .userInitiated) {
+                try OnbiiBundleEnricher().enrich(request)
+            }.value
+            if let index = objects.firstIndex(where: {
+                $0.manifest.objectID == bundle.manifest.objectID
+            }) {
+                objects[index] = enriched
+            }
+            state = .completed(bundle.url.lastPathComponent)
+        } catch {
+            state = .failed(
+                error.localizedDescription
+                    + " The source recording was not changed."
+            )
         }
     }
 

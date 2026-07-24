@@ -12,6 +12,7 @@
 		4AF0E6BBA232BFA11FA1A22F /* WatchRecordingReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */; };
 		578F4AD3AC93EEB80C315B58 /* WatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7583FFAB7781BE9676EBE5 /* WatchViewModel.swift */; };
 		63502158B6243A6A9DADA1C1 /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = F34DA394F7B4AA0C37377E25 /* OnbiiCapture */; };
+		66E96A59700146DF9681E224 /* OnbiiTranscription in Frameworks */ = {isa = PBXBuildFile; productRef = 5AB0D86C94A69EF5CCB3201E /* OnbiiTranscription */; };
 		6734D1A1DC35F235A2881264 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AABAAEBB8C0F6B75BBFE71F /* WatchContentView.swift */; };
 		7118FFBD07163A199AB9101C /* OnbiiIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150AA60AB772C3D311284402 /* OnbiiIOSApp.swift */; };
 		7612B9AE1E9DFD49E81B0BEC /* OnbiiWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 27D86F3915B6DEBA3F9EF4A2 /* OnbiiWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -72,6 +73,7 @@
 			files = (
 				DC23A4612169788C81F7A159 /* OnbiiArchive in Frameworks */,
 				8A678FEBA88CE5439CD1C640 /* OnbiiCapture in Frameworks */,
+				66E96A59700146DF9681E224 /* OnbiiTranscription in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,6 +149,7 @@
 			packageProductDependencies = (
 				1E9F0BD521D5D66DFD988E03 /* OnbiiArchive */,
 				06A2A0B4D62AF8412EDDF849 /* OnbiiCapture */,
+				5AB0D86C94A69EF5CCB3201E /* OnbiiTranscription */,
 			);
 			productName = OnbiiIOS;
 			productReference = 5D776147F91F0F8B65720A25 /* OnbiiIOS.app */;
@@ -504,6 +507,10 @@
 		1E9F0BD521D5D66DFD988E03 /* OnbiiArchive */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OnbiiArchive;
+		};
+		5AB0D86C94A69EF5CCB3201E /* OnbiiTranscription */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OnbiiTranscription;
 		};
 		F34DA394F7B4AA0C37377E25 /* OnbiiCapture */ = {
 			isa = XCSwiftPackageProductDependency;

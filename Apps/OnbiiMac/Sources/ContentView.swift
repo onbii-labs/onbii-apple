@@ -1,4 +1,5 @@
 import OnbiiArchive
+import OnbiiTranscription
 import SwiftUI
 
 struct ContentView: View {
@@ -138,6 +139,8 @@ struct ContentView: View {
             if let bundle = model.selectedBundle {
                 BundleInspectorView(
                     bundle: bundle,
+                    languages: model.availableLanguages,
+                    selectedLanguageID: Bindable(model).selectedLanguageID,
                     reveal: model.revealSelectedBundle,
                     transcribe: model.transcribeSelectedBundle
                 )
@@ -239,8 +242,14 @@ struct ContentView: View {
 
 private struct BundleInspectorView: View {
     let bundle: OnbiiBundle
+    let languages: [OnbiiTranscriptionLanguage]
+    @Binding var selectedLanguageID: String
     let reveal: () -> Void
     let transcribe: () -> Void
+
+    private var hasTranscript: Bool {
+        bundle.manifest.resources.contains { $0.id == "derived-transcript" }
+    }
 
     var body: some View {
         GroupBox("Knowledge Object") {
@@ -249,9 +258,21 @@ private struct BundleInspectorView: View {
                     Text(bundle.manifest.title)
                         .font(.title3.weight(.semibold))
                     Spacer()
-                    if !bundle.manifest.resources.contains(where: {
-                        $0.id == "derived-transcript"
-                    }) {
+                    if !hasTranscript {
+                        if !languages.isEmpty {
+                            Picker("Language", selection: $selectedLanguageID) {
+                                ForEach(languages) { language in
+                                    Text(
+                                        language.isInstalled
+                                            ? language.displayName
+                                            : "\(language.displayName) — download"
+                                    )
+                                    .tag(language.id)
+                                }
+                            }
+                            .labelsHidden()
+                            .frame(maxWidth: 220)
+                        }
                         Button("Transcribe On Device", action: transcribe)
                     }
                     Button("Reveal in Finder", action: reveal)

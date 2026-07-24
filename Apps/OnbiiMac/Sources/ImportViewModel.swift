@@ -41,6 +41,9 @@ final class ImportViewModel {
     private(set) var captureDuration: TimeInterval = 0
     private(set) var captureKind: CaptureKind?
 
+    private(set) var availableLanguages: [OnbiiTranscriptionLanguage] = []
+    var selectedLanguageID: String = ""
+
     var isImporting: Bool {
         if case .importing = state {
             true
@@ -89,6 +92,27 @@ final class ImportViewModel {
 
     init() {
         restoreArchive()
+        Task { await loadLanguages() }
+    }
+
+    var selectedTranscriptionLocale: Locale {
+        availableLanguages.first { $0.id == selectedLanguageID }?.locale ?? .current
+    }
+
+    private func languageDisplayName(for locale: Locale) -> String {
+        availableLanguages.first { $0.id == locale.identifier(.bcp47) }?.displayName
+            ?? Locale.current.localizedString(forIdentifier: locale.identifier)
+            ?? locale.identifier
+    }
+
+    private func loadLanguages() async {
+        let languages = await AppleOnDeviceTranscriber.availableLanguages()
+        availableLanguages = languages
+        if selectedLanguageID.isEmpty
+            || !languages.contains(where: { $0.id == selectedLanguageID }) {
+            selectedLanguageID = AppleOnDeviceTranscriber
+                .preferredLanguage(among: languages)?.id ?? ""
+        }
     }
 
     func chooseArchive() {
@@ -386,6 +410,22 @@ final class ImportViewModel {
 
         do {
             let transcriber = AppleOnDeviceTranscriber()
+            let locale = selectedTranscriptionLocale
+            if !(await AppleOnDeviceTranscriber.isModelInstalled(for: locale)) {
+                let name = languageDisplayName(for: locale)
+                state = .transcribing(
+                    message: "Downloading the \(name) language model…"
+                )
+                try await AppleOnDeviceTranscriber.prepareModel(for: locale) { fraction in
+                    Task { @MainActor [weak self] in
+                        self?.state = .transcribing(
+                            message: "Downloading the \(name) language model… "
+                                + "\(Int(fraction * 100))%"
+                        )
+                    }
+                }
+                await loadLanguages()
+            }
             let firstStart = sourceResources.compactMap(\.captureStartedAt).min()
             var tracks = [OnbiiTrackTranscript]()
             var timelineInputs = [
@@ -401,7 +441,8 @@ final class ImportViewModel {
                 let transcript = try await transcriber.transcribe(
                     audioURL: bundle.url(for: resource),
                     sourceResourceID: resource.id,
-                    sourceRole: role
+                    sourceRole: role,
+                    locale: locale
                 )
                 let offset = if let firstStart, let resourceStart = resource.captureStartedAt {
                     max(0.0, resourceStart.timeIntervalSince(firstStart))
