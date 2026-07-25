@@ -198,25 +198,15 @@ public struct OnbiiBundleWriter: Sendable {
     }
 
     private static func initialMarkdown(for request: OnbiiImportRequest) -> String {
-        let safeTitle = request.title
-            .split(whereSeparator: \.isNewline)
-            .joined(separator: " ")
-        let date = request.createdAt.formatted(.iso8601)
-        let sourceLines = request.sources.map {
-            "- Source: `source/\($0.storedFilename)`"
-                + " (original: `\($0.sourceURL.lastPathComponent)`)"
-        }.joined(separator: "\n")
-
-        return """
-        # \(safeTitle)
-
-        - Created: \(date)
-        \(sourceLines)
-
-        ## Transcript
-
-        _Transcription pending._
-        """
-        + "\n"
+        OnbiiContentMarkdown.render(
+            title: request.title,
+            createdAt: request.createdAt,
+            sources: request.sources.map {
+                OnbiiContentMarkdown.Source(
+                    storedPath: "source/\($0.storedFilename)",
+                    originalFilename: $0.sourceURL.lastPathComponent
+                )
+            }
+        )
     }
 }

@@ -26,6 +26,10 @@ public struct OnbiiBundleArtifact: Sendable {
 public struct OnbiiBundleEnrichmentRequest: Sendable {
     public var bundleURL: URL
     public var artifacts: [OnbiiBundleArtifact]
+    /// Artifacts that overwrite an existing resource in place (matched by ID at
+    /// the same path), e.g. rewriting `content.md` to reflect a new transcript.
+    /// Unlike `artifacts`, each must already exist in the bundle.
+    public var replacements: [OnbiiBundleArtifact]
     public var action: String
     public var occurredAt: Date
     public var agent: OnbiiProvenanceEvent.Agent
@@ -34,6 +38,7 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
     public init(
         bundleURL: URL,
         artifacts: [OnbiiBundleArtifact],
+        replacements: [OnbiiBundleArtifact] = [],
         action: String,
         occurredAt: Date = Date(),
         agent: OnbiiProvenanceEvent.Agent,
@@ -41,6 +46,7 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
     ) {
         self.bundleURL = bundleURL
         self.artifacts = artifacts
+        self.replacements = replacements
         self.action = action
         self.occurredAt = occurredAt
         self.agent = agent
@@ -53,6 +59,8 @@ public enum OnbiiBundleEnricherError: Error, Equatable, Sendable {
     case artifactIsNotARegularFile(String)
     case duplicateResourceID(String)
     case duplicateResourcePath(String)
+    case unknownReplacementResource(String)
+    case replacementPathMismatch(String)
     case replacementFailed(String)
 }
 
@@ -67,6 +75,10 @@ extension OnbiiBundleEnricherError: LocalizedError {
             "The resource ID already exists in the bundle: \(id)"
         case .duplicateResourcePath(let path):
             "The resource path already exists in the bundle: \(path)"
+        case .unknownReplacementResource(let id):
+            "The resource to replace does not exist in the bundle: \(id)"
+        case .replacementPathMismatch(let id):
+            "The replacement path does not match the existing resource: \(id)"
         case .replacementFailed(let path):
             "The validated bundle update could not replace the bundle at \(path)."
         }
@@ -118,6 +130,30 @@ public struct OnbiiBundleEnricher: Sendable {
             )
         }
 
+        for replacement in request.replacements {
+            let destinationURL = stagingURL.appendingPathComponent(replacement.path)
+            if fileManager.fileExists(atPath: destinationURL.path) {
+                try fileManager.removeItem(at: destinationURL)
+            }
+            try fileManager.createDirectory(
+                at: destinationURL.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            try fileManager.copyItem(at: replacement.sourceURL, to: destinationURL)
+            let attributes = try fileManager.attributesOfItem(atPath: destinationURL.path)
+            guard let index = manifest.resources.firstIndex(
+                where: { $0.id == replacement.resourceID }
+            ) else {
+                throw OnbiiBundleEnricherError.unknownReplacementResource(
+                    replacement.resourceID
+                )
+            }
+            manifest.resources[index].role = replacement.role
+            manifest.resources[index].mediaType = replacement.mediaType
+            manifest.resources[index].byteCount =
+                (attributes[.size] as? NSNumber)?.int64Value
+        }
+
         manifest.provenance.append(
             OnbiiProvenanceEvent(
                 action: request.action,
@@ -125,6 +161,7 @@ public struct OnbiiBundleEnricher: Sendable {
                 agent: request.agent,
                 inputResourceIDs: request.inputResourceIDs,
                 outputResourceIDs: request.artifacts.map(\.resourceID)
+                    + request.replacements.map(\.resourceID)
             )
         )
         try manifest.validate()
@@ -150,29 +187,35 @@ public struct OnbiiBundleEnricher: Sendable {
         against manifest: OnbiiManifest,
         fileManager: FileManager
     ) throws {
-        guard !request.artifacts.isEmpty else {
+        guard !(request.artifacts.isEmpty && request.replacements.isEmpty) else {
             throw OnbiiBundleEnricherError.noArtifacts
         }
 
         var resourceIDs = Set(manifest.resources.map(\.id))
         var resourcePaths = Set(manifest.resources.map(\.path))
         for artifact in request.artifacts {
-            var isDirectory: ObjCBool = false
-            guard fileManager.fileExists(
-                atPath: artifact.sourceURL.path,
-                isDirectory: &isDirectory
-            ), !isDirectory.boolValue,
-            (try fileManager.attributesOfItem(atPath: artifact.sourceURL.path)[.type]
-                as? FileAttributeType) == .typeRegular else {
-                throw OnbiiBundleEnricherError.artifactIsNotARegularFile(
-                    artifact.sourceURL.path
-                )
-            }
+            try Self.assertRegularFile(artifact.sourceURL, fileManager: fileManager)
             guard resourceIDs.insert(artifact.resourceID).inserted else {
                 throw OnbiiBundleEnricherError.duplicateResourceID(artifact.resourceID)
             }
             guard resourcePaths.insert(artifact.path).inserted else {
                 throw OnbiiBundleEnricherError.duplicateResourcePath(artifact.path)
+            }
+        }
+
+        for replacement in request.replacements {
+            try Self.assertRegularFile(replacement.sourceURL, fileManager: fileManager)
+            guard let existing = manifest.resources.first(
+                where: { $0.id == replacement.resourceID }
+            ) else {
+                throw OnbiiBundleEnricherError.unknownReplacementResource(
+                    replacement.resourceID
+                )
+            }
+            guard existing.path == replacement.path else {
+                throw OnbiiBundleEnricherError.replacementPathMismatch(
+                    replacement.resourceID
+                )
             }
         }
 
@@ -188,6 +231,19 @@ public struct OnbiiBundleEnricher: Sendable {
             }
         )
         try candidate.validate()
+    }
+
+    private static func assertRegularFile(
+        _ url: URL,
+        fileManager: FileManager
+    ) throws {
+        var isDirectory: ObjCBool = false
+        guard fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory),
+              !isDirectory.boolValue,
+              (try fileManager.attributesOfItem(atPath: url.path)[.type]
+                as? FileAttributeType) == .typeRegular else {
+            throw OnbiiBundleEnricherError.artifactIsNotARegularFile(url.path)
+        }
     }
 
     private static func write(_ manifest: OnbiiManifest, to bundleURL: URL) throws {

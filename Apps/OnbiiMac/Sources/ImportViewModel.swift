@@ -500,6 +500,25 @@ final class ImportViewModel {
                 ).utf8
             ).write(to: markdownURL, options: .atomic)
 
+            let contentURL = processingDirectory.appendingPathComponent("content.md")
+            let speakerCount = Set(document.timeline.compactMap(\.speakerID)).count
+            try Data(
+                OnbiiContentMarkdown.render(
+                    title: bundle.manifest.title,
+                    createdAt: bundle.manifest.createdAt,
+                    sources: bundle.manifest.resources
+                        .filter { $0.role == .source }
+                        .map {
+                            OnbiiContentMarkdown.Source(
+                                storedPath: $0.path,
+                                originalFilename: $0.originalFilename
+                            )
+                        },
+                    transcript: OnbiiTranscriptMarkdown.body(document),
+                    speakerCount: speakerCount > 0 ? speakerCount : nil
+                ).utf8
+            ).write(to: contentURL, options: .atomic)
+
             let request = OnbiiBundleEnrichmentRequest(
                 bundleURL: bundle.url,
                 artifacts: [
@@ -515,6 +534,15 @@ final class ImportViewModel {
                         resourceID: "transcript-markdown",
                         role: .humanReadable,
                         path: "transcript.md",
+                        mediaType: "text/markdown; charset=utf-8"
+                    ),
+                ],
+                replacements: [
+                    OnbiiBundleArtifact(
+                        sourceURL: contentURL,
+                        resourceID: "content-markdown",
+                        role: .humanReadable,
+                        path: "content.md",
                         mediaType: "text/markdown; charset=utf-8"
                     ),
                 ],

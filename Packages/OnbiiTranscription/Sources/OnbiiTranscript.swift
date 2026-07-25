@@ -173,22 +173,28 @@ public enum OnbiiTranscriptMarkdown {
         let safeTitle = title
             .split(whereSeparator: \.isNewline)
             .joined(separator: " ")
-        let labels = displayLabels(for: document.timeline)
-        let lines = turns(from: document.timeline).map { turn in
-            "**\(timestamp(turn.startSeconds)) \(labels[turn.key] ?? "Recording"):** "
-                + turn.text
-        }
-        let body = lines.isEmpty ? "_No speech was recognized._" : lines.joined(
-            separator: "\n\n"
-        )
         return """
         # Transcript: \(safeTitle)
 
         _Generated on-device. Source recordings remain unchanged._
 
-        \(body)
+        \(body(document))
         """
         + "\n"
+    }
+
+    /// The speaker-turn body without the document header. Reused as the
+    /// object's `content.md` transcript section so the two views share exactly
+    /// the same turn rendering.
+    public static func body(_ document: OnbiiTranscriptDocument) -> String {
+        let labels = displayLabels(for: document.timeline)
+        let lines = turns(from: document.timeline).map { turn in
+            "**\(timestamp(turn.startSeconds)) \(labels[turn.key] ?? "Recording"):** "
+                + turn.text
+        }
+        return lines.isEmpty ? "_No speech was recognized._" : lines.joined(
+            separator: "\n\n"
+        )
     }
 
     private struct Turn {
