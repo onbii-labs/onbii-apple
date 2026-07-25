@@ -42,6 +42,21 @@ Conversation.onbii/
     microphone-audio.m4a
 ```
 
+After transcription and speaker turns, derived facets are added and the content
+view is regenerated to present the transcript:
+
+```text
+Conversation.onbii/
+  manifest.json
+  content.md          # regenerated to present the transcript
+  transcript.md       # readable, timestamped, speaker-attributed transcript
+  derived/
+    transcript.json   # machine-readable transcript + merged timeline + speaker turns
+  source/
+    system-audio.caf
+    microphone-audio.m4a
+```
+
 The macOS app exports `org.onbii.bundle` as a package type for the `.onbii`
 extension. Finder therefore presents the directory as one knowledge object.
 People can still inspect its ordinary files using **Show Package Contents**.
@@ -67,6 +82,9 @@ The `0.1.0-draft` manifest records:
 - object type, title, and creation time;
 - explicit resource IDs, roles, paths, media types, sizes, and original names;
 - optional capture start and duration metadata on live source resources;
+- optional capture context — location (coordinates plus a best-effort place
+  name) and the source application(s) for system-audio captures (see spec
+  decision `0030`);
 - provenance events with actions, agents, inputs, outputs, and timestamps.
 
 Resource paths must be safe bundle-relative paths. Provenance may only refer to
@@ -86,8 +104,29 @@ File import:
 4. writes and validates `manifest.json`;
 5. moves the staged bundle into the user-selected archive.
 
-The placeholder Markdown is deliberately not presented as a transcript.
-Transcription will later add a derived resource and its own provenance event.
+The placeholder Markdown is deliberately not presented as a transcript. It is
+regenerated to present the transcript once one exists (see below).
+
+## Transcription And Speaker Turns
+
+Transcription is an explicit, on-device action that enriches an existing object
+without touching its sources. It:
+
+1. transcribes each source track on-device;
+2. derives rough speaker turns by clustering voices — opaque, per-object labels
+   (`Speaker 1`, `Speaker 2`; see spec decision `0031`), never merged across
+   capture legs (see `rough-speaker-turns.md`);
+3. writes `derived/transcript.json` (per-track results plus a merged, timestamped,
+   speaker-attributed timeline) and a readable `transcript.md`;
+4. regenerates `content.md` to present the transcript instead of the pending
+   placeholder, recording the speaker model as provenance;
+5. appends a `transcribed` provenance event linking the source inputs to the
+   derived outputs.
+
+Every change goes through the same validated, atomic whole-bundle replacement as
+the writer. Diarization is best-effort: if voices cannot be separated the
+transcript falls back to honest track labels rather than inventing speakers, and
+a failure never prevents producing the transcript.
 
 ## Initial Call-Capture Result
 
