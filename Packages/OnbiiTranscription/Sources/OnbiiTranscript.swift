@@ -5,20 +5,32 @@ public struct OnbiiTranscriptSegment: Codable, Equatable, Sendable {
     public var startSeconds: TimeInterval
     public var durationSeconds: TimeInterval
     public var confidence: Float?
+    /// The capture track this text came from (`microphone`, `system-audio`, or
+    /// `recording`). This is honest source attribution, never a person.
     public var sourceRole: String
+    /// An opaque, per-object diarization label (e.g. `S1`, `S2`) assigned by
+    /// voice clustering, or `nil` when the recording has not been diarized.
+    ///
+    /// The value carries no cross-object meaning: `S2` in one object is
+    /// unrelated to `S2` in another. Mapping a label to a named person (or a
+    /// reusable voice signature) is a later, separately provenanced step, so
+    /// this stays deliberately opaque. See `OnbiiSpeakerDiarization`.
+    public var speakerID: String?
 
     public init(
         text: String,
         startSeconds: TimeInterval,
         durationSeconds: TimeInterval,
         confidence: Float? = nil,
-        sourceRole: String
+        sourceRole: String,
+        speakerID: String? = nil
     ) {
         self.text = text
         self.startSeconds = startSeconds
         self.durationSeconds = durationSeconds
         self.confidence = confidence
         self.sourceRole = sourceRole
+        self.speakerID = speakerID
     }
 }
 
@@ -155,9 +167,10 @@ public enum OnbiiTranscriptMarkdown {
         let safeTitle = title
             .split(whereSeparator: \.isNewline)
             .joined(separator: " ")
-        let lines = utterances(from: document.timeline).map { utterance in
-            "**\(timestamp(utterance.startSeconds)) \(label(utterance.role)):** "
-                + utterance.text
+        let labels = displayLabels(for: document.timeline)
+        let lines = turns(from: document.timeline).map { turn in
+            "**\(timestamp(turn.startSeconds)) \(labels[turn.key] ?? "Recording"):** "
+                + turn.text
         }
         let body = lines.isEmpty ? "_No speech was recognized._" : lines.joined(
             separator: "\n\n"
@@ -172,37 +185,69 @@ public enum OnbiiTranscriptMarkdown {
         + "\n"
     }
 
-    private struct Utterance {
+    private struct Turn {
+        var key: String
         var startSeconds: TimeInterval
-        var role: String
         var text: String
-        var endSeconds: TimeInterval
     }
 
-    private static func utterances(
+    /// Groups the timeline into speaker turns. A new turn begins only when the
+    /// speaker changes — never on a pause. This means a single speaker who
+    /// pauses stays in one block instead of looking like a different person
+    /// resumed. When the recording has been diarized, the grouping key is the
+    /// opaque speaker ID; before diarization it falls back to the capture track,
+    /// which is honest source attribution rather than an inferred speaker.
+    private static func turns(
         from segments: [OnbiiTranscriptSegment]
-    ) -> [Utterance] {
-        var result = [Utterance]()
+    ) -> [Turn] {
+        var result = [Turn]()
         for segment in segments {
-            if var current = result.last,
-               current.role == segment.sourceRole,
-               segment.startSeconds - current.endSeconds <= 1.5 {
+            let key = groupingKey(for: segment)
+            if var current = result.last, current.key == key {
                 result.removeLast()
                 current.text = append(segment.text, to: current.text)
-                current.endSeconds = segment.startSeconds + segment.durationSeconds
                 result.append(current)
             } else {
                 result.append(
-                    Utterance(
+                    Turn(
+                        key: key,
                         startSeconds: segment.startSeconds,
-                        role: segment.sourceRole,
-                        text: segment.text,
-                        endSeconds: segment.startSeconds + segment.durationSeconds
+                        text: segment.text
                     )
                 )
             }
         }
         return result
+    }
+
+    private static func groupingKey(for segment: OnbiiTranscriptSegment) -> String {
+        if let speakerID = segment.speakerID {
+            return "speaker:\(speakerID)"
+        }
+        return "role:\(segment.sourceRole)"
+    }
+
+    /// Maps each grouping key to a display label. Diarized speakers become
+    /// `Speaker 1`, `Speaker 2`, … numbered by first appearance; undiarized
+    /// tracks keep their source label.
+    private static func displayLabels(
+        for segments: [OnbiiTranscriptSegment]
+    ) -> [String: String] {
+        var labels = [String: String]()
+        var speakerCount = 0
+        for segment in segments {
+            let key = groupingKey(for: segment)
+            guard labels[key] == nil else {
+                continue
+            }
+            if segment.speakerID != nil {
+                speakerCount += 1
+                labels[key] = "Speaker \(speakerCount)"
+            } else {
+                labels[key] = roleLabel(segment.sourceRole)
+            }
+        }
+        return labels
     }
 
     private static func append(_ text: String, to existing: String) -> String {
@@ -218,7 +263,7 @@ public enum OnbiiTranscriptMarkdown {
         return String(format: "%02d:%02d", value / 60, value % 60)
     }
 
-    private static func label(_ role: String) -> String {
+    private static func roleLabel(_ role: String) -> String {
         switch role {
         case "system-audio":
             "System audio"
