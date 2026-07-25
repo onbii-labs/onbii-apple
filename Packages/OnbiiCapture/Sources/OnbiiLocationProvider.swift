@@ -114,7 +114,9 @@ public final class OnbiiLocationProvider: NSObject, CLLocationManagerDelegate {
               let item = try? await request.mapItems.first else {
             return nil
         }
-        return item.addressRepresentations?.cityWithContext
+        // `.full` always includes the country ("Amsterdam, Netherlands"), where
+        // the default context omits it when it matches the device's region.
+        return item.addressRepresentations?.cityWithContext(.full)
             ?? item.addressRepresentations?.cityName
             ?? item.address?.shortAddress
             ?? item.name
