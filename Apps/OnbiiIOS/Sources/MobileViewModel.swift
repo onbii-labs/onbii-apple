@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import OnbiiArchive
 import OnbiiCapture
+import OnbiiCore
 import OnbiiTranscription
 import UniformTypeIdentifiers
 
@@ -79,6 +80,7 @@ final class MobileViewModel {
                 try await Task.detached(priority: .userInitiated) {
                     try recorder.startRecording(to: url)
                 }.value
+                beginCaptureLocation()
                 duration = 0
                 state = .recording
                 beginDurationUpdates()
@@ -114,6 +116,7 @@ final class MobileViewModel {
                 agent: "iPhone microphone capture",
                 captureStartedAt: startedAt,
                 durationSeconds: finalDuration,
+                location: pendingCaptureLocation,
                 removeSourceAfterSuccess: true
             )
         }
@@ -189,6 +192,27 @@ final class MobileViewModel {
         availableLanguages.first { $0.id == locale.identifier(.bcp47) }?.displayName
             ?? Locale.current.localizedString(forIdentifier: locale.identifier)
             ?? locale.identifier
+    }
+
+    private let locationProvider = OnbiiLocationProvider()
+    private var pendingCaptureLocation: OnbiiLocation?
+
+    /// Fetches the capture location asynchronously at record start so it never
+    /// blocks recording; best-effort and may be absent. Consumed on preserve.
+    private func beginCaptureLocation() {
+        pendingCaptureLocation = nil
+        Task { [weak self] in
+            guard let captured = await self?.locationProvider.currentLocation() else {
+                return
+            }
+            self?.pendingCaptureLocation = OnbiiLocation(
+                latitude: captured.latitude,
+                longitude: captured.longitude,
+                horizontalAccuracyMeters: captured.horizontalAccuracyMeters,
+                name: captured.name,
+                capturedAt: captured.capturedAt
+            )
+        }
     }
 
     static let speakerModelName = "3D-Speaker CAM++ (VoxCeleb) on-device"
@@ -342,6 +366,8 @@ final class MobileViewModel {
                                 originalFilename: $0.originalFilename
                             )
                         },
+                    location: bundle.manifest.location,
+                    sourceApplications: bundle.manifest.sourceApplications,
                     transcript: OnbiiTranscriptMarkdown.body(document),
                     speakerCount: speakerCount > 0 ? speakerCount : nil
                 ).utf8
@@ -404,6 +430,7 @@ final class MobileViewModel {
         agent: String,
         captureStartedAt: Date? = nil,
         durationSeconds: TimeInterval? = nil,
+        location: OnbiiLocation? = nil,
         removeSourceAfterSuccess: Bool = false
     ) async {
         state = .preserving
@@ -438,7 +465,8 @@ final class MobileViewModel {
                 title: title,
                 createdAt: captureStartedAt ?? Date(),
                 sourceAction: action,
-                sourceAgentName: agent
+                sourceAgentName: agent,
+                location: location
             )
             let bundle = try await Task.detached(priority: .userInitiated) {
                 try OnbiiBundleWriter().write(request)

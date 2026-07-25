@@ -6,6 +6,7 @@ public enum OnbiiManifestValidationError: Error, Equatable, Sendable {
     case invalidResourcePath(String)
     case duplicateProvenanceEventID(String)
     case unknownProvenanceResource(eventID: String, resourceID: String)
+    case invalidLocation
 }
 
 extension OnbiiManifestValidationError: LocalizedError {
@@ -21,6 +22,8 @@ extension OnbiiManifestValidationError: LocalizedError {
             "The provenance event ID '\(id)' occurs more than once."
         case let .unknownProvenanceResource(eventID, resourceID):
             "The provenance event '\(eventID)' refers to unknown resource '\(resourceID)'."
+        case .invalidLocation:
+            "The location coordinates are out of range."
         }
     }
 }
@@ -63,6 +66,19 @@ public extension OnbiiManifest {
                     resourceID: resourceID
                 )
             }
+        }
+
+        if let location {
+            guard (-90...90).contains(location.latitude),
+                  (-180...180).contains(location.longitude) else {
+                throw OnbiiManifestValidationError.invalidLocation
+            }
+        }
+        for application in sourceApplications ?? [] {
+            try requireNonempty(
+                application.bundleIdentifier,
+                field: "sourceApplications[].bundleIdentifier"
+            )
         }
     }
 

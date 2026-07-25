@@ -51,6 +51,8 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Onbii records where a recording was captured, so you can remember where a conversation happened. Location is optional and stays in your archive.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Onbii records audio only after you tap Record, so it can preserve the recording as an object you control.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

@@ -51,6 +51,35 @@ func provenanceCannotReferenceUnknownResource() {
     }
 }
 
+@Test
+func captureContextRoundTripsAndValidates() throws {
+    var manifest = makeManifest()
+    manifest.location = OnbiiLocation(
+        latitude: 52.3702, longitude: 4.8952,
+        horizontalAccuracyMeters: 12, name: "Amsterdam, Netherlands",
+        capturedAt: Date(timeIntervalSince1970: 5)
+    )
+    manifest.sourceApplications = [
+        OnbiiSourceApplication(bundleIdentifier: "us.zoom.xos", name: "zoom.us"),
+    ]
+    try manifest.validate()
+
+    let data = try JSONEncoder().encode(manifest)
+    let decoded = try JSONDecoder().decode(OnbiiManifest.self, from: data)
+    #expect(decoded == manifest)
+    #expect(decoded.location?.name == "Amsterdam, Netherlands")
+    #expect(decoded.sourceApplications?.first?.bundleIdentifier == "us.zoom.xos")
+}
+
+@Test
+func invalidLocationCoordinatesAreRejected() {
+    var manifest = makeManifest()
+    manifest.location = OnbiiLocation(latitude: 200, longitude: 0)
+    #expect(throws: OnbiiManifestValidationError.invalidLocation) {
+        try manifest.validate()
+    }
+}
+
 private func makeManifest() -> OnbiiManifest {
     OnbiiManifest(
         objectID: .init(rawValue: "object-1"),

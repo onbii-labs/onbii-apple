@@ -36,6 +36,8 @@ public struct OnbiiImportRequest: Sendable {
     public var createdAt: Date
     public var sourceAction: String
     public var sourceAgentName: String
+    public var location: OnbiiLocation?
+    public var sourceApplications: [OnbiiSourceApplication]?
 
     public init(
         sources: [OnbiiSourceFile],
@@ -45,7 +47,9 @@ public struct OnbiiImportRequest: Sendable {
         title: String,
         createdAt: Date = Date(),
         sourceAction: String,
-        sourceAgentName: String
+        sourceAgentName: String,
+        location: OnbiiLocation? = nil,
+        sourceApplications: [OnbiiSourceApplication]? = nil
     ) {
         self.sources = sources
         self.destinationBundleURL = destinationBundleURL
@@ -55,6 +59,8 @@ public struct OnbiiImportRequest: Sendable {
         self.createdAt = createdAt
         self.sourceAction = sourceAction
         self.sourceAgentName = sourceAgentName
+        self.location = location
+        self.sourceApplications = sourceApplications
     }
 
     public init(
@@ -66,7 +72,8 @@ public struct OnbiiImportRequest: Sendable {
         createdAt: Date = Date(),
         mediaType: String = "application/octet-stream",
         sourceAction: String = "imported",
-        sourceAgentName: String = "macOS file import"
+        sourceAgentName: String = "macOS file import",
+        location: OnbiiLocation? = nil
     ) {
         let sourceExtension = sourceAudioURL.pathExtension
         let storedFilename = sourceExtension.isEmpty
@@ -87,7 +94,8 @@ public struct OnbiiImportRequest: Sendable {
             title: title,
             createdAt: createdAt,
             sourceAction: sourceAction,
-            sourceAgentName: sourceAgentName
+            sourceAgentName: sourceAgentName,
+            location: location
         )
     }
 }

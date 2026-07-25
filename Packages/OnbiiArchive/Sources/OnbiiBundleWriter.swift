@@ -123,7 +123,9 @@ public struct OnbiiBundleWriter: Sendable {
                     inputResourceIDs: sourceResources.map(\.id),
                     outputResourceIDs: [contentResource.id]
                 ),
-            ]
+            ],
+            location: request.location,
+            sourceApplications: request.sourceApplications
         )
         try manifest.validate()
 
@@ -206,7 +208,9 @@ public struct OnbiiBundleWriter: Sendable {
                     storedPath: "source/\($0.storedFilename)",
                     originalFilename: $0.sourceURL.lastPathComponent
                 )
-            }
+            },
+            location: request.location,
+            sourceApplications: request.sourceApplications
         )
     }
 }

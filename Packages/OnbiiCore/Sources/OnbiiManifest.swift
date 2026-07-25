@@ -12,6 +12,10 @@ public struct OnbiiManifest: Codable, Equatable, Sendable {
     public var createdAt: Date
     public var resources: [OnbiiResource]
     public var provenance: [OnbiiProvenanceEvent]
+    /// Where the recording was captured, when available and permitted.
+    public var location: OnbiiLocation?
+    /// Applications whose audio was present in a system-audio capture.
+    public var sourceApplications: [OnbiiSourceApplication]?
 
     public init(
         schemaVersion: String = OnbiiSchema.currentDraftVersion,
@@ -20,7 +24,9 @@ public struct OnbiiManifest: Codable, Equatable, Sendable {
         title: String,
         createdAt: Date,
         resources: [OnbiiResource],
-        provenance: [OnbiiProvenanceEvent]
+        provenance: [OnbiiProvenanceEvent],
+        location: OnbiiLocation? = nil,
+        sourceApplications: [OnbiiSourceApplication]? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.objectID = objectID
@@ -29,6 +35,8 @@ public struct OnbiiManifest: Codable, Equatable, Sendable {
         self.createdAt = createdAt
         self.resources = resources
         self.provenance = provenance
+        self.location = location
+        self.sourceApplications = sourceApplications
     }
 }
 

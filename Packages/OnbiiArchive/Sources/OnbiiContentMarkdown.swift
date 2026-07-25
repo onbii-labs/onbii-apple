@@ -1,4 +1,5 @@
 import Foundation
+import OnbiiCore
 
 /// Renders the object's readable `content.md` — its front-page content view:
 /// metadata plus a transcript section. Shared by `OnbiiBundleWriter` (the
@@ -24,6 +25,8 @@ public enum OnbiiContentMarkdown {
         title: String,
         createdAt: Date,
         sources: [Source],
+        location: OnbiiLocation? = nil,
+        sourceApplications: [OnbiiSourceApplication]? = nil,
         transcript: String? = nil,
         speakerCount: Int? = nil
     ) -> String {
@@ -45,6 +48,15 @@ public enum OnbiiContentMarkdown {
         - Created: \(date)
         \(sourceLines)
         """
+        if let applications = sourceApplications, !applications.isEmpty {
+            let names = applications
+                .map { $0.name ?? $0.bundleIdentifier }
+                .joined(separator: ", ")
+            metadata += "\n- Source app\(applications.count > 1 ? "s" : ""): \(names)"
+        }
+        if let location {
+            metadata += "\n- Location: \(locationLine(location))"
+        }
         if let speakerCount, speakerCount > 0 {
             metadata += "\n- Speakers: \(speakerCount) (rough)"
         }
@@ -57,5 +69,15 @@ public enum OnbiiContentMarkdown {
         \(transcript ?? "_Transcription pending._")
         """
         + "\n"
+    }
+
+    private static func locationLine(_ location: OnbiiLocation) -> String {
+        let coordinates = String(
+            format: "%.4f, %.4f", location.latitude, location.longitude
+        )
+        if let name = location.name, !name.isEmpty {
+            return "\(name) (\(coordinates))"
+        }
+        return coordinates
     }
 }

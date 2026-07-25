@@ -3,6 +3,7 @@ import Foundation
 import Observation
 import OnbiiArchive
 import OnbiiCapture
+import OnbiiCore
 import OnbiiTranscription
 import UniformTypeIdentifiers
 
@@ -191,6 +192,7 @@ final class ImportViewModel {
                 let startedAt = Date()
                 try microphoneRecorder.startRecording(to: captureURL)
                 recordingStartedAt = startedAt
+                beginCaptureContext(includeApplications: false)
                 captureDuration = 0
                 captureKind = .microphone
                 isCapturing = true
@@ -228,6 +230,7 @@ final class ImportViewModel {
                     systemAudioURL: locations.systemAudio,
                     microphoneAudioURL: locations.microphoneAudio
                 )
+                beginCaptureContext(includeApplications: true)
                 captureDuration = 0
                 captureKind = .call
                 isCapturing = true
@@ -268,6 +271,7 @@ final class ImportViewModel {
                 of: captureURL,
                 title: title,
                 mediaType: "audio/mp4",
+                location: pendingCaptureLocation,
                 sourceAction: "captured",
                 sourceAgentName: "macOS microphone capture",
                 removeSourceAfterImport: true
@@ -326,10 +330,40 @@ final class ImportViewModel {
         }
     }
 
+    private let locationProvider = OnbiiLocationProvider()
+    private var pendingCaptureLocation: OnbiiLocation?
+    private var pendingCaptureApplications: [OnbiiSourceApplication] = []
+
+    /// Gathers capture context when a recording starts: the audio-producing
+    /// apps (for system-audio captures) synchronously, and the location
+    /// asynchronously so it never blocks recording. Consumed when the bundle is
+    /// written; both are best-effort and may be absent.
+    private func beginCaptureContext(includeApplications: Bool) {
+        pendingCaptureLocation = nil
+        pendingCaptureApplications = includeApplications
+            ? OnbiiAudioProcessProbe.outputProducingApplications().map {
+                OnbiiSourceApplication(bundleIdentifier: $0.bundleIdentifier, name: $0.name)
+            }
+            : []
+        Task { [weak self] in
+            guard let captured = await self?.locationProvider.currentLocation() else {
+                return
+            }
+            self?.pendingCaptureLocation = OnbiiLocation(
+                latitude: captured.latitude,
+                longitude: captured.longitude,
+                horizontalAccuracyMeters: captured.horizontalAccuracyMeters,
+                name: captured.name,
+                capturedAt: captured.capturedAt
+            )
+        }
+    }
+
     private func performImport(
         of sourceURL: URL,
         title explicitTitle: String? = nil,
         mediaType explicitMediaType: String? = nil,
+        location: OnbiiLocation? = nil,
         sourceAction: String = "imported",
         sourceAgentName: String = "macOS file import",
         removeSourceAfterImport: Bool = false
@@ -351,7 +385,8 @@ final class ImportViewModel {
             title: title,
             mediaType: mediaType,
             sourceAction: sourceAction,
-            sourceAgentName: sourceAgentName
+            sourceAgentName: sourceAgentName,
+            location: location
         )
 
         state = .importing(filename: sourceURL.lastPathComponent)
@@ -514,6 +549,8 @@ final class ImportViewModel {
                                 originalFilename: $0.originalFilename
                             )
                         },
+                    location: bundle.manifest.location,
+                    sourceApplications: bundle.manifest.sourceApplications,
                     transcript: OnbiiTranscriptMarkdown.body(document),
                     speakerCount: speakerCount > 0 ? speakerCount : nil
                 ).utf8
@@ -638,7 +675,10 @@ final class ImportViewModel {
                 result.microphoneAudio.startedAt
             ),
             sourceAction: "captured",
-            sourceAgentName: "macOS dual-source call capture"
+            sourceAgentName: "macOS dual-source call capture",
+            location: pendingCaptureLocation,
+            sourceApplications: pendingCaptureApplications.isEmpty
+                ? nil : pendingCaptureApplications
         )
 
         state = .importing(filename: "system audio and microphone")
