@@ -8,18 +8,48 @@
 
 /* Begin PBXBuildFile section */
 		08B6303B511C26E819CB4805 /* OnbiiArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 3659CA5712B7C2891008C098 /* OnbiiArchive */; };
+		141A3A06FAF12F1CAC5A7649 /* OnbiiMacQuickLook.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		21F21392C17625B1B6D9C344 /* OnbiiMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174652EF0D04236BF111E7E7 /* OnbiiMacApp.swift */; };
 		84090A1F44058C77B3A50829 /* ImportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A3FB2C964D600AB1CE259A /* ImportViewModel.swift */; };
+		868E20BEBADEEEF7CEF06D50 /* MarkdownPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F92E817FE8390B8CD1EB432 /* MarkdownPreview.swift */; };
 		AB5D1C79F475437897501244 /* OnbiiTranscription in Frameworks */ = {isa = PBXBuildFile; productRef = EB4390CDE262CEA947ACC7D9 /* OnbiiTranscription */; };
+		B1426CE2F81F5F2B51197A2B /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD276A3C1636C835753FAAC /* PreviewViewController.swift */; };
 		B229143EBCD116918DA148BA /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = 567F509BEE64234E3F4780B3 /* OnbiiCapture */; };
 		B761177102BE17C8DF2478F2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52801286B477F2050F9F36CB /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		CFDE2741A3AD85187672ADCF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C4A04460DB001E667D2250 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0DA74D0547A6BF8A224C3BB0;
+			remoteInfo = OnbiiMacQuickLook;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8BAA3850A0D9BC391EB97092 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				141A3A06FAF12F1CAC5A7649 /* OnbiiMacQuickLook.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		174652EF0D04236BF111E7E7 /* OnbiiMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbiiMacApp.swift; sourceTree = "<group>"; };
+		3F92E817FE8390B8CD1EB432 /* MarkdownPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreview.swift; sourceTree = "<group>"; };
 		52801286B477F2050F9F36CB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OnbiiMacQuickLook.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		92A3FB2C964D600AB1CE259A /* ImportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportViewModel.swift; sourceTree = "<group>"; };
 		9D7ECE7B63B906066DA969EF /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Packages; path = ../../Packages; sourceTree = SOURCE_ROOT; };
+		CFD276A3C1636C835753FAAC /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
 		D8507349F548EE05A973BC24 /* OnbiiMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnbiiMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -37,6 +67,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01AFA0192EEA87702DC4C5E4 /* QuickLook */ = {
+			isa = PBXGroup;
+			children = (
+				3F92E817FE8390B8CD1EB432 /* MarkdownPreview.swift */,
+				CFD276A3C1636C835753FAAC /* PreviewViewController.swift */,
+			);
+			path = QuickLook;
+			sourceTree = "<group>";
+		};
 		BDDC61901B68A1A8D3ACB068 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -59,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				D8507349F548EE05A973BC24 /* OnbiiMac.app */,
+				67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				C2AA9999B9934F398CE2C473 /* Packages */,
+				01AFA0192EEA87702DC4C5E4 /* QuickLook */,
 				BDDC61901B68A1A8D3ACB068 /* Sources */,
 				EEA050FB4630763780A48451 /* Products */,
 			);
@@ -75,16 +116,35 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0DA74D0547A6BF8A224C3BB0 /* OnbiiMacQuickLook */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 53502A3DD40539F0E64F3651 /* Build configuration list for PBXNativeTarget "OnbiiMacQuickLook" */;
+			buildPhases = (
+				90E9D77972BCAA22F6CDD869 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OnbiiMacQuickLook;
+			packageProductDependencies = (
+			);
+			productName = OnbiiMacQuickLook;
+			productReference = 67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		7131E5621D43DFD06E629B0A /* OnbiiMac */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9FB8896C6DB7ACE602433AC5 /* Build configuration list for PBXNativeTarget "OnbiiMac" */;
 			buildPhases = (
 				513185C2B0B3E17D650B2DAF /* Sources */,
 				3FBB7B19B82F3E46537FDD6E /* Frameworks */,
+				8BAA3850A0D9BC391EB97092 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B76157D04F494586AAC536F0 /* PBXTargetDependency */,
 			);
 			name = OnbiiMac;
 			packageProductDependencies = (
@@ -105,6 +165,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					0DA74D0547A6BF8A224C3BB0 = {
+						DevelopmentTeam = S52C3W4ZB8;
+						ProvisioningStyle = Automatic;
+					};
 					7131E5621D43DFD06E629B0A = {
 						DevelopmentTeam = S52C3W4ZB8;
 						ProvisioningStyle = Automatic;
@@ -129,6 +193,7 @@
 			projectRoot = "";
 			targets = (
 				7131E5621D43DFD06E629B0A /* OnbiiMac */,
+				0DA74D0547A6BF8A224C3BB0 /* OnbiiMacQuickLook */,
 			);
 		};
 /* End PBXProject section */
@@ -144,7 +209,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		90E9D77972BCAA22F6CDD869 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				868E20BEBADEEEF7CEF06D50 /* MarkdownPreview.swift in Sources */,
+				B1426CE2F81F5F2B51197A2B /* PreviewViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B76157D04F494586AAC536F0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0DA74D0547A6BF8A224C3BB0 /* OnbiiMacQuickLook */;
+			targetProxy = CFDE2741A3AD85187672ADCF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0872DAFE7CA557989DA92B8B /* Release */ = {
@@ -290,6 +372,31 @@
 			};
 			name = Debug;
 		};
+		435986158E6001FDE4D767B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OnbiiMacQuickLook.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = S52C3W4ZB8;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "QuickLook-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii.QuickLook;
+				PRODUCT_MODULE_NAME = OnbiiMacQuickLook;
+				PRODUCT_NAME = OnbiiMacQuickLook;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
 		DB8ADADD9729E9B3B8D82150 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -314,9 +421,43 @@
 			};
 			name = Debug;
 		};
+		E4F294E8A5329EBA731D65C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OnbiiMacQuickLook.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = S52C3W4ZB8;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "QuickLook-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii.QuickLook;
+				PRODUCT_MODULE_NAME = OnbiiMacQuickLook;
+				PRODUCT_NAME = OnbiiMacQuickLook;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		53502A3DD40539F0E64F3651 /* Build configuration list for PBXNativeTarget "OnbiiMacQuickLook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				435986158E6001FDE4D767B5 /* Debug */,
+				E4F294E8A5329EBA731D65C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		890FBF129508DD50B273B11A /* Build configuration list for PBXProject "OnbiiMac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -26,6 +26,7 @@ targets:
         product: OnbiiCapture
       - package: OnbiiApple
         product: OnbiiTranscription
+      - target: OnbiiMacQuickLook
     settings:
       base:
         DEVELOPMENT_TEAM: S52C3W4ZB8
@@ -39,6 +40,26 @@ targets:
         CODE_SIGN_ENTITLEMENTS: OnbiiMac.entitlements
         CODE_SIGN_STYLE: Automatic
         ENABLE_HARDENED_RUNTIME: true
+
+  OnbiiMacQuickLook:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: QuickLook
+    settings:
+      base:
+        DEVELOPMENT_TEAM: S52C3W4ZB8
+        PRODUCT_NAME: OnbiiMacQuickLook
+        PRODUCT_BUNDLE_IDENTIFIER: com.yepyr.onbii.QuickLook
+        PRODUCT_MODULE_NAME: OnbiiMacQuickLook
+        MARKETING_VERSION: 0.1.0
+        CURRENT_PROJECT_VERSION: 2
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: QuickLook-Info.plist
+        CODE_SIGN_ENTITLEMENTS: OnbiiMacQuickLook.entitlements
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_HARDENED_RUNTIME: true
+        SWIFT_VERSION: "6.0"
 
 schemes:
   OnbiiMacApp:
