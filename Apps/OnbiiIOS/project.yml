@@ -2,6 +2,7 @@ name: OnbiiIOS
 
 options:
   minimumXcodeGenVersion: 2.46.0
+  xcodeVersion: "2700"
   deploymentTarget:
     iOS: "26.0"
 
@@ -12,6 +13,12 @@ packages:
 settings:
   base:
     SWIFT_VERSION: "6.0"
+    # Xcode's "recommended settings" for this Xcode version, declared here so the
+    # generated project is already up to date and Xcode does not offer to change
+    # it on open.
+    DEAD_CODE_STRIPPING: "YES"
+    ENABLE_USER_SCRIPT_SANDBOXING: "YES"
+    STRING_CATALOG_GENERATE_SYMBOLS: "YES"
 
 targets:
   OnbiiIOS:
