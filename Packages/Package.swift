@@ -31,7 +31,8 @@ let package = Package(
         ),
         .target(
             name: "OnbiiTranscription",
-            path: "OnbiiTranscription/Sources"
+            path: "OnbiiTranscription/Sources",
+            resources: [.copy("Resources/CAMPlusEmbedder.mlmodelc")]
         ),
         .testTarget(
             name: "OnbiiCoreTests",

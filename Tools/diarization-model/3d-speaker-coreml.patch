@@ -1,0 +1,60 @@
+diff --git a/speakerlab/models/campplus/DTDNN.py b/speakerlab/models/campplus/DTDNN.py
+index 1a41b29..9675fda 100644
+--- a/speakerlab/models/campplus/DTDNN.py
++++ b/speakerlab/models/campplus/DTDNN.py
+@@ -43,8 +43,7 @@ class FCM(nn.Module):
+         out = self.layer2(out)
+         out = F.relu(self.bn2(self.conv2(out)))
+ 
+-        shape = out.shape
+-        out = out.reshape(shape[0], shape[1]*shape[2], shape[3])
++        out = out.flatten(1, 2)  # (B, C*F, T) — Core ML-friendly, no size arithmetic
+         return out
+ 
+ class CAMPPlus(nn.Module):
+diff --git a/speakerlab/models/campplus/layers.py b/speakerlab/models/campplus/layers.py
+index 9104f80..373f232 100644
+--- a/speakerlab/models/campplus/layers.py
++++ b/speakerlab/models/campplus/layers.py
+@@ -25,7 +25,12 @@ def get_nonlinear(config_str, channels):
+ 
+ def statistics_pooling(x, dim=-1, keepdim=False, unbiased=True, eps=1e-2):
+     mean = x.mean(dim=dim)
+-    std = x.std(dim=dim, unbiased=unbiased)
++    # Explicit unbiased std; coremltools miscompiles aten::std. Equivalent to
++    # x.std(dim, unbiased=True) for real inputs (var >> the sqrt floor).
++    diff = x - mean.unsqueeze(dim)
++    n = x.shape[dim]
++    var = (diff * diff).sum(dim=dim) / (n - 1)
++    std = torch.sqrt(var.clamp(min=1e-10))
+     stats = torch.cat([mean, std], dim=-1)
+     if keepdim:
+         stats = stats.unsqueeze(dim=dim)
+@@ -98,16 +103,17 @@ class CAMLayer(nn.Module):
+         return y*m
+ 
+     def seg_pooling(self, x, seg_len=100, stype='avg'):
+-        if stype == 'avg':
+-            seg = F.avg_pool1d(x, kernel_size=seg_len, stride=seg_len, ceil_mode=True)
+-        elif stype == 'max':
+-            seg = F.max_pool1d(x, kernel_size=seg_len, stride=seg_len, ceil_mode=True)
+-        else:
+-            raise ValueError('Wrong segment pooling type.')
+-        shape = seg.shape
+-        seg = seg.unsqueeze(-1).expand(*shape, seg_len).reshape(*shape[:-1], -1)
+-        seg = seg[..., :x.shape[-1]]
+-        return seg
++        # Original: avg_pool1d(ceil_mode=True) + interpolate — coremltools
++        # miscompiles the ragged last window. Exact equivalent: multiply by a
++        # constant block-average matrix W (T,T) where each column is normalized
++        # by its segment's real frame count (matching the ceil_mode divisor).
++        T = x.shape[-1]
++        seg_id = torch.div(
++            torch.arange(T, device=x.device), seg_len, rounding_mode='floor'
++        )
++        same = (seg_id.unsqueeze(0) == seg_id.unsqueeze(1)).to(x.dtype)
++        W = same / same.sum(0, keepdim=True)
++        return torch.matmul(x, W)
+ 
+ 
+ class CAMDenseTDNNLayer(nn.Module):
