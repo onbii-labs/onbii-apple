@@ -438,11 +438,19 @@ final class ImportViewModel {
                         + "\(sourceResources.count) on this Mac…"
                 )
                 let role = transcriptRole(for: resource.id)
-                let transcript = try await transcriber.transcribe(
+                var transcript = try await transcriber.transcribe(
                     audioURL: bundle.url(for: resource),
                     sourceResourceID: resource.id,
                     sourceRole: role,
                     locale: locale
+                )
+                state = .transcribing(
+                    message: "Identifying speakers on track \(index + 1)…"
+                )
+                transcript.segments = await Self.diarize(
+                    transcript.segments,
+                    audioURL: bundle.url(for: resource),
+                    labelPrefix: "t\(index)s"
                 )
                 let offset = if let firstStart, let resourceStart = resource.captureStartedAt {
                     max(0.0, resourceStart.timeIntervalSince(firstStart))
@@ -460,10 +468,14 @@ final class ImportViewModel {
             }
 
             let generatedAt = Date()
+            let anyDiarized = tracks.contains { track in
+                track.segments.contains { $0.speakerID != nil }
+            }
             let document = OnbiiTranscriptDocument(
                 generatedAt: generatedAt,
                 tracks: tracks,
-                timeline: OnbiiTranscriptTimeline.merge(timelineInputs)
+                timeline: OnbiiTranscriptTimeline.merge(timelineInputs),
+                speakerModel: anyDiarized ? Self.speakerModelName : nil
             )
             state = .transcribing(message: "Attaching transcript to the object…")
             let processingDirectory = try makeProcessingDirectory()
@@ -780,6 +792,30 @@ final class ImportViewModel {
             withIntermediateDirectories: true
         )
         return directory
+    }
+
+    static let speakerModelName = "3D-Speaker CAM++ (VoxCeleb) on-device"
+
+    /// Best-effort rough speaker turns for one track. On any failure (model
+    /// missing, unreadable audio) the segments are returned unchanged, so
+    /// transcription still succeeds and the transcript falls back to track
+    /// labels. Diarization is derived data and never blocks preserving a source.
+    static func diarize(
+        _ segments: [OnbiiTranscriptSegment],
+        audioURL: URL,
+        labelPrefix: String
+    ) async -> [OnbiiTranscriptSegment] {
+        guard !segments.isEmpty else { return segments }
+        do {
+            let embedder = try OnbiiCoreMLSpeakerEmbedder(audioURL: audioURL)
+            return try await OnbiiSpeakerDiarizer().diarize(
+                track: segments,
+                using: embedder,
+                labelPrefix: labelPrefix
+            )
+        } catch {
+            return segments
+        }
     }
 
     private func transcriptRole(for resourceID: String) -> String {

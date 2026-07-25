@@ -60,15 +60,21 @@ public struct OnbiiTranscriptDocument: Codable, Equatable, Sendable {
     public var generatedAt: Date
     public var tracks: [OnbiiTrackTranscript]
     public var timeline: [OnbiiTranscriptSegment]
+    /// The speaker-embedding model that produced the diarization (the segment
+    /// `speakerID`s), or nil when the recording was not diarized. Records the
+    /// provenance of the derived speaker turns.
+    public var speakerModel: String?
 
     public init(
         generatedAt: Date = Date(),
         tracks: [OnbiiTrackTranscript],
-        timeline: [OnbiiTranscriptSegment]
+        timeline: [OnbiiTranscriptSegment],
+        speakerModel: String? = nil
     ) {
         self.generatedAt = generatedAt
         self.tracks = tracks
         self.timeline = timeline
+        self.speakerModel = speakerModel
     }
 }
 
