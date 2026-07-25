@@ -1,6 +1,7 @@
 #if canImport(CoreLocation)
 import CoreLocation
 import Foundation
+import MapKit
 
 /// A captured location in the capture domain. The app maps this to the archive
 /// model, keeping `OnbiiCapture` free of a dependency on the logical model.
@@ -93,12 +94,31 @@ public final class OnbiiLocationProvider: NSObject, CLLocationManagerDelegate {
         #endif
     }
 
+    /// Best-effort reverse geocode of coordinates to a place name. Lets the
+    /// iPhone name a location captured elsewhere (e.g. on the Watch).
+    public static func placeName(
+        latitude: Double,
+        longitude: Double
+    ) async -> String? {
+        await placeName(
+            for: CLLocation(latitude: latitude, longitude: longitude)
+        )
+    }
+
     private static func placeName(for location: CLLocation) async -> String? {
-        let placemarks = try? await CLGeocoder().reverseGeocodeLocation(location)
-        guard let placemark = placemarks?.first else { return nil }
-        let parts = [placemark.locality ?? placemark.name, placemark.country]
-            .compactMap { $0 }
-        return parts.isEmpty ? nil : parts.joined(separator: ", ")
+        #if os(watchOS)
+        return nil  // reverse geocoding happens on the iPhone
+        #else
+        // MapKit; CLGeocoder is deprecated as of the 26 SDKs.
+        guard let request = MKReverseGeocodingRequest(location: location),
+              let item = try? await request.mapItems.first else {
+            return nil
+        }
+        return item.addressRepresentations?.cityWithContext
+            ?? item.addressRepresentations?.cityName
+            ?? item.address?.shortAddress
+            ?? item.name
+        #endif
     }
 
     // MARK: CLLocationManagerDelegate

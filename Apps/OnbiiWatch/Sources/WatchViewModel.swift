@@ -24,6 +24,21 @@ final class WatchViewModel: NSObject {
     private var recordingStartedAt: Date?
     private var pendingURL: URL?
     private var pendingMetadata: OnbiiWatchRecordingMetadata?
+    private let locationProvider = OnbiiLocationProvider()
+    private var pendingCaptureLocation: OnbiiCapturedLocation?
+
+    /// Fetches the Watch's location asynchronously at record start (no geocode —
+    /// the iPhone names it). Best-effort; never blocks recording.
+    private func beginCaptureLocation() {
+        pendingCaptureLocation = nil
+        Task { [weak self] in
+            guard let captured = await self?.locationProvider
+                .currentLocation(reverseGeocode: false) else {
+                return
+            }
+            self?.pendingCaptureLocation = captured
+        }
+    }
 
     private(set) var state: State = .connecting
     private(set) var duration: TimeInterval = 0
@@ -140,6 +155,7 @@ final class WatchViewModel: NSObject {
                     try recorder.startRecording(to: destinationURL)
                 }.value
                 recordingStartedAt = startedAt
+                beginCaptureLocation()
                 duration = 0
                 state = .recording
                 WKInterfaceDevice.current().play(.start)
@@ -174,7 +190,10 @@ final class WatchViewModel: NSObject {
         pendingURL = finalizedURL
         pendingMetadata = OnbiiWatchRecordingMetadata(
             captureStartedAt: startedAt,
-            durationSeconds: finalDuration
+            durationSeconds: finalDuration,
+            latitude: pendingCaptureLocation?.latitude,
+            longitude: pendingCaptureLocation?.longitude,
+            horizontalAccuracyMeters: pendingCaptureLocation?.horizontalAccuracyMeters
         )
         WKInterfaceDevice.current().play(.success)
         queuePendingTransfer()

@@ -66,6 +66,7 @@ targets:
         GENERATE_INFOPLIST_FILE: true
         INFOPLIST_KEY_CFBundleDisplayName: Onbii
         INFOPLIST_KEY_NSMicrophoneUsageDescription: Onbii records audio only after you tap Record, then transfers the original recording to your iPhone.
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: Onbii records where a recording was captured, so you can remember where a conversation happened. Location is optional and travels with the recording to your iPhone.
         INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.yepyr.onbii
         INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp: false
         CODE_SIGN_STYLE: Automatic

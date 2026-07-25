@@ -1,6 +1,7 @@
 import Foundation
 import OnbiiArchive
 import OnbiiCapture
+import OnbiiCore
 @preconcurrency import WatchConnectivity
 
 extension Notification.Name {
@@ -47,7 +48,7 @@ final class WatchRecordingReceiver: NSObject, @unchecked Sendable {
     private func preserve(
         stagedURL: URL,
         metadata: OnbiiWatchRecordingMetadata
-    ) throws -> URL {
+    ) async throws -> URL {
         let archiveURL: URL
         do {
             archiveURL = try OnbiiCloudArchive().directoryURL()
@@ -62,6 +63,20 @@ final class WatchRecordingReceiver: NSObject, @unchecked Sendable {
             for: title,
             in: archiveURL
         )
+
+        var location: OnbiiLocation?
+        if let latitude = metadata.latitude, let longitude = metadata.longitude {
+            location = OnbiiLocation(
+                latitude: latitude,
+                longitude: longitude,
+                horizontalAccuracyMeters: metadata.horizontalAccuracyMeters,
+                name: await OnbiiLocationProvider.placeName(
+                    latitude: latitude, longitude: longitude
+                ),
+                capturedAt: metadata.captureStartedAt
+            )
+        }
+
         let request = OnbiiImportRequest(
             sources: [
                 OnbiiSourceFile(
@@ -77,7 +92,8 @@ final class WatchRecordingReceiver: NSObject, @unchecked Sendable {
             title: title,
             createdAt: metadata.captureStartedAt,
             sourceAction: "captured",
-            sourceAgentName: "Apple Watch microphone capture"
+            sourceAgentName: "Apple Watch microphone capture",
+            location: location
         )
         try OnbiiBundleWriter().write(request)
         try FileManager.default.removeItem(at: stagedURL)
@@ -170,7 +186,7 @@ extension WatchRecordingReceiver: WCSessionDelegate {
 
         Task.detached(priority: .utility) { [self] in
             do {
-                let bundleURL = try preserve(
+                let bundleURL = try await preserve(
                     stagedURL: stagedURL,
                     metadata: metadata
                 )
