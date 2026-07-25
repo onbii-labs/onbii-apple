@@ -88,6 +88,38 @@ func consolidationKeepsRawClustersWhenNoneReachMinimum() {
     #expect(consolidated == [0, 1])
 }
 
+@Test
+func consolidationFractionalFloorScalesWithLength() {
+    let voiceA: [Float] = [1, 0, 0]
+    let voiceB: [Float] = [0, 1, 0]
+    let fragment: [Float] = [0.3, 0, 0.95]   // own cluster, nearer A
+    let embeddings = Array(repeating: voiceA, count: 48)
+        + Array(repeating: voiceB, count: 48)
+        + Array(repeating: fragment, count: 4)
+    let raw = OnbiiSpeakerClustering.cluster(
+        embeddings: embeddings,
+        distanceThreshold: 0.5
+    )
+    #expect(Set(raw).count == 3)
+
+    // Absolute floor alone keeps the 4-window fragment as a speaker.
+    let absolute = OnbiiSpeakerClustering.consolidate(
+        embeddings: embeddings,
+        labels: raw,
+        minClusterSize: 2
+    )
+    #expect(Set(absolute).count == 3)
+
+    // A 5% fractional floor (= 5 of 100 windows) absorbs the fragment.
+    let fractional = OnbiiSpeakerClustering.consolidate(
+        embeddings: embeddings,
+        labels: raw,
+        minClusterSize: 2,
+        minClusterFraction: 0.05
+    )
+    #expect(Set(fractional).count == 2)
+}
+
 // MARK: - Windowing
 
 @Test

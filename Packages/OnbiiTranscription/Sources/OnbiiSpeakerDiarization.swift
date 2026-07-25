@@ -201,26 +201,34 @@ public enum OnbiiSpeakerClustering {
         return 1 - dot
     }
 
-    /// Consolidates raw clusters into speakers. Clusters with at least
-    /// `minClusterSize` windows are treated as real speakers; every window is
-    /// then reassigned to the nearest speaker centroid. This absorbs the small,
-    /// noisy fragment clusters that threshold clustering leaves behind on real
-    /// conversational audio (which would otherwise surface as spurious extra
-    /// speakers) without assuming how many speakers there are. Returns a 0-based
-    /// speaker index per embedding, numbered by first appearance. When no
-    /// cluster is large enough (e.g. a very short recording) the input labels
-    /// are returned, renumbered.
+    /// Consolidates raw clusters into speakers. A cluster counts as a real
+    /// speaker when it holds at least `max(minClusterSize, minClusterFraction ×
+    /// window count)` windows; every window is then reassigned to the nearest
+    /// speaker centroid. This absorbs the small, noisy fragment clusters that
+    /// threshold clustering leaves behind on real conversational audio (which
+    /// would otherwise surface as spurious extra speakers) without assuming how
+    /// many speakers there are. The fractional floor scales with recording
+    /// length: tuned on real meetings, a real speaker held ≥ ~4% of the windows
+    /// while spurious fragments stayed under ~1%, so a ~2% floor separates them.
+    /// Returns a 0-based speaker index per embedding, numbered by first
+    /// appearance. When no cluster is large enough the input labels are
+    /// returned, renumbered.
     public static func consolidate(
         embeddings: [[Float]],
         labels: [Int],
-        minClusterSize: Int
+        minClusterSize: Int,
+        minClusterFraction: Float = 0
     ) -> [Int] {
         let count = labels.count
         guard count > 0 else { return [] }
 
+        let floor = max(
+            minClusterSize,
+            Int((minClusterFraction * Float(count)).rounded(.up))
+        )
         var sizes = [Int: Int]()
         for label in labels { sizes[label, default: 0] += 1 }
-        let speakerLabels = sizes.filter { $0.value >= minClusterSize }
+        let speakerLabels = sizes.filter { $0.value >= floor }
             .keys.sorted()
         guard !speakerLabels.isEmpty else {
             return renumberByFirstAppearance(labels)
@@ -287,22 +295,29 @@ public struct OnbiiSpeakerDiarizer: Sendable {
     /// 0.75 merged them. The consolidation pass below then absorbs the residual
     /// fragments, which makes the exact threshold uncritical across ~0.58–0.70.
     public var distanceThreshold: Float
-    /// Minimum windows for a cluster to count as a real speaker. Smaller,
-    /// noisier fragment clusters are absorbed into the nearest speaker rather
-    /// than surfacing as extra `Speaker N`s. A recording where no cluster
-    /// reaches this keeps its raw clusters.
+    /// Absolute minimum windows for a cluster to count as a real speaker
+    /// (a floor for short recordings). Smaller, noisier fragment clusters are
+    /// absorbed into the nearest speaker rather than surfacing as extra
+    /// `Speaker N`s.
     public var minSpeakerWindows: Int
+    /// Fractional minimum share of windows for a real speaker; scales the floor
+    /// with recording length so long meetings don't accrue fragment speakers.
+    /// 0.02 (2%) was tuned on real meetings — real speakers held ≥ ~4% of
+    /// windows, spurious fragments < ~1%.
+    public var minSpeakerFraction: Float
 
     public init(
         minWindowSeconds: TimeInterval = 2.5,
         maxGapSeconds: TimeInterval = 1.0,
         distanceThreshold: Float = 0.65,
-        minSpeakerWindows: Int = 4
+        minSpeakerWindows: Int = 4,
+        minSpeakerFraction: Float = 0.02
     ) {
         self.minWindowSeconds = minWindowSeconds
         self.maxGapSeconds = maxGapSeconds
         self.distanceThreshold = distanceThreshold
         self.minSpeakerWindows = minSpeakerWindows
+        self.minSpeakerFraction = minSpeakerFraction
     }
 
     /// Diarizes one track in isolation, returning its segments with `speakerID`
@@ -342,7 +357,8 @@ public struct OnbiiSpeakerDiarizer: Sendable {
         let labels = OnbiiSpeakerClustering.consolidate(
             embeddings: embeddings,
             labels: rawLabels,
-            minClusterSize: minSpeakerWindows
+            minClusterSize: minSpeakerWindows,
+            minClusterFraction: minSpeakerFraction
         )
 
         var result = segments
