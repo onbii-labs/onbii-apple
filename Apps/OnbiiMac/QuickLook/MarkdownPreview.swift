@@ -1,122 +1,135 @@
-import Foundation
+import AppKit
 
-/// Small Markdown→HTML renderer for the Quick Look preview. It covers the subset
-/// `content.md` uses — headings, unordered lists, paragraphs, bold, italic, and
-/// inline code — rather than being a general CommonMark implementation.
+/// Renders the `content.md` subset (headings, unordered lists, paragraphs, bold,
+/// italic, inline code) to an `NSAttributedString` for display in an NSTextView.
+/// Native text rendering is used deliberately: a WKWebView cannot launch its
+/// helper processes inside a Quick Look extension's sandbox and hangs.
 enum MarkdownPreview {
-    static func html(from markdown: String) -> String {
-        var body = ""
+    static func attributedString(from markdown: String) -> NSAttributedString {
+        let output = NSMutableAttributedString()
         var paragraph: [String] = []
-        var inList = false
 
         func flushParagraph() {
             guard !paragraph.isEmpty else { return }
-            body += "<p>\(paragraph.map(inline).joined(separator: "<br>"))</p>\n"
+            appendBlock(
+                paragraph.joined(separator: " "),
+                font: bodyFont, color: .labelColor, spacingAfter: 9, into: output
+            )
             paragraph = []
-        }
-        func closeList() {
-            if inList { body += "</ul>\n"; inList = false }
         }
 
         for rawLine in markdown.components(separatedBy: .newlines) {
             let line = rawLine.trimmingCharacters(in: .whitespaces)
             if line.isEmpty {
-                flushParagraph(); closeList()
+                flushParagraph()
             } else if line.hasPrefix("## ") {
-                flushParagraph(); closeList()
-                body += "<h2>\(inline(String(line.dropFirst(3))))</h2>\n"
+                flushParagraph()
+                appendBlock(
+                    String(line.dropFirst(3)).uppercased(),
+                    font: h2Font, color: .secondaryLabelColor,
+                    spacingBefore: 14, spacingAfter: 5, into: output
+                )
             } else if line.hasPrefix("# ") {
-                flushParagraph(); closeList()
-                body += "<h1>\(inline(String(line.dropFirst(2))))</h1>\n"
+                flushParagraph()
+                appendBlock(
+                    String(line.dropFirst(2)),
+                    font: h1Font, color: .labelColor, spacingAfter: 10, into: output
+                )
             } else if line.hasPrefix("- ") {
                 flushParagraph()
-                if !inList { body += "<ul>\n"; inList = true }
-                body += "<li>\(inline(String(line.dropFirst(2))))</li>\n"
+                appendBlock(
+                    "•  " + String(line.dropFirst(2)),
+                    font: bodyFont, color: .secondaryLabelColor,
+                    spacingAfter: 3, headIndent: 16, into: output
+                )
             } else {
-                closeList()
                 paragraph.append(line)
             }
         }
-        flushParagraph(); closeList()
-        return document(body: body)
+        flushParagraph()
+        return output
+    }
+
+    // MARK: Blocks
+
+    private static func appendBlock(
+        _ text: String,
+        font: NSFont,
+        color: NSColor,
+        spacingBefore: CGFloat = 0,
+        spacingAfter: CGFloat,
+        headIndent: CGFloat = 0,
+        into output: NSMutableAttributedString
+    ) {
+        let start = output.length
+        appendInline(text, baseFont: font, color: color, into: output)
+        output.append(NSAttributedString(string: "\n"))
+
+        let style = NSMutableParagraphStyle()
+        style.paragraphSpacing = spacingAfter
+        style.paragraphSpacingBefore = spacingBefore
+        style.lineSpacing = 2
+        style.headIndent = headIndent
+        output.addAttribute(
+            .paragraphStyle,
+            value: style,
+            range: NSRange(location: start, length: output.length - start)
+        )
     }
 
     // MARK: Inline
 
-    /// Splits on backticks so emphasis is never applied inside code spans (our
-    /// source paths and filenames contain underscores).
-    private static func inline(_ text: String) -> String {
-        text.components(separatedBy: "`").enumerated().map { index, part in
-            index.isMultiple(of: 2)
-                ? emphasis(escape(part))
-                : "<code>\(escape(part))</code>"
-        }.joined()
-    }
-
-    private static func emphasis(_ escaped: String) -> String {
-        var value = escaped
-        value = replace(value, #"\*\*(.+?)\*\*"#, "<strong>$1</strong>")
-        value = replace(value, #"_(.+?)_"#, "<em>$1</em>")
-        return value
-    }
-
-    private static func escape(_ text: String) -> String {
-        text.replacingOccurrences(of: "&", with: "&amp;")
-            .replacingOccurrences(of: "<", with: "&lt;")
-            .replacingOccurrences(of: ">", with: "&gt;")
-    }
-
-    private static func replace(
+    /// Splits on backticks first so emphasis is never applied inside code spans
+    /// (our source paths and filenames contain underscores).
+    private static func appendInline(
         _ text: String,
-        _ pattern: String,
-        _ template: String
-    ) -> String {
-        guard let regex = try? NSRegularExpression(pattern: pattern) else {
-            return text
+        baseFont: NSFont,
+        color: NSColor,
+        into output: NSMutableAttributedString
+    ) {
+        for (index, segment) in text.components(separatedBy: "`").enumerated() {
+            if index.isMultiple(of: 2) {
+                appendEmphasis(segment, baseFont: baseFont, color: color, into: output)
+            } else {
+                output.append(NSAttributedString(
+                    string: segment,
+                    attributes: [
+                        .font: NSFont.monospacedSystemFont(
+                            ofSize: baseFont.pointSize - 1, weight: .regular
+                        ),
+                        .foregroundColor: color,
+                    ]
+                ))
+            }
         }
-        return regex.stringByReplacingMatches(
-            in: text,
-            range: NSRange(text.startIndex..., in: text),
-            withTemplate: template
-        )
     }
 
-    // MARK: Document
-
-    private static func document(body: String) -> String {
-        """
-        <!doctype html>
-        <html><head><meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-        :root { color-scheme: light dark; }
-        body {
-          font: -apple-system-body, system-ui, sans-serif;
-          line-height: 1.55;
-          margin: 0; padding: 28px 32px;
-          color: #1d1d1f;
+    private static func appendEmphasis(
+        _ text: String,
+        baseFont: NSFont,
+        color: NSColor,
+        into output: NSMutableAttributedString
+    ) {
+        let manager = NSFontManager.shared
+        for (boldIndex, boldPart) in text.components(separatedBy: "**").enumerated() {
+            let isBold = !boldIndex.isMultiple(of: 2)
+            for (italicIndex, part) in boldPart.components(separatedBy: "_").enumerated() {
+                let isItalic = !italicIndex.isMultiple(of: 2)
+                guard !part.isEmpty else { continue }
+                var font = baseFont
+                if isBold { font = manager.convert(font, toHaveTrait: .boldFontMask) }
+                if isItalic { font = manager.convert(font, toHaveTrait: .italicFontMask) }
+                output.append(NSAttributedString(
+                    string: part,
+                    attributes: [.font: font, .foregroundColor: color]
+                ))
+            }
         }
-        h1 { font-size: 1.6em; margin: 0 0 .4em; }
-        h2 {
-          font-size: 1.05em; text-transform: uppercase; letter-spacing: .04em;
-          color: #86868b; margin: 1.6em 0 .6em;
-        }
-        ul { margin: .2em 0 1em; padding-left: 1.2em; color: #515154; }
-        li { margin: .15em 0; }
-        p { margin: 0 0 .9em; }
-        strong { font-weight: 600; }
-        code {
-          font: ui-monospace, SFMono-Regular, Menlo, monospace;
-          font-size: .9em; background: rgba(128,128,128,.16);
-          padding: .1em .35em; border-radius: 4px;
-        }
-        @media (prefers-color-scheme: dark) {
-          body { color: #f5f5f7; }
-          ul { color: #aeaeb2; }
-        }
-        </style></head>
-        <body>
-        \(body)</body></html>
-        """
     }
+
+    // MARK: Fonts
+
+    private static var h1Font: NSFont { .systemFont(ofSize: 22, weight: .bold) }
+    private static var h2Font: NSFont { .systemFont(ofSize: 11, weight: .semibold) }
+    private static var bodyFont: NSFont { .systemFont(ofSize: 13) }
 }

@@ -1,25 +1,39 @@
 import Cocoa
 import QuickLookUI
-import WebKit
 
 /// Quick Look preview for `.onbii` objects. `.onbii` is a package (a folder), so
 /// macOS would otherwise show a generic package icon; this renders the object's
-/// `content.md` front-page view as formatted Markdown instead.
-final class PreviewViewController: NSViewController, @preconcurrency QLPreviewingController {
-    private let webView: WKWebView = {
-        let configuration = WKWebViewConfiguration()
-        let preferences = WKWebpagePreferences()
-        preferences.allowsContentJavaScript = false  // static preview, no scripts
-        configuration.defaultWebpagePreferences = preferences
-        return WKWebView(frame: .zero, configuration: configuration)
-    }()
-
-    private var completion: ((Error?) -> Void)?
+/// `content.md` front-page view as formatted text. Rendering is native
+/// (NSTextView) and synchronous — a WKWebView hangs inside the QL sandbox.
+final class PreviewViewController: NSViewController,
+    @preconcurrency QLPreviewingController {
+    private var textView: NSTextView!
 
     override func loadView() {
-        webView.navigationDelegate = self
-        webView.setValue(false, forKey: "drawsBackground")
-        view = webView
+        let scrollView = NSScrollView()
+        scrollView.hasVerticalScroller = true
+        scrollView.borderType = .noBorder
+        scrollView.drawsBackground = true
+        scrollView.backgroundColor = .textBackgroundColor
+
+        let text = NSTextView()
+        text.isEditable = false
+        text.isSelectable = true
+        text.drawsBackground = false
+        text.textContainerInset = NSSize(width: 24, height: 20)
+        text.minSize = NSSize(width: 0, height: 0)
+        text.maxSize = NSSize(
+            width: CGFloat.greatestFiniteMagnitude,
+            height: CGFloat.greatestFiniteMagnitude
+        )
+        text.isVerticallyResizable = true
+        text.isHorizontallyResizable = false
+        text.autoresizingMask = [.width]
+        text.textContainer?.widthTracksTextView = true
+
+        scrollView.documentView = text
+        textView = text
+        view = scrollView
         view.frame = NSRect(x: 0, y: 0, width: 800, height: 600)
     }
 
@@ -27,27 +41,13 @@ final class PreviewViewController: NSViewController, @preconcurrency QLPreviewin
         at url: URL,
         completionHandler handler: @escaping (Error?) -> Void
     ) {
-        completion = handler
         let markdown = (try? String(
             contentsOf: url.appendingPathComponent("content.md"),
             encoding: .utf8
         )) ?? "_No preview available._"
-        webView.loadHTMLString(MarkdownPreview.html(from: markdown), baseURL: nil)
-    }
-}
-
-extension PreviewViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        completion?(nil)
-        completion = nil
-    }
-
-    func webView(
-        _ webView: WKWebView,
-        didFail navigation: WKNavigation!,
-        withError error: Error
-    ) {
-        completion?(nil)  // still show whatever rendered; never fail the preview
-        completion = nil
+        textView.textStorage?.setAttributedString(
+            MarkdownPreview.attributedString(from: markdown)
+        )
+        handler(nil)
     }
 }
