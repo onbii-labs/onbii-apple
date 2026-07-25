@@ -9,6 +9,7 @@ Current implementation direction:
 - [macOS App Identity And Signing](macos-app-identity-and-signing.md)
 - [iPhone Capture And Import Direction](ios-capture-import-direction.md)
 - [On-device Transcription Spike](on-device-transcription-spike.md)
+- [Rough Speaker Turns](rough-speaker-turns.md)
 - [Core Audio System-Audio Spike](core-audio-system-audio-spike.md)
 
 Open questions still to answer here:

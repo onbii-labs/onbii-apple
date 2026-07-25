@@ -32,8 +32,11 @@ Speaker labels describe the captured source, not an inferred person:
 - `microphone`
 - `recording` for a single imported or captured source
 
-These labels are track attribution only. They do not satisfy the Milestone 1
-rough-speaker-turn criterion and must not be presented as diarization.
+These labels are track attribution only and are not diarization. The rough
+speaker-turn criterion is met by a separate voice-embedding diarization pass over
+the source audio — see [Rough Speaker Turns](rough-speaker-turns.md). Track
+labels are the pre-diarization fallback the Markdown facet uses when a recording
+has not (or could not) be diarized.
 
 The merged text timeline conservatively suppresses probable speaker echo from
 the microphone track only when at least three consecutive normalized words
