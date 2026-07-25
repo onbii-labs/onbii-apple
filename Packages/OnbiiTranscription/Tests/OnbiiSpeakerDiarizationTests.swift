@@ -45,6 +45,49 @@ func clusteringHonorsThreshold() {
     )
 }
 
+@Test
+func consolidationAbsorbsSmallFragmentsIntoNearestSpeaker() {
+    let voiceA: [Float] = [1, 0, 0]
+    let voiceB: [Float] = [0, 1, 0]
+    // Far enough from both A and B to be its own cluster, but nearer A.
+    let fragment: [Float] = [0.3, 0, 0.95]
+    let embeddings = Array(repeating: voiceA, count: 5)
+        + Array(repeating: voiceB, count: 5)
+        + Array(repeating: fragment, count: 2)
+
+    let raw = OnbiiSpeakerClustering.cluster(
+        embeddings: embeddings,
+        distanceThreshold: 0.5
+    )
+    #expect(Set(raw).count == 3)   // A, B, and the small fragment cluster
+
+    let consolidated = OnbiiSpeakerClustering.consolidate(
+        embeddings: embeddings,
+        labels: raw,
+        minClusterSize: 4
+    )
+    #expect(Set(consolidated).count == 2)            // fragment absorbed
+    #expect(Set(consolidated[0..<5]).count == 1)     // all A → one speaker
+    #expect(Set(consolidated[5..<10]).count == 1)    // all B → one speaker
+    #expect(consolidated[0] != consolidated[5])      // A and B are distinct
+    #expect(consolidated[10] == consolidated[0])     // fragment joined A
+}
+
+@Test
+func consolidationKeepsRawClustersWhenNoneReachMinimum() {
+    let embeddings = [[Float]([1, 0, 0]), [Float]([0, 1, 0])]
+    let raw = OnbiiSpeakerClustering.cluster(
+        embeddings: embeddings,
+        distanceThreshold: 0.5
+    )
+    let consolidated = OnbiiSpeakerClustering.consolidate(
+        embeddings: embeddings,
+        labels: raw,
+        minClusterSize: 4
+    )
+    #expect(consolidated == [0, 1])
+}
+
 // MARK: - Windowing
 
 @Test

@@ -200,6 +200,76 @@ public enum OnbiiSpeakerClustering {
         }
         return 1 - dot
     }
+
+    /// Consolidates raw clusters into speakers. Clusters with at least
+    /// `minClusterSize` windows are treated as real speakers; every window is
+    /// then reassigned to the nearest speaker centroid. This absorbs the small,
+    /// noisy fragment clusters that threshold clustering leaves behind on real
+    /// conversational audio (which would otherwise surface as spurious extra
+    /// speakers) without assuming how many speakers there are. Returns a 0-based
+    /// speaker index per embedding, numbered by first appearance. When no
+    /// cluster is large enough (e.g. a very short recording) the input labels
+    /// are returned, renumbered.
+    public static func consolidate(
+        embeddings: [[Float]],
+        labels: [Int],
+        minClusterSize: Int
+    ) -> [Int] {
+        let count = labels.count
+        guard count > 0 else { return [] }
+
+        var sizes = [Int: Int]()
+        for label in labels { sizes[label, default: 0] += 1 }
+        let speakerLabels = sizes.filter { $0.value >= minClusterSize }
+            .keys.sorted()
+        guard !speakerLabels.isEmpty else {
+            return renumberByFirstAppearance(labels)
+        }
+
+        let normalized = embeddings.map(normalize)
+        let centroids = speakerLabels.map { label -> [Float] in
+            normalize(mean(normalized.indices
+                .filter { labels[$0] == label }
+                .map { normalized[$0] }))
+        }
+
+        var assigned = [Int](repeating: 0, count: count)
+        for index in 0..<count {
+            var bestCentroid = 0
+            var bestSimilarity = -Float.greatestFiniteMagnitude
+            for (centroidIndex, centroid) in centroids.enumerated() {
+                let similarity = 1 - cosineDistance(normalized[index], centroid)
+                if similarity > bestSimilarity {
+                    bestSimilarity = similarity
+                    bestCentroid = centroidIndex
+                }
+            }
+            assigned[index] = bestCentroid
+        }
+        return renumberByFirstAppearance(assigned)
+    }
+
+    private static func renumberByFirstAppearance(_ labels: [Int]) -> [Int] {
+        var mapping = [Int: Int]()
+        var next = 0
+        return labels.map { label in
+            if let mapped = mapping[label] { return mapped }
+            let value = next
+            mapping[label] = value
+            next += 1
+            return value
+        }
+    }
+
+    private static func mean(_ vectors: [[Float]]) -> [Float] {
+        guard let first = vectors.first else { return [] }
+        var sum = [Float](repeating: 0, count: first.count)
+        for vector in vectors {
+            for index in sum.indices { sum[index] += vector[index] }
+        }
+        let divisor = Float(vectors.count)
+        return sum.map { $0 / divisor }
+    }
 }
 
 // MARK: - Diarizer
@@ -211,17 +281,28 @@ public struct OnbiiSpeakerDiarizer: Sendable {
     /// A silence longer than this forces a window boundary.
     public var maxGapSeconds: TimeInterval
     /// Cosine-distance cutoff separating "same voice" from "different voice".
-    /// Tuned against real, participant-labeled recordings in validation.
+    /// 0.65 was tuned on a real two-speaker recording: on conversational audio
+    /// the two speakers' window embeddings sat ~0.48 apart (far tighter than
+    /// clean read speech), so 0.5 shattered each speaker into fragments while
+    /// 0.75 merged them. The consolidation pass below then absorbs the residual
+    /// fragments, which makes the exact threshold uncritical across ~0.58–0.70.
     public var distanceThreshold: Float
+    /// Minimum windows for a cluster to count as a real speaker. Smaller,
+    /// noisier fragment clusters are absorbed into the nearest speaker rather
+    /// than surfacing as extra `Speaker N`s. A recording where no cluster
+    /// reaches this keeps its raw clusters.
+    public var minSpeakerWindows: Int
 
     public init(
         minWindowSeconds: TimeInterval = 2.5,
         maxGapSeconds: TimeInterval = 1.0,
-        distanceThreshold: Float = 0.5
+        distanceThreshold: Float = 0.65,
+        minSpeakerWindows: Int = 4
     ) {
         self.minWindowSeconds = minWindowSeconds
         self.maxGapSeconds = maxGapSeconds
         self.distanceThreshold = distanceThreshold
+        self.minSpeakerWindows = minSpeakerWindows
     }
 
     /// Diarizes one track in isolation, returning its segments with `speakerID`
@@ -253,9 +334,15 @@ public struct OnbiiSpeakerDiarizer: Sendable {
         }
         guard !embeddedWindows.isEmpty else { return segments }
 
-        let labels = OnbiiSpeakerClustering.cluster(
-            embeddings: embeddedWindows.map(\.embedding),
+        let embeddings = embeddedWindows.map(\.embedding)
+        let rawLabels = OnbiiSpeakerClustering.cluster(
+            embeddings: embeddings,
             distanceThreshold: distanceThreshold
+        )
+        let labels = OnbiiSpeakerClustering.consolidate(
+            embeddings: embeddings,
+            labels: rawLabels,
+            minClusterSize: minSpeakerWindows
         )
 
         var result = segments
