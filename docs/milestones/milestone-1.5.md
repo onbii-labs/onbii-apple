@@ -20,6 +20,27 @@ From the roadmap:
 - the same presentable home and status view on iPhone;
 - no change to the object format; the person's archive stays the source of truth.
 
+## Status Against The Roadmap
+
+| Roadmap requirement | State |
+|---|---|
+| A defined visual identity — icon and colour scheme — applied consistently | **Done** |
+| A real, browsable home on desktop and iPhone: objects, their state, settings | **Done** |
+| Clear visual indicators of an object's status at a glance | **Done** |
+| The same presentable home and status view on iPhone | **Done** |
+| No change to the object format; the archive stays the source of truth | **Held** |
+| A macOS menu-bar service that is always at the ready | Deferred |
+| An explicit offer to record when a chosen application becomes active | Deferred |
+| Background processing of new recordings and files on the desktop | Deferred |
+
+Beyond the roadmap, one gap found while using it: transcription could be started
+on iPhone but the result could not be read without leaving the app. A transcript
+reader was added on both platforms.
+
+The milestone is therefore **half delivered**. What remains — the menu-bar
+service, the activation prompt, background processing — is the "always-ready"
+strand, and it is a coherent second slice rather than leftovers.
+
 ## Current Implementation Slice
 
 The identity and home half:
@@ -51,12 +72,19 @@ The identity and home half:
   re-reads the archive.
 - **Quick Look**: the accent on section sub-headers and a named type scale, with
   no package dependency added to the sandboxed extension.
-- **A transcript reader on iPhone.** Transcription could be started but its
-  result could not be read without leaving the app. `OnbiiTranscriptView` reads
-  the derived transcript back as speaker turns with timestamps, falling back to
-  the human-readable `transcript.md` when the structured artefact is absent. It
-  states when the transcript was generated, that the sources were unchanged, and
-  that speaker labels are opaque groupings rather than people.
+- **Apple Watch**: a full Forest brand field with a Watch-specific solid-fill
+  mark. The mark is the one place the artwork diverges by platform, because a
+  pale colour needs area to read on a small screen — see
+  [Visual Identity](../architecture/visual-identity.md).
+- **A transcript reader**, on both platforms. Transcription could be started but
+  its result could not be read without leaving the app. `OnbiiTranscriptView`
+  reads the derived transcript back as speaker turns with timestamps, falling
+  back to the human-readable `transcript.md` when the structured artefact is
+  absent. It states when the transcript was generated, that the sources were
+  unchanged, and that speaker labels are opaque per-object groupings rather than
+  people — numbered for reading, never showing the internal diarization label.
+  On both platforms the transcript sits directly under the title, with details
+  and resources folded away.
 
 ## Known Milestone Gaps
 
@@ -69,8 +97,15 @@ The remaining roadmap bullets are deliberately not in this slice:
   and with it a filesystem watcher — the macOS home currently refreshes after
   every write, on archive selection, at window appearance, and on ⌘⇧R.
 
-Carried over from Milestone 1 and still open: English-only on-device
-transcription, and physical-device validation of the iPhone and Watch paths.
+Carried over from Milestone 1 and still open: physical-device validation of the
+iPhone and Watch capture paths, and the quality gap between the two recognisers
+(Dutch works, but through the older dictation model until Apple adds it to
+`SpeechTranscriber`).
+
+Two brand items are with the designer rather than the code: the wordmark's `ii`
+stems still carry the pre-correction copper, and the slogan lockup uses values
+outside the palette. Neither is used in the apps — only the icon, the mark and
+the wordmark on the iPhone launch screen are.
 
 Verification notes, including how to re-check the app icon after artwork changes,
 are in [Visual Identity](../architecture/visual-identity.md).

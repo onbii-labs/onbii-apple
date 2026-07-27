@@ -51,9 +51,13 @@ The first slice establishes:
 - Source-role labels such as `Microphone` and `System audio` are track
   attribution, not speaker turns. Rough speaker turns remain unmet (true
   diarization stays post-Milestone-1).
-- On-device transcription currently succeeds in English only; Dutch fails on
-  device. Multilingual is formally deferred, but Dutch is an essential
-  near-term need.
+- Transcription quality is uneven across languages, because two recognisers are
+  in play. `AppleOnDeviceTranscriber` prefers `SpeechTranscriber`, the newer
+  long-form model, and falls back to `DictationTranscriber` for locales
+  `SpeechTranscriber` does not yet cover — Dutch among them. Dutch therefore
+  works, but through the older dictation path and at noticeably lower quality.
+  Nothing to fix here until Apple adds the language to the newer stack; the
+  fallback is the right behaviour in the meantime.
 - Location and known-people metadata are not yet captured.
 - The human-readable `content.md` still reads "Transcription pending" after a
   successful transcription; the transcript lives in a separate `transcript.md`.
@@ -63,10 +67,9 @@ The first slice establishes:
 - Longer desktop sessions, timing drift, and additional audio routes need
   broader validation.
 
-After rudimentary iPhone and Watch parity, multilingual transcription,
-mid-sentence language changes, and genuine “who said what, when” speaker
-attribution are the next core processing priorities. They are not treated as
-Milestone 1 polish on the English-only Apple Speech spike.
+After rudimentary iPhone and Watch parity, mid-sentence language changes and
+genuine “who said what, when” speaker attribution are the next core processing
+priorities. They are not treated as polish on the Apple Speech spike.
 
 See the [Milestone 1 Bundle Profile](../architecture/milestone-1-bundle-profile.md)
 and [macOS Capture And Import
