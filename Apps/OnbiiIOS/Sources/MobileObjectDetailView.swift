@@ -1,5 +1,6 @@
 import OnbiiArchive
 import OnbiiCore
+import OnbiiProcessing
 import OnbiiUI
 import SwiftUI
 
@@ -84,6 +85,8 @@ struct MobileObjectDetailView: View {
                     transcribeControls
                 }
 
+                repairOffer
+
                 ShareLink(item: bundle.url) {
                     Label("Share Object", systemImage: "square.and.arrow.up")
                 }
@@ -97,6 +100,33 @@ struct MobileObjectDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task(id: bundle.manifest.objectID) {
             model.resolvePlaceNameIfNeeded(for: bundle)
+            model.checkForRepairs(bundle)
+        }
+    }
+
+    /// Offered, never done quietly.
+    ///
+    /// The object is saying something its own contents contradict — a duration
+    /// the audio disproves, coordinates with no name. Correcting that changes
+    /// what the object records about itself, so it is a person's call, and the
+    /// offer says what is wrong rather than just "repair".
+    @ViewBuilder
+    private var repairOffer: some View {
+        if let findings = model.repairFindings[bundle.manifest.objectID],
+           let summary = findings.summary {
+            Button {
+                model.repair(bundle)
+            } label: {
+                Label("Correct What This Object Records", systemImage: "wrench.adjustable")
+            }
+            .disabled(model.isBusy)
+
+            Text(
+                summary + " Re-measures the preserved audio and resolves the "
+                    + "coordinates. The recording itself is not touched."
+            )
+            .font(.caption)
+            .foregroundStyle(.onbiiSecondaryText)
         }
     }
 

@@ -191,6 +191,14 @@ Invariants that the writer/reader enforce and that new code must uphold:
 - **Absent and empty are the same thing** for best-effort fields, and the check
   belongs where the value is produced. Read them through `resolvedName`-style
   accessors, never `?? fallback` on a raw optional.
+- **Correcting a recorded fact is not superseding a derived result.**
+  `OnbiiObjectRepair` re-derives what an object says about itself — a duration
+  the preserved file contradicts, a place name never resolved — and writes it
+  under a `corrected` provenance event. It only ever fills gaps and fixes
+  demonstrable falsehoods; a place name already present is never replaced,
+  because a person may have typed it (spec `0010`). Manifest corrections go
+  through the enricher's typed `OnbiiRecordedFactCorrections`, never an
+  open-ended manifest edit.
 
 ## Apps
 

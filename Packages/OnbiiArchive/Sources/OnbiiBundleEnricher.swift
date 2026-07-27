@@ -45,6 +45,9 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
     /// What determined this result — languages, how they were chosen, the model.
     /// Required by `0033` for the inputs that decide what a derived result says.
     public var configuration: OnbiiDerivationConfiguration?
+    /// Corrections to what the object records about itself. See
+    /// ``OnbiiRecordedFactCorrections``.
+    public var corrections: OnbiiRecordedFactCorrections?
 
     public init(
         bundleURL: URL,
@@ -55,7 +58,8 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
         occurredAt: Date = Date(),
         agent: OnbiiProvenanceEvent.Agent,
         inputResourceIDs: [String],
-        configuration: OnbiiDerivationConfiguration? = nil
+        configuration: OnbiiDerivationConfiguration? = nil,
+        corrections: OnbiiRecordedFactCorrections? = nil
     ) {
         self.bundleURL = bundleURL
         self.artifacts = artifacts
@@ -66,6 +70,7 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
         self.agent = agent
         self.inputResourceIDs = inputResourceIDs
         self.configuration = configuration
+        self.corrections = corrections
     }
 }
 
@@ -233,6 +238,8 @@ public struct OnbiiBundleEnricher: Sendable {
                 (attributes[.size] as? NSNumber)?.int64Value
         }
 
+        request.corrections?.apply(to: &manifest)
+
         manifest.provenance.append(
             OnbiiProvenanceEvent(
                 action: request.action,
@@ -284,7 +291,8 @@ public struct OnbiiBundleEnricher: Sendable {
     ) throws {
         guard !(request.artifacts.isEmpty
             && request.replacements.isEmpty
-            && request.supersessions.isEmpty) else {
+            && request.supersessions.isEmpty
+            && (request.corrections?.isEmpty ?? true)) else {
             throw OnbiiBundleEnricherError.noArtifacts
         }
 

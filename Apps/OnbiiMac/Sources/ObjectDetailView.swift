@@ -1,5 +1,6 @@
 import OnbiiArchive
 import OnbiiCore
+import OnbiiProcessing
 import OnbiiUI
 import SwiftUI
 
@@ -19,6 +20,7 @@ struct ObjectDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.l) {
                 header
+                repairOffer
 
                 if bundle.manifest.hasTranscript {
                     Divider().overlay(Color.onbiiDivider)
@@ -36,6 +38,7 @@ struct ObjectDetailView: View {
         .id(bundle.manifest.objectID)
         .task(id: bundle.manifest.objectID) {
             model.resolvePlaceNameIfNeeded(for: bundle)
+            model.checkForRepairs(bundle)
         }
     }
 
@@ -92,6 +95,43 @@ struct ObjectDetailView: View {
                     model.reveal(bundle)
                 }
             }
+        }
+    }
+
+    /// Offered, never done quietly.
+    ///
+    /// The object is saying something its own contents contradict — a duration
+    /// the audio disproves, coordinates with no name. Correcting that changes
+    /// what the object records about itself, so it is a person's call, and the
+    /// offer says what is wrong rather than just "repair".
+    @ViewBuilder
+    private var repairOffer: some View {
+        if let findings = model.repairFindings[bundle.manifest.objectID],
+           let summary = findings.summary {
+            HStack(spacing: OnbiiTheme.Spacing.m) {
+                Image(systemName: "exclamationmark.circle.fill")
+                    .foregroundStyle(.onbiiWarning)
+                Text(summary)
+                    .foregroundStyle(.onbiiSecondaryText)
+                Spacer()
+                Button("Correct It") {
+                    model.repair(bundle)
+                }
+                .disabled(model.isBusy)
+                .help(
+                    "Re-measures the preserved audio and resolves the "
+                        + "coordinates, then updates what the object records. "
+                        + "The recording itself is not touched."
+                )
+            }
+            .font(.callout)
+            .padding(OnbiiTheme.Spacing.m)
+            .background(
+                Color.onbiiWarning.opacity(0.10),
+                in: RoundedRectangle(
+                    cornerRadius: OnbiiTheme.Radius.badge, style: .continuous
+                )
+            )
         }
     }
 

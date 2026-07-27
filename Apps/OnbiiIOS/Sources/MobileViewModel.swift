@@ -210,6 +210,69 @@ final class MobileViewModel {
         }
     }
 
+    // MARK: Repairing recorded facts
+
+    /// What each object would gain from being repaired. Session-only; filled in
+    /// as objects are looked at, cleared once one is repaired.
+    private(set) var repairFindings = [OnbiiObjectID: OnbiiObjectRepair.Findings]()
+
+    /// Checks quietly, so the object can offer the repair rather than the person
+    /// having to suspect it. Reads only; writes nothing.
+    func checkForRepairs(_ bundle: OnbiiBundle) {
+        let objectID = bundle.manifest.objectID
+        guard repairFindings[objectID] == nil else { return }
+        Task { [weak self] in
+            let findings = await OnbiiObjectRepair().findings(
+                for: bundle,
+                resolvingPlaceName: { latitude, longitude in
+                    await OnbiiLocationProvider.placeName(
+                        latitude: latitude, longitude: longitude
+                    )
+                }
+            )
+            self?.repairFindings[objectID] = findings
+        }
+    }
+
+    /// Corrects what the object records about itself, and regenerates its
+    /// readable facet so it stops repeating what was wrong.
+    ///
+    /// Deliberate, never automatic: an object is not rewritten because someone
+    /// looked at it.
+    func repair(_ bundle: OnbiiBundle) {
+        guard !isBusy else { return }
+        let objectID = bundle.manifest.objectID
+        activity[objectID] = .working("Correcting what this object records…")
+        Task {
+            do {
+                let hasAccess = bundle.url.startAccessingSecurityScopedResource()
+                defer {
+                    if hasAccess { bundle.url.stopAccessingSecurityScopedResource() }
+                }
+                let (repaired, _) = try await OnbiiObjectRepair().repair(
+                    bundle,
+                    resolvingPlaceName: { latitude, longitude in
+                        await OnbiiLocationProvider.placeName(
+                            latitude: latitude, longitude: longitude
+                        )
+                    }
+                )
+                activity[objectID] = nil
+                repairFindings[objectID] = OnbiiObjectRepair.Findings()
+                if let index = objects.firstIndex(where: {
+                    $0.manifest.objectID == objectID
+                }) {
+                    objects[index] = repaired
+                }
+            } catch {
+                activity[objectID] = .failed(error.localizedDescription)
+                state = .failed(
+                    error.localizedDescription + " The object was not changed."
+                )
+            }
+        }
+    }
+
     // MARK: Place names
 
     /// Names resolved for objects whose manifest has coordinates but no label.

@@ -90,8 +90,31 @@ than the last.
   event rather than the resource, so a retained generation keeps what it was made
   with.
 - The transcription language is remembered instead of silently resetting to the
-  system language each launch, and the transcript view states what the transcript
+  system language each launch, and it is chosen **on the object** rather than
+  only in Settings — which language a recording is in is a property of the
+  recording, and switching between a Dutch note and an English one should not
+  mean a trip to Settings. The transcript view states what the transcript
   assumed and what earlier generations assumed.
+
+**Objects can be corrected, not only regenerated.**
+
+- `OnbiiObjectRepair` re-derives what an object records *about itself* and fixes
+  what its own contents contradict: a duration the preserved audio disproves, a
+  place name that was never resolved. This is distinct from supersession —
+  `0032` governs derived *results*, and there is no earlier generation of a
+  duration to retain, only a wrong number. The correction is recorded as a
+  `corrected` provenance event, and `content.md` is regenerated so the readable
+  facet stops repeating what was wrong (retaining what it used to say, since a
+  rendering *is* a resource).
+- It only fills gaps and corrects demonstrable falsehoods. A place name already
+  present is never replaced: a person may have typed it, and `0010` requires that
+  reprocessing never displaces a human edit.
+- Deliberate, never automatic. An object offers the correction and says what is
+  wrong; it is not rewritten because someone opened it.
+- Verified against a copy of the real 08:02 object: `durationSeconds: 0` became
+  1200.098, `"name": ""` became "Breda, Netherlands", and its `content.md` went
+  from `Location: 51.5810, 4.7777` to the named place — with the transcript still
+  current and both earlier generations intact.
 
 **Smaller findings.**
 
@@ -216,10 +239,9 @@ ambient floor is 13 dB above either Watch recording, so the coverage script's
   but it gates Milestone 2: do not build summaries, tasks or links on transcripts
   until it exists, or they drift silently the first time a transcript is
   superseded.
-- **Backfilling the three field-test objects.** Correcting a manifest fact is a
-  human edit under `0010` and needs its own provenance shape. The field-test
-  record preserves what they say. Now that supersession exists, repair can become
-  a normal provenanced action rather than an ad-hoc rewrite.
+- **Repairing every object at once.** The correction exists and is offered per
+  object; sweeping the whole archive is a different thing, and it wants the
+  desktop background-processing strand that Milestone 1.5 still owes.
 - **Compressing or pruning retained generations** — `0032` is explicit that this
   is a later size optimisation and never a reason to discard.
 - **Promoting the supersession layout into the spec** — `0025` is open.

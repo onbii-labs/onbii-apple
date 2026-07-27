@@ -170,6 +170,14 @@ public struct OnbiiProvenanceEvent: Codable, Equatable, Sendable {
     /// A `superseded` event names which result replaced which.
     public static let supersededAction = "superseded"
 
+    /// A recorded *fact* about the object was re-derived from the object and
+    /// found to be absent or wrong — a duration the preserved file contradicts,
+    /// a place name that was never resolved.
+    ///
+    /// Distinct from `superseded`, which is about derived *results*. A
+    /// correction changes what the object says about itself, so it says so.
+    public static let correctedAction = "corrected"
+
     public var id: String
     public var action: String
     public var occurredAt: Date

@@ -98,13 +98,27 @@ None of these are answered, and the shape of the eventual design depends on them
 - **What is a situation?** Named by the person ("walking", "at my desk", "in a
   call")? Inferred from what the device can observe — motion, ambient level,
   which microphone, whether the screen is locked? Some of both?
-- **Who chooses the profile?** A person, a heuristic, or the object's own
-  recorded context at processing time. Spec decision
+- **Who chooses the profile?** Leaning, from the person whose archive this is:
+  **not the user, by default.** Asking someone to classify their own acoustics
+  before they talk is the friction Onbii exists to remove, and they are not the
+  best judge of it anyway. The likelier shape is an **analysis stage over the
+  audio itself** that determines which treatment to apply, with a manual
+  override kept for advanced settings rather than put in the way. That would make
+  the choice a derivation like any other — and under
+  [`0033`](../spec/docs/decisions/0033-derived-results-record-their-configuration.md)
+  it would be recorded as *detected* rather than *chosen*, exactly as a language
+  is. Not decided; a direction to design against.
+  Spec decision
   [`0023`](../spec/docs/decisions/0023-no-hidden-retrospective-recording.md) says
   capture is never hidden; whether the same standard applies to choosing how
   something is processed is a separate question, and
   [`0032`](../spec/docs/decisions/0032-reprocessing-supersedes-and-retains.md)
   already requires reprocessing to be deliberate.
+- **When would that analysis run — at capture, or at processing?** Analysing
+  before recording could pick a capture profile; analysing the preserved file
+  could pick a processing profile and can be re-run later with better methods.
+  The second is more in keeping with derived data being regenerable, and does not
+  require getting it right in the moment.
 - **Does a profile span capture and processing, or are they separate things?**
   They are separate boundaries and separately replaceable, but a person thinks
   "I am going for a walk" once, not twice.

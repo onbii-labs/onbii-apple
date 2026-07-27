@@ -42,3 +42,8 @@ Open questions still to answer here:
 - Where should the user's first Onbii archive live by default on Apple platforms?
 - What permissions, entitlements, and user-facing consent flows are required for capture, location, and transcription?
 - How should human corrections be represented before full versioning is designed?
+  Partly answered for *machine* corrections: `OnbiiObjectRepair` re-derives facts
+  an object records about itself and writes them under a `corrected` provenance
+  event, refusing to displace anything a person could have set. What a human
+  correction looks like — editing a title, fixing a speaker, rewriting a line of
+  transcript — is still open.

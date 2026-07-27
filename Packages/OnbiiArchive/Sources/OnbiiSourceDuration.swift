@@ -90,7 +90,7 @@ public enum OnbiiSourceDuration {
     /// timer to report from, so filling the duration in is an improvement rather
     /// than an anomaly. Only a claim that turns out to be wrong is worth telling
     /// someone about.
-    static func disagrees(reported: Double?, measured: Double) -> Bool {
+    public static func disagrees(reported: Double?, measured: Double) -> Bool {
         guard let reported else {
             return false
         }
