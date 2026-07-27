@@ -132,9 +132,14 @@ than the last.
 
 Gated on evidence, not on effort:
 
-- **Declared background runtime on watchOS.** Shape decided by the spike below.
-  The Watch's Info.plist is authored now so a mode can be declared, and says
-  what to try; nothing is declared until it has been measured.
+- **An honest limit on the Watch.** Find what a recording actually survives
+  today (Spike A), then say it before recording rather than after: state the
+  limit, tap the wrist as it approaches, stop cleanly with everything preserved.
+  The Watch's Info.plist is authored now so `WKBackgroundModes: [audio]` can be
+  declared if it turns out to help; nothing is declared until it is measured.
+  Giving the Watch a *longer* claim on runtime is a feature, not a declaration —
+  see [Watch Capture Modes](../architecture/watch-capture-modes.md) — and is not
+  in this milestone.
 - **Confirmation that the iPhone and Mac claims hold in practice.** Both are
   declared and correct on paper. Spike B measures whether a locked phone and a
   napping Mac actually keep recording — the declaration is the prerequisite for
@@ -145,46 +150,66 @@ Gated on evidence, not on effort:
 
 ## The spikes
 
-### A. watchOS background capture runtime
+### A. How long does a Watch recording actually survive?
 
-What, if anything, lets an Onbii Watch recording survive losing the foreground,
-and for how long? The Watch declares no `WKBackgroundModes` and takes no
-`WKExtendedRuntimeSession`, so watchOS was entitled to suspend it. What it
-*could* claim must be measured on watchOS 27, not assumed.
+One question, and everything else waits on its answer:
 
-One configuration per run, ~45 minutes each, with another app deliberately taking
-the foreground at T+5 min. The instrument is one number: file-measured duration
-against wall-clock elapsed — which the writer now provides for free.
+> **How long does a Watch recording survive today — with nothing declared, and
+> with `WKBackgroundModes: [audio]`?**
+
+The extended-runtime session types (`.mindfulness`, `.selfCare`) are off this
+spike: they describe a bounded stationary practice, which a reflection walk is
+not, and stretching them to fit would be the kind of claim this project should
+not make. `HKWorkoutSession` is off it too — it is the right answer for a
+*walking* session, and it is a feature rather than a declaration, so it belongs
+to [Watch Capture Modes](../architecture/watch-capture-modes.md) and not here.
+
+What is left is small:
 
 | Config | What it tests |
 |---|---|
-| Nothing declared | Reproduces the 1200 s failure; a run without touching the workout prompt also answers whether 1200 s is a real ceiling |
-| `WKBackgroundModes: [audio]` | On iOS this is the answer; on watchOS the audio mode has historically been playback-oriented |
-| `WKExtendedRuntimeSession` `.mindfulness` | Does it start, does recording continue, what is the real cap, what happens on losing the foreground |
-| `WKExtendedRuntimeSession` `.selfCare` | Same, different declared purpose |
-| `HKWorkoutSession` (control) | Establishes the ceiling to compare against; not a candidate |
+| Nothing declared | What the Watch grants an ordinary app today. Reproduces the field-test failure, and a run that does *not* touch the workout prompt also answers whether 1200 s was a ceiling or just when the Workout app took over |
+| `WKBackgroundModes: [audio]` | On iOS this is the answer. On watchOS the audio mode has historically been playback-oriented — verify, do not assume |
 
-**The decision this spike sets up**, so it is answerable at a glance when the
-measurements come back:
+The instrument is one number per run: file-measured duration against wall-clock
+elapsed. The writer provides the first half for free, and an interrupted capture
+now announces itself.
 
-> Should the Watch declare itself a **mindfulness** or **self-care** app in order
-> to keep recording in the background?
+**Step zero, and it may answer this without a walk.** The 27 July failure is in
+the Watch's own logs, and they are the cheapest evidence available — but the
+persisted log store on a Watch is small and rotates quickly, so this decays by
+the day. Worth trying before anything else:
 
-Those are the two `WKExtendedRuntimeSession` types that plausibly fit. The
-question is not technical — it is whether the claim is *true*. A system whose
-purpose is to let someone stop holding thoughts in their head has a real claim on
-that territory, and for the walk-and-talk case above it may be an honest
-description rather than a workaround. It may equally read as a stretch to
-someone who did not build it, including App Review.
+1. Put the Watch on the wrist, unlocked, on the same network as the Mac, and
+   confirm `xcrun devicectl list devices` shows it *connected* rather than
+   *available (paired)*.
+2. `xcrun devicectl diagnose --device <identifier>` — or trigger a sysdiagnose on
+   the Watch itself and collect it from the paired iPhone under
+   Settings → Privacy & Security → Analytics & Improvements → Analytics Data.
+3. Query the archive for what happened to the process:
 
-Answering it needs the spike first, because "does it even work, and for how
-long?" changes what is being weighed. If `audio` alone turns out to be enough,
-the question does not arise. If nothing works, the honest answer is that the
-Watch cannot hold a background recording and should say so.
+   ```sh
+   log show --archive <path> --start "2026-07-27 08:00:00" --end "2026-07-27 09:00:00" \
+       --predicate 'eventMessage CONTAINS[c] "onbii"'
+   log show --archive <path> --start "2026-07-27 08:00:00" \
+       --predicate 'subsystem == "com.apple.runningboard"'
+   ```
 
-Whichever way it goes, it belongs in the spec's decision log next to
-[`0023`](../spec/docs/decisions/0023-no-hidden-retrospective-recording.md)
-(recording is always explicit, never hidden), which stays true regardless.
+   `runningboardd` is what grants and revokes an app's right to run, and its
+   assertion messages are persisted at default level. If the suspension at
+   08:22:37 is in there, it will say what took the runtime and why — which is the
+   whole question, answered from a log rather than from another morning outdoors.
+
+**What it decides.** Around twenty minutes means a stated limit is a good enough
+answer for now and the Watch stays useful. A couple of minutes means the Watch is
+effectively broken for the use case that matters most, and
+[Watch Capture Modes](../architecture/watch-capture-modes.md) stops being an
+enhancement and becomes urgent.
+
+**Either way, 1.6's answer is the same shape:** find the limit, state it before
+recording rather than after, tap the wrist as it approaches, and stop cleanly
+with everything preserved. An app that says "you have about four minutes left" is
+honest. One that stops silently is the failure this milestone exists to remove.
 
 ### B. iPhone and Mac background capture
 

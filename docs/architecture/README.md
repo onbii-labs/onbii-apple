@@ -11,16 +11,18 @@ Current implementation direction:
 - [On-device Transcription Spike](on-device-transcription-spike.md)
 - [Rough Speaker Turns](rough-speaker-turns.md)
 - [Capture Situations And Processing](capture-situations-and-processing.md)
+- [Watch Capture Modes](watch-capture-modes.md)
 - [Core Audio System-Audio Spike](core-audio-system-audio-spike.md)
 - [Visual Identity](visual-identity.md)
 
 Open questions still to answer here:
 
-- **Does watchOS grant a third-party app enough runtime to keep recording once it
-  loses the foreground — a background mode, an extended runtime session, or
-  nothing?** This decides the shape of the biggest fix in
-  [Milestone 1.6](../milestones/milestone-1.6.md), and it needs measurement on a
-  real device, not an assumption.
+- **How long does a Watch recording actually survive today?** One number, and a
+  lot hangs on it: whether a stated limit is a good enough answer for now, or
+  whether [Watch Capture Modes](watch-capture-modes.md) becomes urgent. Needs
+  measurement on a real device — or possibly just the Watch's own logs from
+  27 July, which is cheaper and decays by the day. Spike A in
+  [Milestone 1.6](../milestones/milestone-1.6.md).
 - Does `.record` with `.measurement` recover the speech recognition is currently
   dropping? Note that this cannot be tested against the existing field-test
   fixtures — changing the audio session changes what gets recorded — so it needs
