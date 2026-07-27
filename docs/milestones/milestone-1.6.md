@@ -175,30 +175,28 @@ The instrument is one number per run: file-measured duration against wall-clock
 elapsed. The writer provides the first half for free, and an interrupted capture
 now announces itself.
 
-**Step zero, and it may answer this without a walk.** The 27 July failure is in
-the Watch's own logs, and they are the cheapest evidence available — but the
-persisted log store on a Watch is small and rotates quickly, so this decays by
-the day. Worth trying before anything else:
+**Reading it out of the Watch's logs does not work. Do not spend time on it.**
+Tried on 27 July: `devicectl diagnose` fails with an opaque
+`DiagnoseError error 0` even with the Developer Disk Image mounted, and
+`log collect --device-udid` fails with *Device not configured*, because it
+expects a USB-attached device and a Watch only ever connects over a network
+tunnel. An on-device sysdiagnose retrieved through the paired iPhone remains
+theoretically possible, and is more work than the experiment below, which answers
+the question directly.
 
-1. Put the Watch on the wrist, unlocked, on the same network as the Mac, and
-   confirm `xcrun devicectl list devices` shows it *connected* rather than
-   *available (paired)*.
-2. `xcrun devicectl diagnose --device <identifier>` — or trigger a sysdiagnose on
-   the Watch itself and collect it from the paired iPhone under
-   Settings → Privacy & Security → Analytics & Improvements → Analytics Data.
-3. Query the archive for what happened to the process:
+**The measurement is a desk experiment, not a walk**, because the app is now the
+instrument: an interrupted capture announces itself, and the preserved object
+records the true duration. One run is enough — no need to bisect, the file says
+where it stopped.
 
-   ```sh
-   log show --archive <path> --start "2026-07-27 08:00:00" --end "2026-07-27 09:00:00" \
-       --predicate 'eventMessage CONTAINS[c] "onbii"'
-   log show --archive <path> --start "2026-07-27 08:00:00" \
-       --predicate 'subsystem == "com.apple.runningboard"'
-   ```
+1. Start a recording on the Watch.
+2. Press the Digital Crown to leave the app, or drop the wrist.
+3. Wait ~15 minutes.
+4. Return to Onbii and stop.
 
-   `runningboardd` is what grants and revokes an app's right to run, and its
-   assertion messages are persisted at default level. If the suspension at
-   08:22:37 is in there, it will say what took the runtime and why — which is the
-   whole question, answered from a log rather than from another morning outdoors.
+The Watch must be running a build that reports interruptions. Its build number is
+the check, which is why it was bumped away from 1 — an experiment run against the
+old build fails silently and looks exactly like the app failing to report.
 
 **What it decides.** Around twenty minutes means a stated limit is a good enough
 answer for now and the Watch stays useful. A couple of minutes means the Watch is
@@ -216,8 +214,14 @@ honest. One that stops silently is the failure this milestone exists to remove.
 Both claims are declared. The point is to have them measured with the same
 harness rather than assumed.
 
-- **iPhone:** record, lock the screen, switch to another app, wait, stop,
-  compare measured duration against wall clock.
+- **iPhone: confirmed working, 27 July.** A recording survives the screen
+  locking and continues while the phone is closed. iOS shows its own microphone
+  indicator throughout, which is a better honesty guarantee than anything Onbii
+  can offer for itself — the system tells the person the microphone is live,
+  independently of whether the app is telling the truth. `UIBackgroundModes:
+  [audio]` does what it says on iPhone Air / iOS 26.
+  *Method, for repeating it:* record, lock the screen, switch to another app,
+  wait, stop, compare measured duration against wall clock.
 - **Mac:** record, put the window behind another app, leave the machine to reach
   its idle sleep timer, stop, compare. The lid stays open — closing it sleeps
   the machine regardless, and the app should be honest about that rather than
