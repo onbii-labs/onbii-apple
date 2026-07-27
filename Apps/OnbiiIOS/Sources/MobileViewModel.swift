@@ -210,6 +210,59 @@ final class MobileViewModel {
         }
     }
 
+    // MARK: Place names
+
+    /// Names resolved for objects whose manifest has coordinates but no label.
+    /// Session-only: never encoded, never written to a manifest.
+    private var resolvedPlaceNames = [OnbiiObjectID: String]()
+
+    /// What to show for an object's location.
+    ///
+    /// The manifest's own label wins. Failing that, the coordinates are resolved
+    /// for display — the objects from the first field test all carry good
+    /// coordinates and an empty name, because the geocoder happened to have no
+    /// label for a spot in a park that morning, and a name it can produce today
+    /// is worth showing.
+    ///
+    /// This resolves for **display only**; nothing is written back. Coordinates
+    /// are what the object recorded and a name has always been best-effort, so a
+    /// view is the right place to resolve one. It does mean `content.md` still
+    /// shows coordinates to anything reading the object outside this app —
+    /// putting the name in the object itself is a repair, with its own
+    /// provenance, and is not this.
+    func locationDescription(for bundle: OnbiiBundle) -> String? {
+        guard let location = bundle.manifest.location else { return nil }
+        if let name = location.resolvedName {
+            return name
+        }
+        if let resolved = resolvedPlaceNames[bundle.manifest.objectID] {
+            return resolved
+        }
+        return String(
+            format: "%.4f, %.4f", location.latitude, location.longitude
+        )
+    }
+
+    /// Best-effort, and quiet about failing: an unresolvable spot simply keeps
+    /// showing its coordinates, which were never wrong.
+    func resolvePlaceNameIfNeeded(for bundle: OnbiiBundle) {
+        let objectID = bundle.manifest.objectID
+        guard let location = bundle.manifest.location,
+              location.resolvedName == nil,
+              resolvedPlaceNames[objectID] == nil else {
+            return
+        }
+        Task { [weak self] in
+            guard let name = await OnbiiLocationProvider.placeName(
+                latitude: location.latitude,
+                longitude: location.longitude
+            ) else {
+                return
+            }
+            self?.resolvedPlaceNames[objectID] = name
+        }
+    }
+
     var selectedTranscriptionLocale: Locale {
         availableLanguages.first { $0.id == selectedLanguageID }?.locale ?? .current
     }
@@ -235,7 +288,12 @@ final class MobileViewModel {
         bundle.manifest.hasTranscript
     }
 
-    func transcribe(_ bundle: OnbiiBundle) {
+    /// - Parameter locale: the language to transcribe *this* object in. The
+    ///   Settings choice is only a default: which language a recording is in is
+    ///   a property of the recording, not of the app, and someone who keeps
+    ///   notes in two languages should not have to visit Settings between them.
+    func transcribe(_ bundle: OnbiiBundle, in locale: Locale? = nil) {
+        let locale = locale ?? selectedTranscriptionLocale
         guard !isBusy else {
             return
         }
@@ -256,7 +314,7 @@ final class MobileViewModel {
                 )
                 return
             }
-            await performTranscription(of: bundle)
+            await performTranscription(of: bundle, in: locale)
         }
     }
 
@@ -272,6 +330,12 @@ final class MobileViewModel {
     private func failTranscribing(_ message: String, for bundle: OnbiiBundle) {
         state = .failed(message)
         activity[bundle.manifest.objectID] = .failed(message)
+    }
+
+    /// The language a transcribe action will use unless another is picked.
+    var selectedLanguageDisplayName: String {
+        availableLanguages.first { $0.id == selectedLanguageID }?.displayName
+            ?? languageDisplayName(for: selectedTranscriptionLocale)
     }
 
     private func languageDisplayName(for locale: Locale) -> String {
@@ -365,7 +429,7 @@ final class MobileViewModel {
     /// Everything this used to do by hand — recognise, diarize, render, attach —
     /// now lives in `OnbiiProcessing`, alongside the identical copy the Mac had.
     /// What is left is what genuinely belongs to an iPhone app.
-    private func performTranscription(of bundle: OnbiiBundle) async {
+    private func performTranscription(of bundle: OnbiiBundle, in locale: Locale) async {
         let hasAccess = bundle.url.startAccessingSecurityScopedResource()
         defer {
             if hasAccess {
@@ -376,7 +440,7 @@ final class MobileViewModel {
         do {
             let enriched = try await OnbiiTranscriptionRun().run(
                 on: bundle,
-                language: .init(locale: selectedTranscriptionLocale)
+                language: .init(locale: locale)
             ) { progress in
                 Task { @MainActor [weak self] in
                     self?.beginTranscribing(Self.describe(progress), for: bundle)

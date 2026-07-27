@@ -81,30 +81,7 @@ struct MobileObjectDetailView: View {
 
             Section {
                 if model.canTranscribe(bundle) {
-                    // "Again" rather than a repeat of the same offer: the person
-                    // should know a second run is a new generation, not a no-op,
-                    // and that the existing transcript is kept.
-                    let supersedes = model.wouldSupersedeTranscript(bundle)
-                    Button {
-                        model.transcribe(bundle)
-                    } label: {
-                        Label(
-                            supersedes ? "Transcribe Again" : "Transcribe On Device",
-                            systemImage: supersedes
-                                ? "arrow.clockwise" : "text.viewfinder"
-                        )
-                    }
-                    .disabled(model.isBusy)
-
-                    if supersedes {
-                        Text(
-                            "Makes a new transcript in the language set in "
-                                + "Settings. The current one is kept inside the "
-                                + "object."
-                        )
-                        .font(.caption)
-                        .foregroundStyle(.onbiiSecondaryText)
-                    }
+                    transcribeControls
                 }
 
                 ShareLink(item: bundle.url) {
@@ -118,6 +95,59 @@ struct MobileObjectDetailView: View {
         .background(Color.onbiiBackground)
         .navigationTitle(bundle.manifest.title)
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: bundle.manifest.objectID) {
+            model.resolvePlaceNameIfNeeded(for: bundle)
+        }
+    }
+
+    /// Transcribe, with the language chosen here rather than in Settings.
+    ///
+    /// The button uses the default; the menu beside it transcribes in any other
+    /// language without leaving the object. Which language a recording is in is
+    /// a property of the recording, so someone who keeps notes in Dutch and
+    /// English should not have to visit Settings between them.
+    ///
+    /// "Again" rather than a repeat of the same offer: a second run is a new
+    /// generation, not a no-op, and the existing transcript is kept.
+    @ViewBuilder
+    private var transcribeControls: some View {
+        let supersedes = model.wouldSupersedeTranscript(bundle)
+
+        Button {
+            model.transcribe(bundle)
+        } label: {
+            Label(
+                supersedes
+                    ? "Transcribe Again in \(model.selectedLanguageDisplayName)"
+                    : "Transcribe in \(model.selectedLanguageDisplayName)",
+                systemImage: supersedes ? "arrow.clockwise" : "text.viewfinder"
+            )
+        }
+        .disabled(model.isBusy)
+
+        Menu {
+            ForEach(model.availableLanguages) { language in
+                Button(
+                    language.isInstalled
+                        ? language.displayName
+                        : "\(language.displayName) — download"
+                ) {
+                    model.transcribe(bundle, in: language.locale)
+                }
+            }
+        } label: {
+            Label("Transcribe in Another Language", systemImage: "globe")
+        }
+        .disabled(model.isBusy)
+
+        if supersedes {
+            Text(
+                "A new transcript supersedes the current one. The current one is "
+                    + "kept inside the object, with the language it was made in."
+            )
+            .font(.caption)
+            .foregroundStyle(.onbiiSecondaryText)
+        }
     }
 
     private var factRows: [(label: String, value: String)] {
@@ -132,16 +162,8 @@ struct MobileObjectDetailView: View {
             ),
         ]
 
-        if let location = bundle.manifest.location {
-            rows.append((
-                "Location",
-                location.resolvedName
-                    ?? String(
-                        format: "%.4f, %.4f",
-                        location.latitude,
-                        location.longitude
-                    )
-            ))
+        if let location = model.locationDescription(for: bundle) {
+            rows.append(("Location", location))
         }
 
         let applications = (bundle.manifest.sourceApplications ?? [])

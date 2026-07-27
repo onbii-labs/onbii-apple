@@ -34,6 +34,9 @@ struct ObjectDetailView: View {
         }
         .background(Color.onbiiBackground)
         .id(bundle.manifest.objectID)
+        .task(id: bundle.manifest.objectID) {
+            model.resolvePlaceNameIfNeeded(for: bundle)
+        }
     }
 
     private var transcript: some View {
@@ -82,23 +85,7 @@ struct ObjectDetailView: View {
 
                 if model.canTranscribeSelectedBundle,
                    bundle.manifest.objectID == model.selectedObjectID {
-                    // "Again" rather than a repeat of the same offer: the
-                    // person should know a second run is a new generation, not
-                    // a no-op, and that the existing transcript is kept.
-                    Button(
-                        model.wouldSupersedeTranscript
-                            ? "Transcribe Again"
-                            : "Transcribe On Device"
-                    ) {
-                        model.transcribeSelectedBundle()
-                    }
-                    .disabled(model.isBusy)
-                    .help(
-                        model.wouldSupersedeTranscript
-                            ? "Makes a new transcript in the chosen language. "
-                                + "The current one is kept inside the object."
-                            : "Transcribes the source audio on this Mac."
-                    )
+                    transcribeControl
                 }
 
                 Button("Reveal in Finder") {
@@ -106,6 +93,49 @@ struct ObjectDetailView: View {
                 }
             }
         }
+    }
+
+    /// Transcribe, with the language chosen here rather than in Settings.
+    ///
+    /// The main action uses the default; the menu offers any other language
+    /// without leaving the object. Which language a recording is in is a
+    /// property of the recording, so someone who keeps notes in Dutch and
+    /// English should not have to visit Settings between them.
+    ///
+    /// "Again" rather than a repeat of the same offer: a second run is a new
+    /// generation, not a no-op, and the existing transcript is kept.
+    private var transcribeControl: some View {
+        Menu {
+            ForEach(model.availableLanguages) { language in
+                Button(
+                    language.isInstalled
+                        ? language.displayName
+                        : "\(language.displayName) — download"
+                ) {
+                    model.transcribeSelectedBundle(in: language.locale)
+                }
+            }
+        } label: {
+            Text(
+                model.wouldSupersedeTranscript
+                    ? "Transcribe Again"
+                    : "Transcribe On Device"
+            )
+        } primaryAction: {
+            model.transcribeSelectedBundle()
+        }
+        .menuStyle(.button)
+        .fixedSize()
+        .disabled(model.isBusy)
+        .help(
+            model.wouldSupersedeTranscript
+                ? "Transcribes again in \(model.selectedLanguageDisplayName). "
+                    + "The current transcript is kept inside the object. "
+                    + "Use the menu for another language."
+                : "Transcribes the source audio on this Mac in "
+                    + "\(model.selectedLanguageDisplayName). Use the menu for "
+                    + "another language."
+        )
     }
 
     private var facts: some View {
@@ -138,11 +168,8 @@ struct ObjectDetailView: View {
             ),
         ]
 
-        if let location = bundle.manifest.location {
-            rows.append((
-                "Location",
-                location.resolvedName ?? coordinates(of: location)
-            ))
+        if let location = model.locationDescription(for: bundle) {
+            rows.append(("Location", location))
         }
 
         let applications = (bundle.manifest.sourceApplications ?? [])
@@ -153,10 +180,6 @@ struct ObjectDetailView: View {
 
         rows.append(("Object ID", bundle.manifest.objectID.rawValue))
         return rows
-    }
-
-    private func coordinates(of location: OnbiiLocation) -> String {
-        String(format: "%.4f, %.4f", location.latitude, location.longitude)
     }
 
     private var resources: some View {
