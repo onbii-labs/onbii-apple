@@ -96,6 +96,21 @@ than the last.
   mean a trip to Settings. The transcript view states what the transcript
   assumed and what earlier generations assumed.
 
+**The app says so when nobody is looking.**
+
+- Local notifications on all three platforms for a capture that stopped without
+  being asked, and on the Watch for a recording that has not reached the iPhone
+  within three minutes. In-app honesty is no use to a phone in a pocket, which is
+  precisely the situation the first field test was in.
+- Permission is asked when a recording starts rather than at launch — a prompt
+  makes sense next to the thing it is for — and never blocks recording.
+- Nothing here is required for an object to be correct. A notification that fails
+  to send loses no knowledge; it only costs someone finding out sooner. Every
+  call is best-effort and silent about its own failure.
+- The Watch has its own copy rather than sharing `OnbiiNotifier`, for the same
+  documented reason its button style is duplicated: taking `OnbiiUI` would drag
+  `OnbiiArchive` onto a device that has no business reading or writing bundles.
+
 **Objects can be corrected, not only regenerated.**
 
 - `OnbiiObjectRepair` re-derives what an object records *about itself* and fixes
@@ -130,17 +145,11 @@ than the last.
 
 ### Still to do
 
-- **System notifications.** The only unconditional code left. In-app honesty
-  landed — an interrupted recording says so, and an object says when its recorded
-  facts are wrong — but none of it reaches a phone in a pocket. Two cases:
-  a capture that stopped without being asked, and a Watch recording that has not
-  arrived on the iPhone. Local notifications only, so nothing is needed beyond
-  runtime authorisation: no entitlement, no Info.plist key, no usage string.
-- **Whatever Spike A turns out to need — possibly nothing.** The Watch records
-  in the background with no declaration at all, so there may be no limit to state
-  honestly. If the next walk shows capture surviving the workout, this item
-  disappears. If the workout kills it, the fix is that collision specifically, not
-  a general claim on runtime.
+- **Whatever the next walk turns out to need — possibly nothing.** The Watch
+  records in the background with no declaration at all, so there may be no limit
+  to state honestly. If capture survives the workout, this disappears. If the
+  workout kills it, the fix is that collision specifically, not a general claim
+  on runtime.
 - **Field test 2**, which is the gate rather than a task. See *Verification*.
 
 ## The spikes

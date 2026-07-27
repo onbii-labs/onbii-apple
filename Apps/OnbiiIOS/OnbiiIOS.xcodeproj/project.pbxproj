@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		013C867FD2C0DCAD04F64732 /* WatchNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305820ED8B966550494939B0 /* WatchNotifier.swift */; };
 		3095FB2300C9079775B8F074 /* OnbiiWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7837BC1BB46426003C207CEC /* OnbiiWatchApp.swift */; };
 		3A352AAC2DC87E685E7F869F /* MobileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */; };
 		4AF0E6BBA232BFA11FA1A22F /* WatchRecordingReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */; };
@@ -56,6 +57,7 @@
 		150AA60AB772C3D311284402 /* OnbiiIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbiiIOSApp.swift; sourceTree = "<group>"; };
 		1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileViewModel.swift; sourceTree = "<group>"; };
 		27D86F3915B6DEBA3F9EF4A2 /* OnbiiWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnbiiWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		305820ED8B966550494939B0 /* WatchNotifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNotifier.swift; sourceTree = "<group>"; };
 		3AABAAEBB8C0F6B75BBFE71F /* WatchContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentView.swift; sourceTree = "<group>"; };
 		48BCCF1F704D70DB0AF19B21 /* MobileObjectRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileObjectRow.swift; sourceTree = "<group>"; };
 		51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRecordingReceiver.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 			children = (
 				7837BC1BB46426003C207CEC /* OnbiiWatchApp.swift */,
 				3AABAAEBB8C0F6B75BBFE71F /* WatchContentView.swift */,
+				305820ED8B966550494939B0 /* WatchNotifier.swift */,
 				FA7583FFAB7781BE9676EBE5 /* WatchViewModel.swift */,
 			);
 			name = Sources;
@@ -281,6 +284,7 @@
 			files = (
 				3095FB2300C9079775B8F074 /* OnbiiWatchApp.swift in Sources */,
 				6734D1A1DC35F235A2881264 /* WatchContentView.swift in Sources */,
+				013C867FD2C0DCAD04F64732 /* WatchNotifier.swift in Sources */,
 				578F4AD3AC93EEB80C315B58 /* WatchViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

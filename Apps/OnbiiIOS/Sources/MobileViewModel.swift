@@ -94,6 +94,9 @@ final class MobileViewModel {
         }
         pendingInterruption = nil
         state = .preparing
+        // Asked here rather than at launch: a permission prompt makes sense next
+        // to the thing it is for. Never blocks the recording.
+        Task { await OnbiiNotifier.requestAuthorizationIfNeeded() }
         Task {
             guard await recorder.requestPermission() else {
                 state = .failed("Microphone permission is required to record.")
@@ -140,6 +143,9 @@ final class MobileViewModel {
     /// is not a reason to discard audio.
     private func handle(_ interruption: OnbiiCaptureInterruption) {
         pendingInterruption = interruption.message
+        // A pocketed phone is exactly the case this matters in, and exactly the
+        // case where nobody sees the status line.
+        Task { await OnbiiNotifier.captureStopped(interruption.message) }
         stopRecording()
     }
 
@@ -199,6 +205,9 @@ final class MobileViewModel {
     func watchRecordingReceived(_ notification: Notification) {
         if let errorMessage = notification.userInfo?["errorMessage"] as? String {
             state = .failed(errorMessage)
+            // A Watch recording that fails to land is as silent as one that was
+            // never made, and the person believes it is already in the archive.
+            Task { await OnbiiNotifier.captureStopped(errorMessage) }
             return
         }
         reloadObjects()

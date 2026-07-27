@@ -39,28 +39,30 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Onbii records audio only after you tap Record, then transfers the original recording to your iPhone.</string>
 	<!--
-		WKBackgroundModes is deliberately not declared yet.
+		WKBackgroundModes is deliberately absent, and that appears to be fine.
 
-		The first field test lost twenty-five minutes of a walk because this app
-		has no sanctioned claim on runtime once it stops being frontmost, so
-		watchOS was entitled to suspend it and the recorder stopped. Declaring a
-		mode is not a free fix: each value is a statement about what this app
-		is, and the honest one is not yet established. Spike A measures what
-		watchOS 27 actually grants, one configuration per run:
+		Measured on watchOS 27, 27 July 2026: with no background mode declared at
+		all, leaving the app leaves the microphone live and recording, with the
+		system's own indicator showing. Siri and a timer did not disturb it.
 
-			<key>WKBackgroundModes</key>
-			<array>
-				<string>audio</string>          <!- - does watchOS honour this
-				                                     for recording, or only
-				                                     playback? - ->
-				<string>mindfulness</string>    <!- - WKExtendedRuntimeSession - ->
-				<string>self-care</string>      <!- - WKExtendedRuntimeSession - ->
-			</array>
+		This corrects the first field test's reasoning, which assumed that
+		without a declared mode watchOS "was entitled to suspend it". Entitled
+		perhaps; it does not appear to exercise that. The recording that morning
+		did stop after 1200 s, and the likelier cause is that the Workout app
+		took over — which is a specific collision to solve, not a missing claim
+		on runtime. See docs/field-tests/2026-07-27-field-test-1.md.
 
-		Add exactly one at a time and compare the preserved file's measured
-		duration against wall-clock elapsed. Do not ship a mode that the app
-		cannot honestly claim; if none fits, the app should say plainly that it
-		cannot hold a recording in the background rather than imply it can.
+		So do not add a mode speculatively. Two that were considered are
+		rejected on the merits rather than untested: `mindfulness` and
+		`self-care` back WKExtendedRuntimeSession, which describes a bounded
+		stationary practice — a reflection walk is not one, and stretching the
+		definition to fit would be a claim this project should not make.
+
+		`audio` remains the only plausible addition, and only if a recording is
+		found to die in the background for want of it. Giving the Watch a longer
+		or stronger claim on runtime is a *feature* — an HKWorkoutSession for a
+		walk that is genuinely happening, saved as a workout — and belongs in
+		docs/architecture/watch-capture-modes.md, not here.
 	-->
 	<key>WKApplication</key>
 	<true/>

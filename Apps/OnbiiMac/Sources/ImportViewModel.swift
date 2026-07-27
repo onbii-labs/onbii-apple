@@ -463,6 +463,9 @@ final class ImportViewModel {
         }
 
         state = .preparingCapture
+        // Asked here rather than at launch: a permission prompt makes sense next
+        // to the thing it is for. Never blocks the recording.
+        Task { await OnbiiNotifier.requestAuthorizationIfNeeded() }
         Task {
             guard await microphoneRecorder.requestPermission() else {
                 state = .failed(
@@ -508,6 +511,8 @@ final class ImportViewModel {
                     return
                 }
                 pendingInterruption = interruption.message
+                // The Mac case is someone who walked away from the machine.
+                Task { await OnbiiNotifier.captureStopped(interruption.message) }
                 stopMicrophoneCapture()
                 return
             }

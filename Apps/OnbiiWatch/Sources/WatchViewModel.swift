@@ -22,6 +22,7 @@ final class WatchViewModel: NSObject {
     private let session: WCSession?
     private var durationTask: Task<Void, Never>?
     private var interruptionTask: Task<Void, Never>?
+    private var stalledTransferTask: Task<Void, Never>?
     private var recordingStartedAt: Date?
     private var pendingURL: URL?
     private var pendingMetadata: OnbiiWatchRecordingMetadata?
@@ -170,6 +171,9 @@ final class WatchViewModel: NSObject {
         }
         pendingInterruption = nil
         state = .preparing
+        // Asked here rather than at launch: a permission prompt makes sense next
+        // to the thing it is for. Never blocks the recording.
+        Task { await WatchNotifier.requestAuthorizationIfNeeded() }
 
         Task {
             guard await recorder.requestPermission() else {
@@ -263,6 +267,10 @@ final class WatchViewModel: NSObject {
 
     private func handle(_ interruption: OnbiiCaptureInterruption) {
         WKInterfaceDevice.current().play(.failure)
+        // The haptic says something happened; this says what. On a walk with the
+        // app in the background, that is the difference between turning around
+        // and carrying on believing you are recording.
+        Task { await WatchNotifier.captureStopped(interruption.message) }
         finishRecording(interruption: interruption.message)
     }
 
@@ -283,7 +291,32 @@ final class WatchViewModel: NSObject {
             metadata: pendingMetadata.propertyList
         )
         state = .queued
+        watchForStalledTransfer()
     }
+
+    /// Says so when a transfer has not completed in a reasonable time.
+    ///
+    /// Watch Connectivity queues a file and delivers it when it can, which is
+    /// usually fine and occasionally never. Until then the audio is safe on the
+    /// Watch — but the person's mental model is that a recording they finished is
+    /// already in their archive, and nothing corrects that. This is the transfer
+    /// half of "the app must say when capture or transfer fails".
+    ///
+    /// Deliberately a plain wait rather than a guess at the cause. It reports
+    /// that it has not arrived, which is the fact; why is Watch Connectivity's
+    /// business.
+    private func watchForStalledTransfer() {
+        stalledTransferTask?.cancel()
+        stalledTransferTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.transferPatienceSeconds))
+            guard !Task.isCancelled, let self, state == .queued else { return }
+            await WatchNotifier.transferOutstanding()
+        }
+    }
+
+    /// Long enough that an ordinary transfer finishes first, short enough that
+    /// someone still on the same walk hears about it.
+    private static let transferPatienceSeconds = 180.0
 
     private func makeRecordingURL() throws -> URL {
         let directory = FileManager.default.urls(
@@ -341,10 +374,19 @@ extension WatchViewModel: WCSessionDelegate {
             guard let self else {
                 return
             }
+            stalledTransferTask?.cancel()
+            stalledTransferTask = nil
             if let error {
                 state = .failed(
                     "Transfer failed: \(error.localizedDescription)"
                 )
+                Task {
+                    await WatchNotifier.captureStopped(
+                        "The recording could not be sent to your iPhone: "
+                            + "\(error.localizedDescription) It is still on this "
+                            + "Watch."
+                    )
+                }
                 return
             }
             try? FileManager.default.removeItem(at: transferredURL)
