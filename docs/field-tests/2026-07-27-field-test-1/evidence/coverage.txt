@@ -1,0 +1,15 @@
+20260727-0802 Recording.onbii
+  ambient floor         -44.3 dBFS
+  median level          -37.0 dBFS
+  speech-level audio      45% of the file
+  of that, no words       71%  (382 s)
+20260727-0857 Recording.onbii
+  ambient floor         -42.3 dBFS
+  median level          -33.1 dBFS
+  speech-level audio      56% of the file
+  of that, no words       54%  (44 s)
+20260727-0902 Recording.onbii
+  ambient floor         -31.3 dBFS
+  median level          -22.1 dBFS
+  speech-level audio      60% of the file
+  of that, no words       66%  (18 s)

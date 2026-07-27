@@ -1,0 +1,96 @@
+{
+  "createdAt" : "2026-07-27T07:02:05Z",
+  "location" : {
+    "capturedAt" : "2026-07-27T07:02:02Z",
+    "horizontalAccuracyMeters" : 10.811125517683223,
+    "latitude" : 51.58184947958728,
+    "longitude" : 4.776994359758651,
+    "name" : ""
+  },
+  "objectID" : "d882dedc-3e4b-47a2-a709-973d1e0de559",
+  "objectType" : "recorded-conversation",
+  "provenance" : [
+    {
+      "action" : "captured",
+      "agent" : {
+        "kind" : "source-adapter",
+        "name" : "iPhone microphone capture"
+      },
+      "id" : "42592c9a-4d1f-4cc7-80ac-2a81e36d4d2a",
+      "inputResourceIDs" : [
+
+      ],
+      "occurredAt" : "2026-07-27T07:02:05Z",
+      "outputResourceIDs" : [
+        "source-recording"
+      ]
+    },
+    {
+      "action" : "rendered",
+      "agent" : {
+        "kind" : "software",
+        "name" : "OnbiiArchive"
+      },
+      "id" : "92ffdffd-ae9d-41dc-b939-a03aed7d0f6d",
+      "inputResourceIDs" : [
+        "source-recording"
+      ],
+      "occurredAt" : "2026-07-27T07:02:05Z",
+      "outputResourceIDs" : [
+        "content-markdown"
+      ]
+    },
+    {
+      "action" : "transcribed",
+      "agent" : {
+        "kind" : "software",
+        "name" : "Apple Speech on-device"
+      },
+      "id" : "61cb3336-76f0-44dd-9659-0b61561f6e22",
+      "inputResourceIDs" : [
+        "source-recording"
+      ],
+      "occurredAt" : "2026-07-27T07:04:11Z",
+      "outputResourceIDs" : [
+        "derived-transcript",
+        "transcript-markdown",
+        "content-markdown"
+      ]
+    }
+  ],
+  "resources" : [
+    {
+      "byteCount" : 405699,
+      "captureStartedAt" : "2026-07-27T07:02:05Z",
+      "durationSeconds" : 44.10993197278911,
+      "id" : "source-recording",
+      "mediaType" : "audio/mp4",
+      "originalFilename" : "capture-848c0092-ceb2-4caf-88a8-61950a0e2a69.m4a",
+      "path" : "source/recording.m4a",
+      "role" : "source"
+    },
+    {
+      "byteCount" : 484,
+      "id" : "content-markdown",
+      "mediaType" : "text/markdown; charset=utf-8",
+      "path" : "content.md",
+      "role" : "human-readable"
+    },
+    {
+      "byteCount" : 15969,
+      "id" : "derived-transcript",
+      "mediaType" : "application/json",
+      "path" : "derived/transcript.json",
+      "role" : "derived"
+    },
+    {
+      "byteCount" : 362,
+      "id" : "transcript-markdown",
+      "mediaType" : "text/markdown; charset=utf-8",
+      "path" : "transcript.md",
+      "role" : "human-readable"
+    }
+  ],
+  "schemaVersion" : "0.1.0-draft",
+  "title" : "20260727-0902 Recording"
+}

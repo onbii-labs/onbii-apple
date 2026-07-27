@@ -1,0 +1,5954 @@
+{
+  "generatedAt" : "2026-07-27T06:52:17Z",
+  "speakerModel" : "3D-Speaker CAM++ (VoxCeleb) on-device",
+  "timeline" : [
+    {
+      "confidence" : 0.34,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 3.48,
+      "text" : "Okay."
+    },
+    {
+      "confidence" : 0.499,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 3.96,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.938,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 4.26,
+      "text" : "what"
+    },
+    {
+      "confidence" : 0.398,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 4.56,
+      "text" : "he"
+    },
+    {
+      "confidence" : 0.621,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 4.68,
+      "text" : "needed."
+    },
+    {
+      "confidence" : 0.347,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 5.22,
+      "text" : "They"
+    },
+    {
+      "confidence" : 0.157,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 8.34,
+      "text" : "The"
+    },
+    {
+      "confidence" : 0.341,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 8.64,
+      "text" : "omi"
+    },
+    {
+      "confidence" : 0.169,
+      "durationSeconds" : 0.9,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 9.3,
+      "text" : "hotelamo"
+    },
+    {
+      "confidence" : 0.607,
+      "durationSeconds" : 1.02,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 10.2,
+      "text" : "mix."
+    },
+    {
+      "confidence" : 0.303,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 11.76,
+      "text" : "But"
+    },
+    {
+      "confidence" : 0.134,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 12.06,
+      "text" : "everyone,"
+    },
+    {
+      "confidence" : 0.251,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 12.54,
+      "text" : "you"
+    },
+    {
+      "confidence" : 0.354,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 12.72,
+      "text" : "know?"
+    },
+    {
+      "confidence" : 0.041,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 13.02,
+      "text" : "Yeah,"
+    },
+    {
+      "confidence" : 0.017,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 13.2,
+      "text" : "sit"
+    },
+    {
+      "confidence" : 0.04,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 13.32,
+      "text" : "down,"
+    },
+    {
+      "confidence" : 0.209,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 13.62,
+      "text" : "salad."
+    },
+    {
+      "confidence" : 0.493,
+      "durationSeconds" : 1.38,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 13.92,
+      "text" : "Kingy."
+    },
+    {
+      "confidence" : 0.143,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 42.54,
+      "text" : "My"
+    },
+    {
+      "confidence" : 0.038,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 42.84,
+      "text" : "adult"
+    },
+    {
+      "confidence" : 0.311,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 43.2,
+      "text" : "listen"
+    },
+    {
+      "confidence" : 0.168,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 43.44,
+      "text" : "to"
+    },
+    {
+      "confidence" : 0.123,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 43.62,
+      "text" : "go"
+    },
+    {
+      "confidence" : 0.149,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 43.74,
+      "text" : "on"
+    },
+    {
+      "confidence" : 0.131,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 43.92,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.014,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 44.04,
+      "text" : "deal"
+    },
+    {
+      "confidence" : 0.582,
+      "durationSeconds" : 2.46,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 44.16,
+      "text" : "from"
+    },
+    {
+      "confidence" : 0.467,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 46.62,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.271,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 47.16,
+      "text" : "test,"
+    },
+    {
+      "confidence" : 0.188,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 47.52,
+      "text" : "about"
+    },
+    {
+      "confidence" : 0.016,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 47.82,
+      "text" : "it"
+    },
+    {
+      "confidence" : 0.025,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 48.06,
+      "text" : "today"
+    },
+    {
+      "confidence" : 0.18,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 48.3,
+      "text" : "from"
+    },
+    {
+      "confidence" : 0.037,
+      "durationSeconds" : 1.5,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 48.48,
+      "text" : "now."
+    },
+    {
+      "confidence" : 0.146,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 49.98,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.393,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 54.72,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.402,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 55.02,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.064,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 55.2,
+      "text" : "floor,"
+    },
+    {
+      "confidence" : 0.094,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 55.56,
+      "text" : "come"
+    },
+    {
+      "confidence" : 0.107,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 55.68,
+      "text" : "back"
+    },
+    {
+      "confidence" : 0.065,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 55.86,
+      "text" : "to"
+    },
+    {
+      "confidence" : 0.012,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 56.1,
+      "text" : "it,"
+    },
+    {
+      "confidence" : 0.005,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 56.22,
+      "text" : "it"
+    },
+    {
+      "confidence" : 0.113,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 56.4,
+      "text" : "is"
+    },
+    {
+      "confidence" : 0.064,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 56.52,
+      "text" : "still"
+    },
+    {
+      "confidence" : 0.118,
+      "durationSeconds" : 0.72,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 56.76,
+      "text" : "good."
+    },
+    {
+      "confidence" : 0.21,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 57.48,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.136,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 58.14,
+      "text" : "then,"
+    },
+    {
+      "confidence" : 0.065,
+      "durationSeconds" : 2.88,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 58.5,
+      "text" : "uh..."
+    },
+    {
+      "confidence" : 0.206,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 80.22,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.347,
+      "durationSeconds" : 0.96,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 80.64,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.544,
+      "durationSeconds" : 0.96,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 81.6,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.502,
+      "durationSeconds" : 2.64,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 82.56,
+      "text" : "telephone."
+    },
+    {
+      "confidence" : 0.326,
+      "durationSeconds" : 1.38,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 85.2,
+      "text" : "Telephone,"
+    },
+    {
+      "confidence" : 0.062,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 86.58,
+      "text" : "it's"
+    },
+    {
+      "confidence" : 0.24,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 86.82,
+      "text" : "an"
+    },
+    {
+      "confidence" : 0.268,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 86.94,
+      "text" : "app"
+    },
+    {
+      "confidence" : 0.11,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 87.06,
+      "text" : "of"
+    },
+    {
+      "confidence" : 0.327,
+      "durationSeconds" : 9.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 87.24,
+      "text" : "telephone."
+    },
+    {
+      "confidence" : 0.197,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 96.3,
+      "text" : "Okay."
+    },
+    {
+      "confidence" : 0.446,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 101.34,
+      "text" : "Now,"
+    },
+    {
+      "confidence" : 0.628,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 101.76,
+      "text" : "they"
+    },
+    {
+      "confidence" : 0.744,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 101.88,
+      "text" : "have"
+    },
+    {
+      "confidence" : 0.792,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 102.06,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.446,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 102.12,
+      "text" : "colon"
+    },
+    {
+      "confidence" : 0.348,
+      "durationSeconds" : 1.8,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 102.42,
+      "text" : "desktop..."
+    },
+    {
+      "confidence" : 0.087,
+      "durationSeconds" : 0.6,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 104.22,
+      "text" : "app,"
+    },
+    {
+      "confidence" : 0.346,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 104.82,
+      "text" : "you"
+    },
+    {
+      "confidence" : 0.087,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 105,
+      "text" : "think,"
+    },
+    {
+      "confidence" : 0.204,
+      "durationSeconds" : 3.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 105.42,
+      "text" : "before..."
+    },
+    {
+      "confidence" : 0.262,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 109.08,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.242,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 109.44,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.39,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 109.86,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.13,
+      "durationSeconds" : 1.2,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 109.98,
+      "text" : "captain..."
+    },
+    {
+      "confidence" : 0.346,
+      "durationSeconds" : 2.88,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 111.18,
+      "text" : "Oh..."
+    },
+    {
+      "confidence" : 0.218,
+      "durationSeconds" : 4.38,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 114.06,
+      "text" : "Oh..."
+    },
+    {
+      "confidence" : 0.291,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 159.3,
+      "text" : "Have"
+    },
+    {
+      "confidence" : 0.599,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 159.6,
+      "text" : "you"
+    },
+    {
+      "confidence" : 0.445,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 159.78,
+      "text" : "popped"
+    },
+    {
+      "confidence" : 0.062,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 160.08,
+      "text" : "anti"
+    },
+    {
+      "confidence" : 0.087,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 160.44,
+      "text" : "shell"
+    },
+    {
+      "confidence" : 0.083,
+      "durationSeconds" : 1.2,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 160.62,
+      "text" : "pop..."
+    },
+    {
+      "confidence" : 0.244,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 161.82,
+      "text" : "It's"
+    },
+    {
+      "confidence" : 0.044,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 162.18,
+      "text" : "easy,"
+    },
+    {
+      "confidence" : 0.092,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 162.48,
+      "text" : "though,"
+    },
+    {
+      "confidence" : 0.129,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 162.6,
+      "text" : "you"
+    },
+    {
+      "confidence" : 0.319,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 162.66,
+      "text" : "open"
+    },
+    {
+      "confidence" : 0.057,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 162.84,
+      "text" : "cheese"
+    },
+    {
+      "confidence" : 0.269,
+      "durationSeconds" : 4.26,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 163.02,
+      "text" : "courses..."
+    },
+    {
+      "confidence" : 0.198,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 167.28,
+      "text" : "Yeah,"
+    },
+    {
+      "confidence" : 0.328,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 167.46,
+      "text" : "please."
+    },
+    {
+      "confidence" : 0.269,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 171.42,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.164,
+      "durationSeconds" : 1.02,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 171.84,
+      "text" : "That"
+    },
+    {
+      "confidence" : 0.127,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 172.86,
+      "text" : "frisky"
+    },
+    {
+      "confidence" : 0.335,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 173.4,
+      "text" : "stuff."
+    },
+    {
+      "confidence" : 0.098,
+      "durationSeconds" : 0.84,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 173.7,
+      "text" : "Bulk"
+    },
+    {
+      "confidence" : 0.103,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 174.54,
+      "text" : "was"
+    },
+    {
+      "confidence" : 0.138,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 174.72,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.26,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 174.84,
+      "text" : "joke."
+    },
+    {
+      "confidence" : 0.228,
+      "durationSeconds" : 4.2,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 175.14,
+      "text" : "This"
+    },
+    {
+      "confidence" : 0.11,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 179.34,
+      "text" : "is"
+    },
+    {
+      "confidence" : 0.294,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 179.58,
+      "text" : "very"
+    },
+    {
+      "confidence" : 0.137,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 179.76,
+      "text" : "missy."
+    },
+    {
+      "confidence" : 0.736,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "startSeconds" : 188.52,
+      "text" : "Thank"
+    },
+    {
+      "confidence" : 0.448,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "startSeconds" : 188.82,
+      "text" : "you,"
+    },
+    {
+      "confidence" : 0.551,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "startSeconds" : 189.12,
+      "text" : "Al."
+    },
+    {
+      "confidence" : 0.631,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "startSeconds" : 192.54,
+      "text" : "."
+    },
+    {
+      "confidence" : 0.212,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 195.84,
+      "text" : "We'll"
+    },
+    {
+      "confidence" : 0.031,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 196.14,
+      "text" : "drive"
+    },
+    {
+      "confidence" : 0.135,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 196.2,
+      "text" : "down"
+    },
+    {
+      "confidence" : 0.627,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 196.5,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.776,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 196.62,
+      "text" : "little"
+    },
+    {
+      "confidence" : 0.309,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 196.68,
+      "text" : "metallical"
+    },
+    {
+      "confidence" : 0.569,
+      "durationSeconds" : 0.6,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 197.1,
+      "text" : "coach."
+    },
+    {
+      "confidence" : 0.383,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 213.42,
+      "text" : "I"
+    },
+    {
+      "confidence" : 0.117,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 213.72,
+      "text" : "kept"
+    },
+    {
+      "confidence" : 0.288,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 214.02,
+      "text" : "this"
+    },
+    {
+      "confidence" : 0.427,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 214.26,
+      "text" : "in"
+    },
+    {
+      "confidence" : 0.491,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 214.44,
+      "text" : "an"
+    },
+    {
+      "confidence" : 0.286,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 215.1,
+      "text" : "ample"
+    },
+    {
+      "confidence" : 0.17,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 215.28,
+      "text" : "day,"
+    },
+    {
+      "confidence" : 0.018,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 215.52,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.514,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 215.64,
+      "text" : "opposite."
+    },
+    {
+      "confidence" : 0.036,
+      "durationSeconds" : 0.6,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 217.14,
+      "text" : "If,"
+    },
+    {
+      "confidence" : 0.117,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 217.74,
+      "text" : "uh,"
+    },
+    {
+      "confidence" : 0.666,
+      "durationSeconds" : 1.02,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 218.1,
+      "text" : "ancient"
+    },
+    {
+      "confidence" : 0.5,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 219.12,
+      "text" : "open"
+    },
+    {
+      "confidence" : 0.785,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 219.24,
+      "text" : "source"
+    },
+    {
+      "confidence" : 0.504,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 219.6,
+      "text" : "command,"
+    },
+    {
+      "confidence" : 0.07,
+      "durationSeconds" : 0.9,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 220.14,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.234,
+      "durationSeconds" : 0.9,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 221.04,
+      "text" : "undi,"
+    },
+    {
+      "confidence" : 0.072,
+      "durationSeconds" : 1.26,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 221.94,
+      "text" : "uh,"
+    },
+    {
+      "confidence" : 0.355,
+      "durationSeconds" : 1.38,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 223.2,
+      "text" : "molish,"
+    },
+    {
+      "confidence" : 0.526,
+      "durationSeconds" : 0.9,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 224.58,
+      "text" : "spec."
+    },
+    {
+      "confidence" : 0.238,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 225.48,
+      "text" : "What,"
+    },
+    {
+      "confidence" : 0.397,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 226.02,
+      "text" : "man?"
+    },
+    {
+      "confidence" : 0.35,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 229.44,
+      "text" : "Mm"
+    },
+    {
+      "confidence" : 0.326,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 229.74,
+      "text" : "hmm."
+    },
+    {
+      "confidence" : 0.229,
+      "durationSeconds" : 3.96,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 230.1,
+      "text" : "And..."
+    },
+    {
+      "confidence" : 0.056,
+      "durationSeconds" : 0.78,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 286.2,
+      "text" : "Elaine,"
+    },
+    {
+      "confidence" : 0.008,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 286.98,
+      "text" : "he"
+    },
+    {
+      "confidence" : 0.002,
+      "durationSeconds" : 1.08,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 287.1,
+      "text" : "understands"
+    },
+    {
+      "confidence" : 0.062,
+      "durationSeconds" : 3.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 288.18,
+      "text" : "that..."
+    },
+    {
+      "confidence" : 0.287,
+      "durationSeconds" : 1.68,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 291.42,
+      "text" : "from"
+    },
+    {
+      "confidence" : 0.144,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 293.1,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.192,
+      "durationSeconds" : 2.4,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 293.64,
+      "text" : "dictation."
+    },
+    {
+      "confidence" : 0.188,
+      "durationSeconds" : 0.96,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 296.04,
+      "text" : "It's,"
+    },
+    {
+      "confidence" : 0.152,
+      "durationSeconds" : 7.08,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 297,
+      "text" : "uh..."
+    },
+    {
+      "confidence" : 0.491,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 304.26,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.426,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 304.92,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.131,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 305.22,
+      "text" : "on"
+    },
+    {
+      "confidence" : 0.173,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 305.34,
+      "text" : "in"
+    },
+    {
+      "confidence" : 0.338,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 305.58,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.195,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 305.7,
+      "text" : "two"
+    },
+    {
+      "confidence" : 0.03,
+      "durationSeconds" : 4.56,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 305.76,
+      "text" : "covers,"
+    },
+    {
+      "confidence" : 0.216,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 310.32,
+      "text" : "he's"
+    },
+    {
+      "confidence" : 0.478,
+      "durationSeconds" : 1.38,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 310.8,
+      "text" : "upgraded,"
+    },
+    {
+      "confidence" : 0.161,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 312.18,
+      "text" : "on"
+    },
+    {
+      "confidence" : 0.116,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 312.36,
+      "text" : "his"
+    },
+    {
+      "confidence" : 0.098,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 312.48,
+      "text" : "track,"
+    },
+    {
+      "confidence" : 0.139,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 312.96,
+      "text" : "and"
+    },
+    {
+      "confidence" : 0.18,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 313.08,
+      "text" : "getting"
+    },
+    {
+      "confidence" : 0.148,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 313.26,
+      "text" : "out,"
+    },
+    {
+      "confidence" : 0.329,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 313.8,
+      "text" : "meat"
+    },
+    {
+      "confidence" : 0.219,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 313.98,
+      "text" : "in"
+    },
+    {
+      "confidence" : 0.043,
+      "durationSeconds" : 2.34,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 314.28,
+      "text" : "the..."
+    },
+    {
+      "confidence" : 0.027,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 316.62,
+      "text" : "The"
+    },
+    {
+      "confidence" : 0.283,
+      "durationSeconds" : 2.04,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 316.8,
+      "text" : "apple"
+    },
+    {
+      "confidence" : 0.173,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 318.84,
+      "text" : "server,"
+    },
+    {
+      "confidence" : 0.082,
+      "durationSeconds" : 1.5,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 319.2,
+      "text" : "too."
+    },
+    {
+      "confidence" : 0.043,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 322.92,
+      "text" : "Yeah,"
+    },
+    {
+      "confidence" : 0.037,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 323.4,
+      "text" : "absolutely."
+    },
+    {
+      "confidence" : 0.116,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 323.88,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.02,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 324,
+      "text" : "this"
+    },
+    {
+      "confidence" : 0.063,
+      "durationSeconds" : 4.2,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 324.06,
+      "text" : "bracket,"
+    },
+    {
+      "confidence" : 0.096,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 328.26,
+      "text" : "getting"
+    },
+    {
+      "confidence" : 0.05,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 328.32,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.19,
+      "durationSeconds" : 4.62,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 328.5,
+      "text" : "towel..."
+    },
+    {
+      "confidence" : 0.204,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 333.12,
+      "text" : "Yeah,"
+    },
+    {
+      "confidence" : 0.458,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 333.48,
+      "text" : "absolutely."
+    },
+    {
+      "confidence" : 0.308,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 358.8,
+      "text" : "I"
+    },
+    {
+      "confidence" : 0.334,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 359.1,
+      "text" : "like"
+    },
+    {
+      "confidence" : 0.294,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 359.16,
+      "text" : "it,"
+    },
+    {
+      "confidence" : 0.309,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 359.34,
+      "text" : "yeah?"
+    },
+    {
+      "confidence" : 0.104,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 359.94,
+      "text" : "And,"
+    },
+    {
+      "confidence" : 0.062,
+      "durationSeconds" : 1.08,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 360.42,
+      "text" : "uh,"
+    },
+    {
+      "confidence" : 0.357,
+      "durationSeconds" : 3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 361.5,
+      "text" : "for"
+    },
+    {
+      "confidence" : 0.255,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 364.5,
+      "text" : "meetings,"
+    },
+    {
+      "confidence" : 0.034,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 365.16,
+      "text" : "like,"
+    },
+    {
+      "confidence" : 0.021,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 365.58,
+      "text" : "say,"
+    },
+    {
+      "confidence" : 0.01,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 365.76,
+      "text" : "for"
+    },
+    {
+      "confidence" : 0.049,
+      "durationSeconds" : 1.86,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 365.82,
+      "text" : "me,"
+    },
+    {
+      "confidence" : 0.095,
+      "durationSeconds" : 0.72,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 367.68,
+      "text" : "from"
+    },
+    {
+      "confidence" : 0.139,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 368.4,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.355,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 368.46,
+      "text" : "Apple"
+    },
+    {
+      "confidence" : 0.33,
+      "durationSeconds" : 0.6,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 368.7,
+      "text" : "devices,"
+    },
+    {
+      "confidence" : 0.182,
+      "durationSeconds" : 0.72,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 369.3,
+      "text" : "have"
+    },
+    {
+      "confidence" : 0.354,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 370.02,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.558,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 370.26,
+      "text" : "machine"
+    },
+    {
+      "confidence" : 0.23,
+      "durationSeconds" : 3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 370.38,
+      "text" : "learning..."
+    },
+    {
+      "confidence" : 0.108,
+      "durationSeconds" : 1.08,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 373.38,
+      "text" : "It's"
+    },
+    {
+      "confidence" : 0.056,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 374.46,
+      "text" : "all,"
+    },
+    {
+      "confidence" : 0.034,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 374.7,
+      "text" : "you've"
+    },
+    {
+      "confidence" : 0.07,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 375.06,
+      "text" : "been"
+    },
+    {
+      "confidence" : 0.22,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 375.12,
+      "text" : "eaten"
+    },
+    {
+      "confidence" : 0.277,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 375.36,
+      "text" : "at"
+    },
+    {
+      "confidence" : 0.374,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 375.48,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.546,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 375.54,
+      "text" : "cloud"
+    },
+    {
+      "confidence" : 0.327,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 375.72,
+      "text" : "of"
+    },
+    {
+      "confidence" : 0.077,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 375.9,
+      "text" : "no"
+    },
+    {
+      "confidence" : 0.027,
+      "durationSeconds" : 3.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 376.02,
+      "text" : "AI."
+    },
+    {
+      "confidence" : 0.452,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 422.34,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.235,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 422.64,
+      "text" : "in"
+    },
+    {
+      "confidence" : 0.403,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 422.82,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.258,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 423,
+      "text" : "two"
+    },
+    {
+      "confidence" : 0.031,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 423.12,
+      "text" : "comms,"
+    },
+    {
+      "confidence" : 0.1,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 423.54,
+      "text" : "so"
+    },
+    {
+      "confidence" : 0.17,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 423.66,
+      "text" : "it's"
+    },
+    {
+      "confidence" : 0.052,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 423.84,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.066,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 423.9,
+      "text" : "basic,"
+    },
+    {
+      "confidence" : 0.04,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 424.26,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.005,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 424.32,
+      "text" : "loop,"
+    },
+    {
+      "confidence" : 0.008,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 424.68,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.07,
+      "durationSeconds" : 2.1,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 424.74,
+      "text" : "same."
+    },
+    {
+      "confidence" : 0.292,
+      "durationSeconds" : 12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 426.84,
+      "text" : "And..."
+    },
+    {
+      "confidence" : 0.382,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 439.2,
+      "text" : "So"
+    },
+    {
+      "confidence" : 0.087,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 439.5,
+      "text" : "that,"
+    },
+    {
+      "confidence" : 0.023,
+      "durationSeconds" : 3.96,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 439.92,
+      "text" : "um,"
+    },
+    {
+      "confidence" : 0.315,
+      "durationSeconds" : 3.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 443.88,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.532,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 446.94,
+      "text" : "photos."
+    },
+    {
+      "confidence" : 0.102,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 458.04,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.134,
+      "durationSeconds" : 1.74,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 458.46,
+      "text" : "And,"
+    },
+    {
+      "confidence" : 0.02,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 460.2,
+      "text" : "uh,"
+    },
+    {
+      "confidence" : 0.09,
+      "durationSeconds" : 1.56,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 460.44,
+      "text" : "yeah."
+    },
+    {
+      "confidence" : 0.463,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 516.96,
+      "text" : "This,"
+    },
+    {
+      "confidence" : 0.165,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 517.5,
+      "text" : "uh..."
+    },
+    {
+      "confidence" : 0.452,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 518.04,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.127,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 520.2,
+      "text" : "What,"
+    },
+    {
+      "confidence" : 0.195,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 520.44,
+      "text" : "huh?"
+    },
+    {
+      "confidence" : 0.448,
+      "durationSeconds" : 8.94,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 520.62,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.213,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 529.56,
+      "text" : "Yeah,"
+    },
+    {
+      "confidence" : 0.185,
+      "durationSeconds" : 3.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 530.04,
+      "text" : "but..."
+    },
+    {
+      "confidence" : 0.444,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 533.52,
+      "text" : "It's"
+    },
+    {
+      "confidence" : 0.369,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 533.94,
+      "text" : "omeless."
+    },
+    {
+      "confidence" : 0.117,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 536.64,
+      "text" : "And"
+    },
+    {
+      "confidence" : 0.153,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 536.94,
+      "text" : "I"
+    },
+    {
+      "confidence" : 0.168,
+      "durationSeconds" : 9.9,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 537.12,
+      "text" : "just..."
+    },
+    {
+      "confidence" : 0.204,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 547.02,
+      "text" : "Mm"
+    },
+    {
+      "confidence" : 0.199,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 547.32,
+      "text" : "hmm."
+    },
+    {
+      "confidence" : 0.182,
+      "durationSeconds" : 1.62,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 547.74,
+      "text" : "The"
+    },
+    {
+      "confidence" : 0.182,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 549.36,
+      "text" : "bed."
+    },
+    {
+      "confidence" : 0.4,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 565.56,
+      "text" : "from"
+    },
+    {
+      "confidence" : 0.439,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 565.86,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.602,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 565.98,
+      "text" : "big"
+    },
+    {
+      "confidence" : 0.059,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 566.04,
+      "text" : "head"
+    },
+    {
+      "confidence" : 0.107,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 566.22,
+      "text" : "of"
+    },
+    {
+      "confidence" : 0.06,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 566.46,
+      "text" : "eggs,"
+    },
+    {
+      "confidence" : 0.012,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 566.76,
+      "text" : "huh?"
+    },
+    {
+      "confidence" : 0.171,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 566.88,
+      "text" : "You"
+    },
+    {
+      "confidence" : 0.126,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 567.06,
+      "text" : "just,"
+    },
+    {
+      "confidence" : 0.053,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 567.36,
+      "text" : "uh..."
+    },
+    {
+      "confidence" : 0.083,
+      "durationSeconds" : 2.28,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 567.84,
+      "text" : "Space"
+    },
+    {
+      "confidence" : 0.107,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 570.12,
+      "text" : "ficati"
+    },
+    {
+      "confidence" : 0.472,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 570.6,
+      "text" : "from"
+    },
+    {
+      "confidence" : 0.131,
+      "durationSeconds" : 1.14,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 570.96,
+      "text" : "the..."
+    },
+    {
+      "confidence" : 0.022,
+      "durationSeconds" : 4.2,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 572.1,
+      "text" : "the..."
+    },
+    {
+      "confidence" : 0.194,
+      "durationSeconds" : 2.46,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 576.3,
+      "text" : "the..."
+    },
+    {
+      "confidence" : 0.352,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 582.72,
+      "text" : "Mm"
+    },
+    {
+      "confidence" : 0.31,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 583.02,
+      "text" : "hmm."
+    },
+    {
+      "confidence" : 0.221,
+      "durationSeconds" : 0.78,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 583.38,
+      "text" : "And,"
+    },
+    {
+      "confidence" : 0.106,
+      "durationSeconds" : 1.14,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 584.16,
+      "text" : "uh..."
+    },
+    {
+      "confidence" : 0.221,
+      "durationSeconds" : 5.82,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 585.3,
+      "text" : "This"
+    },
+    {
+      "confidence" : 0.497,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 591.12,
+      "text" : "means"
+    },
+    {
+      "confidence" : 0.156,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 591.24,
+      "text" : "it"
+    },
+    {
+      "confidence" : 0.103,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 591.54,
+      "text" : "himself"
+    },
+    {
+      "confidence" : 0.46,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 591.78,
+      "text" : "in"
+    },
+    {
+      "confidence" : 0.29,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 591.9,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.125,
+      "durationSeconds" : 1.8,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 592.02,
+      "text" : "car..."
+    },
+    {
+      "confidence" : 0.209,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 593.82,
+      "text" : "Mm"
+    },
+    {
+      "confidence" : 0.294,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 594.06,
+      "text" : "hmm."
+    },
+    {
+      "confidence" : 0.129,
+      "durationSeconds" : 0.84,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 598.98,
+      "text" : "Telephone,"
+    },
+    {
+      "confidence" : 0.606,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 599.82,
+      "text" : "desktop"
+    },
+    {
+      "confidence" : 0.308,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 600.24,
+      "text" : "concern."
+    },
+    {
+      "confidence" : 0.194,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 634.38,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.149,
+      "durationSeconds" : 3.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 634.8,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.494,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "startSeconds" : 650.4,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.093,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 655.62,
+      "text" : "This"
+    },
+    {
+      "confidence" : 0.085,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 655.92,
+      "text" : "is"
+    },
+    {
+      "confidence" : 0.054,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 656.16,
+      "text" : "all"
+    },
+    {
+      "confidence" : 0.177,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 656.34,
+      "text" : "this"
+    },
+    {
+      "confidence" : 0.204,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 656.7,
+      "text" : "shop"
+    },
+    {
+      "confidence" : 0.332,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 656.76,
+      "text" : "is"
+    },
+    {
+      "confidence" : 0.126,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 656.94,
+      "text" : "done"
+    },
+    {
+      "confidence" : 0.422,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 657.06,
+      "text" : "there,"
+    },
+    {
+      "confidence" : 0.366,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 657.24,
+      "text" : "there."
+    },
+    {
+      "confidence" : 0.3,
+      "durationSeconds" : 0.72,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 657.6,
+      "text" : "Like"
+    },
+    {
+      "confidence" : 0.126,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 658.32,
+      "text" : "modus,"
+    },
+    {
+      "confidence" : 0.045,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 658.86,
+      "text" : "you"
+    },
+    {
+      "confidence" : 0.038,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 658.92,
+      "text" : "can,"
+    },
+    {
+      "confidence" : 0.13,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 659.16,
+      "text" : "sugar,"
+    },
+    {
+      "confidence" : 0.275,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 659.52,
+      "text" : "okay?"
+    },
+    {
+      "confidence" : 0.335,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 660.18,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.009,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 660.72,
+      "text" : "Okay,"
+    },
+    {
+      "confidence" : 0.027,
+      "durationSeconds" : 2.94,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 661.14,
+      "text" : "okay,"
+    },
+    {
+      "confidence" : 0.383,
+      "durationSeconds" : 1.8,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 664.08,
+      "text" : "okay."
+    },
+    {
+      "confidence" : 0.03,
+      "durationSeconds" : 2.46,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 670.56,
+      "text" : "Well,"
+    },
+    {
+      "confidence" : 0.534,
+      "durationSeconds" : 0.9,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 673.02,
+      "text" : "machine"
+    },
+    {
+      "confidence" : 0.156,
+      "durationSeconds" : 1.32,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 673.92,
+      "text" : "learning."
+    },
+    {
+      "confidence" : 0.288,
+      "durationSeconds" : 1.62,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 675.24,
+      "text" : "It's,"
+    },
+    {
+      "confidence" : 0.088,
+      "durationSeconds" : 0.6,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 676.86,
+      "text" : "um..."
+    },
+    {
+      "confidence" : 0.484,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 680.64,
+      "text" : "Who"
+    },
+    {
+      "confidence" : 0.507,
+      "durationSeconds" : 0.9,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 680.94,
+      "text" : "coming?"
+    },
+    {
+      "confidence" : 0.46,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "startSeconds" : 729.54,
+      "text" : "Okay."
+    },
+    {
+      "confidence" : 0.636,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "startSeconds" : 745.62,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.559,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 780.9,
+      "text" : "It's"
+    },
+    {
+      "confidence" : 0.273,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 781.32,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.478,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 781.44,
+      "text" : "very"
+    },
+    {
+      "confidence" : 0.194,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 781.56,
+      "text" : "fine"
+    },
+    {
+      "confidence" : 0.244,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 781.86,
+      "text" : "tuning"
+    },
+    {
+      "confidence" : 0.15,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 782.28,
+      "text" : "phone."
+    },
+    {
+      "confidence" : 0.115,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 782.64,
+      "text" : "Yeah,"
+    },
+    {
+      "confidence" : 0.091,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 783,
+      "text" : "stop"
+    },
+    {
+      "confidence" : 0.196,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 783.42,
+      "text" : "it."
+    },
+    {
+      "confidence" : 0.299,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 783.54,
+      "text" : "The"
+    },
+    {
+      "confidence" : 0.523,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 783.72,
+      "text" : "parameters."
+    },
+    {
+      "confidence" : 0.332,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1006.32,
+      "text" : "Okay."
+    },
+    {
+      "confidence" : 0.144,
+      "durationSeconds" : 1.14,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1006.8,
+      "text" : "Okay,"
+    },
+    {
+      "confidence" : 0.047,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1007.94,
+      "text" : "see,"
+    },
+    {
+      "confidence" : 0.062,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1008.36,
+      "text" : "you"
+    },
+    {
+      "confidence" : 0.215,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1008.48,
+      "text" : "call"
+    },
+    {
+      "confidence" : 0.065,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1008.66,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.101,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1008.84,
+      "text" : "Google"
+    },
+    {
+      "confidence" : 0.279,
+      "durationSeconds" : 0.6,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1009.02,
+      "text" : "workspace"
+    },
+    {
+      "confidence" : 0.139,
+      "durationSeconds" : 1.68,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1009.62,
+      "text" : "today."
+    },
+    {
+      "confidence" : 0.044,
+      "durationSeconds" : 5.22,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1047.36,
+      "text" : "Okay."
+    },
+    {
+      "confidence" : 0.35,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1052.58,
+      "text" : "Walk."
+    },
+    {
+      "confidence" : 0.217,
+      "durationSeconds" : 3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1053.24,
+      "text" : "The"
+    },
+    {
+      "confidence" : 0.154,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1056.24,
+      "text" : "microphone"
+    },
+    {
+      "confidence" : 0.089,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1056.6,
+      "text" : "is"
+    },
+    {
+      "confidence" : 0.003,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1056.78,
+      "text" : "my"
+    },
+    {
+      "confidence" : 0.018,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1056.9,
+      "text" : "state,"
+    },
+    {
+      "confidence" : 0.095,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1057.2,
+      "text" : "sir."
+    },
+    {
+      "confidence" : 0.398,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1137.06,
+      "text" : "Yeah,"
+    },
+    {
+      "confidence" : 0.192,
+      "durationSeconds" : 5.76,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1137.48,
+      "text" : "and..."
+    },
+    {
+      "confidence" : 0.326,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1167.3,
+      "text" : "I'm"
+    },
+    {
+      "confidence" : 0.219,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1167.72,
+      "text" : "beating"
+    },
+    {
+      "confidence" : 0.198,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1167.96,
+      "text" : "a"
+    },
+    {
+      "confidence" : 0.222,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1168.08,
+      "text" : "crash"
+    },
+    {
+      "confidence" : 0.185,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1168.26,
+      "text" : "of"
+    },
+    {
+      "confidence" : 0.271,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1168.44,
+      "text" : "tinder."
+    },
+    {
+      "confidence" : 0.194,
+      "durationSeconds" : 1.32,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1168.98,
+      "text" : "Getting"
+    },
+    {
+      "confidence" : 0.295,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1170.3,
+      "text" : "ambled"
+    },
+    {
+      "confidence" : 0.521,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1170.78,
+      "text" : "from"
+    },
+    {
+      "confidence" : 0.185,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1170.9,
+      "text" : "ECA,"
+    },
+    {
+      "confidence" : 0.397,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1171.56,
+      "text" : "go"
+    },
+    {
+      "confidence" : 0.054,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1171.62,
+      "text" : "to"
+    },
+    {
+      "confidence" : 0.254,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1171.68,
+      "text" : "the"
+    },
+    {
+      "confidence" : 0.123,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1171.8,
+      "text" : "bowl"
+    },
+    {
+      "confidence" : 0.208,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1171.98,
+      "text" : "in"
+    },
+    {
+      "confidence" : 0.064,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1172.04,
+      "text" : "Boston,"
+    },
+    {
+      "confidence" : 0.03,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1172.46,
+      "text" : "you"
+    },
+    {
+      "confidence" : 0.177,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1172.58,
+      "text" : "know."
+    },
+    {
+      "confidence" : 0.33,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1172.7,
+      "text" : "Yeah."
+    },
+    {
+      "confidence" : 0.237,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1173.18,
+      "text" : "Just"
+    },
+    {
+      "confidence" : 0.307,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1173.54,
+      "text" : "for"
+    },
+    {
+      "confidence" : 0.221,
+      "durationSeconds" : 7.02,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 1173.78,
+      "text" : "my..."
+    },
+    {
+      "confidence" : 0.193,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1195.74,
+      "text" : "Now,"
+    },
+    {
+      "confidence" : 0.074,
+      "durationSeconds" : 1.02,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1196.22,
+      "text" : "when"
+    },
+    {
+      "confidence" : 0.035,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1197.24,
+      "text" : "he"
+    },
+    {
+      "confidence" : 0.031,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1197.48,
+      "text" : "related"
+    },
+    {
+      "confidence" : 0.134,
+      "durationSeconds" : 2.04,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s2",
+      "startSeconds" : 1197.78,
+      "text" : "noise..."
+    }
+  ],
+  "tracks" : [
+    {
+      "formattedText" : "Okay. And what he needed.  They  The omi hotelamo mix.  But everyone, you know?  Yeah, sit down, salad. Kingy.  My adult listen to go on the deal from the test, about it today from now. Yeah.  And the floor, come back to it, it is still good. And then, uh...  Yeah. And a telephone. Telephone, it's an app of telephone. Okay.  Now, they have a colon desktop... app, you think, before... Yeah. And the captain... Oh... Oh...  Have you popped anti shell pop... It's easy, though, you open cheese courses... Yeah, please.  Yeah. That frisky stuff. Bulk was a joke. This is very missy.  Thank you, Al. .  We'll drive down a little metallical coach.  I kept this in an ample day, the opposite.  If, uh, ancient open source command, the undi, uh, molish, spec. What, man?  Mm hmm. And...  Elaine, he understands that... from the dictation. It's, uh...  Yeah.  And on in the two covers, he's upgraded, on his track, and getting out, meat in the... The apple server, too.  Yeah, absolutely. And this bracket, getting the towel... Yeah, absolutely.  I like it, yeah?  And, uh, for meetings, like, say, for me, from the Apple devices, have a machine learning... It's all, you've been eaten at a cloud of no AI.  And in the two comms, so it's the basic, the loop, the same. And...  So that, um, the photos.  Yeah. And, uh, yeah.  This, uh... Yeah.  What, huh? Yeah. Yeah, but...  It's omeless.  And I just... Mm hmm. The bed.  from the big head of eggs, huh? You just, uh... Space ficati from the... the... the...  Mm hmm. And, uh... This means it himself in a car... Mm hmm.  Telephone, desktop concern.  Yeah. Yeah.  Yeah.  This is all this shop is done there, there. Like modus, you can, sugar, okay? Yeah.  Okay, okay, okay.  Well, machine learning. It's, um...  Who coming?  Okay.  Yeah.  It's a very fine tuning phone. Yeah, stop it. The parameters.  Okay. Okay, see, you call a Google workspace today.  Okay. Walk. The microphone is my state, sir.  Yeah, and...  I'm beating a crash of tinder. Getting ambled from ECA, go to the bowl in Boston, you know. Yeah. Just for my...  Now, when he related noise...",
+      "localeIdentifier" : "en-AU",
+      "segments" : [
+        {
+          "confidence" : 0.34,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 3.48,
+          "text" : "Okay."
+        },
+        {
+          "confidence" : 0.499,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 3.96,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.938,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 4.26,
+          "text" : "what"
+        },
+        {
+          "confidence" : 0.398,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 4.56,
+          "text" : "he"
+        },
+        {
+          "confidence" : 0.621,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 4.68,
+          "text" : "needed."
+        },
+        {
+          "confidence" : 0.347,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 5.22,
+          "text" : "They"
+        },
+        {
+          "confidence" : 0.157,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 8.34,
+          "text" : "The"
+        },
+        {
+          "confidence" : 0.341,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 8.64,
+          "text" : "omi"
+        },
+        {
+          "confidence" : 0.169,
+          "durationSeconds" : 0.9,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 9.3,
+          "text" : "hotelamo"
+        },
+        {
+          "confidence" : 0.607,
+          "durationSeconds" : 1.02,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 10.2,
+          "text" : "mix."
+        },
+        {
+          "confidence" : 0.303,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 11.76,
+          "text" : "But"
+        },
+        {
+          "confidence" : 0.134,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 12.06,
+          "text" : "everyone,"
+        },
+        {
+          "confidence" : 0.251,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 12.54,
+          "text" : "you"
+        },
+        {
+          "confidence" : 0.354,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 12.72,
+          "text" : "know?"
+        },
+        {
+          "confidence" : 0.041,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 13.02,
+          "text" : "Yeah,"
+        },
+        {
+          "confidence" : 0.017,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 13.2,
+          "text" : "sit"
+        },
+        {
+          "confidence" : 0.04,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 13.32,
+          "text" : "down,"
+        },
+        {
+          "confidence" : 0.209,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 13.62,
+          "text" : "salad."
+        },
+        {
+          "confidence" : 0.493,
+          "durationSeconds" : 1.38,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 13.92,
+          "text" : "Kingy."
+        },
+        {
+          "confidence" : 0.143,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 42.54,
+          "text" : "My"
+        },
+        {
+          "confidence" : 0.038,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 42.84,
+          "text" : "adult"
+        },
+        {
+          "confidence" : 0.311,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 43.2,
+          "text" : "listen"
+        },
+        {
+          "confidence" : 0.168,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 43.44,
+          "text" : "to"
+        },
+        {
+          "confidence" : 0.123,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 43.62,
+          "text" : "go"
+        },
+        {
+          "confidence" : 0.149,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 43.74,
+          "text" : "on"
+        },
+        {
+          "confidence" : 0.131,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 43.92,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.014,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 44.04,
+          "text" : "deal"
+        },
+        {
+          "confidence" : 0.582,
+          "durationSeconds" : 2.46,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 44.16,
+          "text" : "from"
+        },
+        {
+          "confidence" : 0.467,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 46.62,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.271,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 47.16,
+          "text" : "test,"
+        },
+        {
+          "confidence" : 0.188,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 47.52,
+          "text" : "about"
+        },
+        {
+          "confidence" : 0.016,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 47.82,
+          "text" : "it"
+        },
+        {
+          "confidence" : 0.025,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 48.06,
+          "text" : "today"
+        },
+        {
+          "confidence" : 0.18,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 48.3,
+          "text" : "from"
+        },
+        {
+          "confidence" : 0.037,
+          "durationSeconds" : 1.5,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 48.48,
+          "text" : "now."
+        },
+        {
+          "confidence" : 0.146,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 49.98,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.393,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 54.72,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.402,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 55.02,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.064,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 55.2,
+          "text" : "floor,"
+        },
+        {
+          "confidence" : 0.094,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 55.56,
+          "text" : "come"
+        },
+        {
+          "confidence" : 0.107,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 55.68,
+          "text" : "back"
+        },
+        {
+          "confidence" : 0.065,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 55.86,
+          "text" : "to"
+        },
+        {
+          "confidence" : 0.012,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 56.1,
+          "text" : "it,"
+        },
+        {
+          "confidence" : 0.005,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 56.22,
+          "text" : "it"
+        },
+        {
+          "confidence" : 0.113,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 56.4,
+          "text" : "is"
+        },
+        {
+          "confidence" : 0.064,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 56.52,
+          "text" : "still"
+        },
+        {
+          "confidence" : 0.118,
+          "durationSeconds" : 0.72,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 56.76,
+          "text" : "good."
+        },
+        {
+          "confidence" : 0.21,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 57.48,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.136,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 58.14,
+          "text" : "then,"
+        },
+        {
+          "confidence" : 0.065,
+          "durationSeconds" : 2.88,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 58.5,
+          "text" : "uh..."
+        },
+        {
+          "confidence" : 0.206,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 80.22,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.347,
+          "durationSeconds" : 0.96,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 80.64,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.544,
+          "durationSeconds" : 0.96,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 81.6,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.502,
+          "durationSeconds" : 2.64,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 82.56,
+          "text" : "telephone."
+        },
+        {
+          "confidence" : 0.326,
+          "durationSeconds" : 1.38,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 85.2,
+          "text" : "Telephone,"
+        },
+        {
+          "confidence" : 0.062,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 86.58,
+          "text" : "it's"
+        },
+        {
+          "confidence" : 0.24,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 86.82,
+          "text" : "an"
+        },
+        {
+          "confidence" : 0.268,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 86.94,
+          "text" : "app"
+        },
+        {
+          "confidence" : 0.11,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 87.06,
+          "text" : "of"
+        },
+        {
+          "confidence" : 0.327,
+          "durationSeconds" : 9.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 87.24,
+          "text" : "telephone."
+        },
+        {
+          "confidence" : 0.197,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 96.3,
+          "text" : "Okay."
+        },
+        {
+          "confidence" : 0.446,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 101.34,
+          "text" : "Now,"
+        },
+        {
+          "confidence" : 0.628,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 101.76,
+          "text" : "they"
+        },
+        {
+          "confidence" : 0.744,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 101.88,
+          "text" : "have"
+        },
+        {
+          "confidence" : 0.792,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 102.06,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.446,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 102.12,
+          "text" : "colon"
+        },
+        {
+          "confidence" : 0.348,
+          "durationSeconds" : 1.8,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 102.42,
+          "text" : "desktop..."
+        },
+        {
+          "confidence" : 0.087,
+          "durationSeconds" : 0.6,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 104.22,
+          "text" : "app,"
+        },
+        {
+          "confidence" : 0.346,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 104.82,
+          "text" : "you"
+        },
+        {
+          "confidence" : 0.087,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 105,
+          "text" : "think,"
+        },
+        {
+          "confidence" : 0.204,
+          "durationSeconds" : 3.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 105.42,
+          "text" : "before..."
+        },
+        {
+          "confidence" : 0.262,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 109.08,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.242,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 109.44,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.39,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 109.86,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.13,
+          "durationSeconds" : 1.2,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 109.98,
+          "text" : "captain..."
+        },
+        {
+          "confidence" : 0.346,
+          "durationSeconds" : 2.88,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 111.18,
+          "text" : "Oh..."
+        },
+        {
+          "confidence" : 0.218,
+          "durationSeconds" : 4.38,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 114.06,
+          "text" : "Oh..."
+        },
+        {
+          "confidence" : 0.291,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 159.3,
+          "text" : "Have"
+        },
+        {
+          "confidence" : 0.599,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 159.6,
+          "text" : "you"
+        },
+        {
+          "confidence" : 0.445,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 159.78,
+          "text" : "popped"
+        },
+        {
+          "confidence" : 0.062,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 160.08,
+          "text" : "anti"
+        },
+        {
+          "confidence" : 0.087,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 160.44,
+          "text" : "shell"
+        },
+        {
+          "confidence" : 0.083,
+          "durationSeconds" : 1.2,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 160.62,
+          "text" : "pop..."
+        },
+        {
+          "confidence" : 0.244,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 161.82,
+          "text" : "It's"
+        },
+        {
+          "confidence" : 0.044,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 162.18,
+          "text" : "easy,"
+        },
+        {
+          "confidence" : 0.092,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 162.48,
+          "text" : "though,"
+        },
+        {
+          "confidence" : 0.129,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 162.6,
+          "text" : "you"
+        },
+        {
+          "confidence" : 0.319,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 162.66,
+          "text" : "open"
+        },
+        {
+          "confidence" : 0.057,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 162.84,
+          "text" : "cheese"
+        },
+        {
+          "confidence" : 0.269,
+          "durationSeconds" : 4.26,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 163.02,
+          "text" : "courses..."
+        },
+        {
+          "confidence" : 0.198,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 167.28,
+          "text" : "Yeah,"
+        },
+        {
+          "confidence" : 0.328,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 167.46,
+          "text" : "please."
+        },
+        {
+          "confidence" : 0.269,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 171.42,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.164,
+          "durationSeconds" : 1.02,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 171.84,
+          "text" : "That"
+        },
+        {
+          "confidence" : 0.127,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 172.86,
+          "text" : "frisky"
+        },
+        {
+          "confidence" : 0.335,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 173.4,
+          "text" : "stuff."
+        },
+        {
+          "confidence" : 0.098,
+          "durationSeconds" : 0.84,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 173.7,
+          "text" : "Bulk"
+        },
+        {
+          "confidence" : 0.103,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 174.54,
+          "text" : "was"
+        },
+        {
+          "confidence" : 0.138,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 174.72,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.26,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 174.84,
+          "text" : "joke."
+        },
+        {
+          "confidence" : 0.228,
+          "durationSeconds" : 4.2,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 175.14,
+          "text" : "This"
+        },
+        {
+          "confidence" : 0.11,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 179.34,
+          "text" : "is"
+        },
+        {
+          "confidence" : 0.294,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 179.58,
+          "text" : "very"
+        },
+        {
+          "confidence" : 0.137,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 179.76,
+          "text" : "missy."
+        },
+        {
+          "confidence" : 0.736,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "startSeconds" : 188.52,
+          "text" : "Thank"
+        },
+        {
+          "confidence" : 0.448,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "startSeconds" : 188.82,
+          "text" : "you,"
+        },
+        {
+          "confidence" : 0.551,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "startSeconds" : 189.12,
+          "text" : "Al."
+        },
+        {
+          "confidence" : 0.631,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "startSeconds" : 192.54,
+          "text" : "."
+        },
+        {
+          "confidence" : 0.212,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 195.84,
+          "text" : "We'll"
+        },
+        {
+          "confidence" : 0.031,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 196.14,
+          "text" : "drive"
+        },
+        {
+          "confidence" : 0.135,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 196.2,
+          "text" : "down"
+        },
+        {
+          "confidence" : 0.627,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 196.5,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.776,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 196.62,
+          "text" : "little"
+        },
+        {
+          "confidence" : 0.309,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 196.68,
+          "text" : "metallical"
+        },
+        {
+          "confidence" : 0.569,
+          "durationSeconds" : 0.6,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 197.1,
+          "text" : "coach."
+        },
+        {
+          "confidence" : 0.383,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 213.42,
+          "text" : "I"
+        },
+        {
+          "confidence" : 0.117,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 213.72,
+          "text" : "kept"
+        },
+        {
+          "confidence" : 0.288,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 214.02,
+          "text" : "this"
+        },
+        {
+          "confidence" : 0.427,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 214.26,
+          "text" : "in"
+        },
+        {
+          "confidence" : 0.491,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 214.44,
+          "text" : "an"
+        },
+        {
+          "confidence" : 0.286,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 215.1,
+          "text" : "ample"
+        },
+        {
+          "confidence" : 0.17,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 215.28,
+          "text" : "day,"
+        },
+        {
+          "confidence" : 0.018,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 215.52,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.514,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 215.64,
+          "text" : "opposite."
+        },
+        {
+          "confidence" : 0.036,
+          "durationSeconds" : 0.6,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 217.14,
+          "text" : "If,"
+        },
+        {
+          "confidence" : 0.117,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 217.74,
+          "text" : "uh,"
+        },
+        {
+          "confidence" : 0.666,
+          "durationSeconds" : 1.02,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 218.1,
+          "text" : "ancient"
+        },
+        {
+          "confidence" : 0.5,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 219.12,
+          "text" : "open"
+        },
+        {
+          "confidence" : 0.785,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 219.24,
+          "text" : "source"
+        },
+        {
+          "confidence" : 0.504,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 219.6,
+          "text" : "command,"
+        },
+        {
+          "confidence" : 0.07,
+          "durationSeconds" : 0.9,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 220.14,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.234,
+          "durationSeconds" : 0.9,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 221.04,
+          "text" : "undi,"
+        },
+        {
+          "confidence" : 0.072,
+          "durationSeconds" : 1.26,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 221.94,
+          "text" : "uh,"
+        },
+        {
+          "confidence" : 0.355,
+          "durationSeconds" : 1.38,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 223.2,
+          "text" : "molish,"
+        },
+        {
+          "confidence" : 0.526,
+          "durationSeconds" : 0.9,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 224.58,
+          "text" : "spec."
+        },
+        {
+          "confidence" : 0.238,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 225.48,
+          "text" : "What,"
+        },
+        {
+          "confidence" : 0.397,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 226.02,
+          "text" : "man?"
+        },
+        {
+          "confidence" : 0.35,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 229.44,
+          "text" : "Mm"
+        },
+        {
+          "confidence" : 0.326,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 229.74,
+          "text" : "hmm."
+        },
+        {
+          "confidence" : 0.229,
+          "durationSeconds" : 3.96,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 230.1,
+          "text" : "And..."
+        },
+        {
+          "confidence" : 0.056,
+          "durationSeconds" : 0.78,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 286.2,
+          "text" : "Elaine,"
+        },
+        {
+          "confidence" : 0.008,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 286.98,
+          "text" : "he"
+        },
+        {
+          "confidence" : 0.002,
+          "durationSeconds" : 1.08,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 287.1,
+          "text" : "understands"
+        },
+        {
+          "confidence" : 0.062,
+          "durationSeconds" : 3.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 288.18,
+          "text" : "that..."
+        },
+        {
+          "confidence" : 0.287,
+          "durationSeconds" : 1.68,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 291.42,
+          "text" : "from"
+        },
+        {
+          "confidence" : 0.144,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 293.1,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.192,
+          "durationSeconds" : 2.4,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 293.64,
+          "text" : "dictation."
+        },
+        {
+          "confidence" : 0.188,
+          "durationSeconds" : 0.96,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 296.04,
+          "text" : "It's,"
+        },
+        {
+          "confidence" : 0.152,
+          "durationSeconds" : 7.08,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 297,
+          "text" : "uh..."
+        },
+        {
+          "confidence" : 0.491,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 304.26,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.426,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 304.92,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.131,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 305.22,
+          "text" : "on"
+        },
+        {
+          "confidence" : 0.173,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 305.34,
+          "text" : "in"
+        },
+        {
+          "confidence" : 0.338,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 305.58,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.195,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 305.7,
+          "text" : "two"
+        },
+        {
+          "confidence" : 0.03,
+          "durationSeconds" : 4.56,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 305.76,
+          "text" : "covers,"
+        },
+        {
+          "confidence" : 0.216,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 310.32,
+          "text" : "he's"
+        },
+        {
+          "confidence" : 0.478,
+          "durationSeconds" : 1.38,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 310.8,
+          "text" : "upgraded,"
+        },
+        {
+          "confidence" : 0.161,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 312.18,
+          "text" : "on"
+        },
+        {
+          "confidence" : 0.116,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 312.36,
+          "text" : "his"
+        },
+        {
+          "confidence" : 0.098,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 312.48,
+          "text" : "track,"
+        },
+        {
+          "confidence" : 0.139,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 312.96,
+          "text" : "and"
+        },
+        {
+          "confidence" : 0.18,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 313.08,
+          "text" : "getting"
+        },
+        {
+          "confidence" : 0.148,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 313.26,
+          "text" : "out,"
+        },
+        {
+          "confidence" : 0.329,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 313.8,
+          "text" : "meat"
+        },
+        {
+          "confidence" : 0.219,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 313.98,
+          "text" : "in"
+        },
+        {
+          "confidence" : 0.043,
+          "durationSeconds" : 2.34,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 314.28,
+          "text" : "the..."
+        },
+        {
+          "confidence" : 0.027,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 316.62,
+          "text" : "The"
+        },
+        {
+          "confidence" : 0.283,
+          "durationSeconds" : 2.04,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 316.8,
+          "text" : "apple"
+        },
+        {
+          "confidence" : 0.173,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 318.84,
+          "text" : "server,"
+        },
+        {
+          "confidence" : 0.082,
+          "durationSeconds" : 1.5,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 319.2,
+          "text" : "too."
+        },
+        {
+          "confidence" : 0.043,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 322.92,
+          "text" : "Yeah,"
+        },
+        {
+          "confidence" : 0.037,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 323.4,
+          "text" : "absolutely."
+        },
+        {
+          "confidence" : 0.116,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 323.88,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.02,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 324,
+          "text" : "this"
+        },
+        {
+          "confidence" : 0.063,
+          "durationSeconds" : 4.2,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 324.06,
+          "text" : "bracket,"
+        },
+        {
+          "confidence" : 0.096,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 328.26,
+          "text" : "getting"
+        },
+        {
+          "confidence" : 0.05,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 328.32,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.19,
+          "durationSeconds" : 4.62,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 328.5,
+          "text" : "towel..."
+        },
+        {
+          "confidence" : 0.204,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 333.12,
+          "text" : "Yeah,"
+        },
+        {
+          "confidence" : 0.458,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 333.48,
+          "text" : "absolutely."
+        },
+        {
+          "confidence" : 0.308,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 358.8,
+          "text" : "I"
+        },
+        {
+          "confidence" : 0.334,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 359.1,
+          "text" : "like"
+        },
+        {
+          "confidence" : 0.294,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 359.16,
+          "text" : "it,"
+        },
+        {
+          "confidence" : 0.309,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 359.34,
+          "text" : "yeah?"
+        },
+        {
+          "confidence" : 0.104,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 359.94,
+          "text" : "And,"
+        },
+        {
+          "confidence" : 0.062,
+          "durationSeconds" : 1.08,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 360.42,
+          "text" : "uh,"
+        },
+        {
+          "confidence" : 0.357,
+          "durationSeconds" : 3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 361.5,
+          "text" : "for"
+        },
+        {
+          "confidence" : 0.255,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 364.5,
+          "text" : "meetings,"
+        },
+        {
+          "confidence" : 0.034,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 365.16,
+          "text" : "like,"
+        },
+        {
+          "confidence" : 0.021,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 365.58,
+          "text" : "say,"
+        },
+        {
+          "confidence" : 0.01,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 365.76,
+          "text" : "for"
+        },
+        {
+          "confidence" : 0.049,
+          "durationSeconds" : 1.86,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 365.82,
+          "text" : "me,"
+        },
+        {
+          "confidence" : 0.095,
+          "durationSeconds" : 0.72,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 367.68,
+          "text" : "from"
+        },
+        {
+          "confidence" : 0.139,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 368.4,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.355,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 368.46,
+          "text" : "Apple"
+        },
+        {
+          "confidence" : 0.33,
+          "durationSeconds" : 0.6,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 368.7,
+          "text" : "devices,"
+        },
+        {
+          "confidence" : 0.182,
+          "durationSeconds" : 0.72,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 369.3,
+          "text" : "have"
+        },
+        {
+          "confidence" : 0.354,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 370.02,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.558,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 370.26,
+          "text" : "machine"
+        },
+        {
+          "confidence" : 0.23,
+          "durationSeconds" : 3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 370.38,
+          "text" : "learning..."
+        },
+        {
+          "confidence" : 0.108,
+          "durationSeconds" : 1.08,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 373.38,
+          "text" : "It's"
+        },
+        {
+          "confidence" : 0.056,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 374.46,
+          "text" : "all,"
+        },
+        {
+          "confidence" : 0.034,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 374.7,
+          "text" : "you've"
+        },
+        {
+          "confidence" : 0.07,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 375.06,
+          "text" : "been"
+        },
+        {
+          "confidence" : 0.22,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 375.12,
+          "text" : "eaten"
+        },
+        {
+          "confidence" : 0.277,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 375.36,
+          "text" : "at"
+        },
+        {
+          "confidence" : 0.374,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 375.48,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.546,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 375.54,
+          "text" : "cloud"
+        },
+        {
+          "confidence" : 0.327,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 375.72,
+          "text" : "of"
+        },
+        {
+          "confidence" : 0.077,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 375.9,
+          "text" : "no"
+        },
+        {
+          "confidence" : 0.027,
+          "durationSeconds" : 3.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 376.02,
+          "text" : "AI."
+        },
+        {
+          "confidence" : 0.452,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 422.34,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.235,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 422.64,
+          "text" : "in"
+        },
+        {
+          "confidence" : 0.403,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 422.82,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.258,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 423,
+          "text" : "two"
+        },
+        {
+          "confidence" : 0.031,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 423.12,
+          "text" : "comms,"
+        },
+        {
+          "confidence" : 0.1,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 423.54,
+          "text" : "so"
+        },
+        {
+          "confidence" : 0.17,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 423.66,
+          "text" : "it's"
+        },
+        {
+          "confidence" : 0.052,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 423.84,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.066,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 423.9,
+          "text" : "basic,"
+        },
+        {
+          "confidence" : 0.04,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 424.26,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.005,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 424.32,
+          "text" : "loop,"
+        },
+        {
+          "confidence" : 0.008,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 424.68,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.07,
+          "durationSeconds" : 2.1,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 424.74,
+          "text" : "same."
+        },
+        {
+          "confidence" : 0.292,
+          "durationSeconds" : 12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 426.84,
+          "text" : "And..."
+        },
+        {
+          "confidence" : 0.382,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 439.2,
+          "text" : "So"
+        },
+        {
+          "confidence" : 0.087,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 439.5,
+          "text" : "that,"
+        },
+        {
+          "confidence" : 0.023,
+          "durationSeconds" : 3.96,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 439.92,
+          "text" : "um,"
+        },
+        {
+          "confidence" : 0.315,
+          "durationSeconds" : 3.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 443.88,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.532,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 446.94,
+          "text" : "photos."
+        },
+        {
+          "confidence" : 0.102,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 458.04,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.134,
+          "durationSeconds" : 1.74,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 458.46,
+          "text" : "And,"
+        },
+        {
+          "confidence" : 0.02,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 460.2,
+          "text" : "uh,"
+        },
+        {
+          "confidence" : 0.09,
+          "durationSeconds" : 1.56,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 460.44,
+          "text" : "yeah."
+        },
+        {
+          "confidence" : 0.463,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 516.96,
+          "text" : "This,"
+        },
+        {
+          "confidence" : 0.165,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 517.5,
+          "text" : "uh..."
+        },
+        {
+          "confidence" : 0.452,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 518.04,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.127,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 520.2,
+          "text" : "What,"
+        },
+        {
+          "confidence" : 0.195,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 520.44,
+          "text" : "huh?"
+        },
+        {
+          "confidence" : 0.448,
+          "durationSeconds" : 8.94,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 520.62,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.213,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 529.56,
+          "text" : "Yeah,"
+        },
+        {
+          "confidence" : 0.185,
+          "durationSeconds" : 3.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 530.04,
+          "text" : "but..."
+        },
+        {
+          "confidence" : 0.444,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 533.52,
+          "text" : "It's"
+        },
+        {
+          "confidence" : 0.369,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 533.94,
+          "text" : "omeless."
+        },
+        {
+          "confidence" : 0.117,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 536.64,
+          "text" : "And"
+        },
+        {
+          "confidence" : 0.153,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 536.94,
+          "text" : "I"
+        },
+        {
+          "confidence" : 0.168,
+          "durationSeconds" : 9.9,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 537.12,
+          "text" : "just..."
+        },
+        {
+          "confidence" : 0.204,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 547.02,
+          "text" : "Mm"
+        },
+        {
+          "confidence" : 0.199,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 547.32,
+          "text" : "hmm."
+        },
+        {
+          "confidence" : 0.182,
+          "durationSeconds" : 1.62,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 547.74,
+          "text" : "The"
+        },
+        {
+          "confidence" : 0.182,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 549.36,
+          "text" : "bed."
+        },
+        {
+          "confidence" : 0.4,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 565.56,
+          "text" : "from"
+        },
+        {
+          "confidence" : 0.439,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 565.86,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.602,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 565.98,
+          "text" : "big"
+        },
+        {
+          "confidence" : 0.059,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 566.04,
+          "text" : "head"
+        },
+        {
+          "confidence" : 0.107,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 566.22,
+          "text" : "of"
+        },
+        {
+          "confidence" : 0.06,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 566.46,
+          "text" : "eggs,"
+        },
+        {
+          "confidence" : 0.012,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 566.76,
+          "text" : "huh?"
+        },
+        {
+          "confidence" : 0.171,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 566.88,
+          "text" : "You"
+        },
+        {
+          "confidence" : 0.126,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 567.06,
+          "text" : "just,"
+        },
+        {
+          "confidence" : 0.053,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 567.36,
+          "text" : "uh..."
+        },
+        {
+          "confidence" : 0.083,
+          "durationSeconds" : 2.28,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 567.84,
+          "text" : "Space"
+        },
+        {
+          "confidence" : 0.107,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 570.12,
+          "text" : "ficati"
+        },
+        {
+          "confidence" : 0.472,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 570.6,
+          "text" : "from"
+        },
+        {
+          "confidence" : 0.131,
+          "durationSeconds" : 1.14,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 570.96,
+          "text" : "the..."
+        },
+        {
+          "confidence" : 0.022,
+          "durationSeconds" : 4.2,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 572.1,
+          "text" : "the..."
+        },
+        {
+          "confidence" : 0.194,
+          "durationSeconds" : 2.46,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 576.3,
+          "text" : "the..."
+        },
+        {
+          "confidence" : 0.352,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 582.72,
+          "text" : "Mm"
+        },
+        {
+          "confidence" : 0.31,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 583.02,
+          "text" : "hmm."
+        },
+        {
+          "confidence" : 0.221,
+          "durationSeconds" : 0.78,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 583.38,
+          "text" : "And,"
+        },
+        {
+          "confidence" : 0.106,
+          "durationSeconds" : 1.14,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 584.16,
+          "text" : "uh..."
+        },
+        {
+          "confidence" : 0.221,
+          "durationSeconds" : 5.82,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 585.3,
+          "text" : "This"
+        },
+        {
+          "confidence" : 0.497,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 591.12,
+          "text" : "means"
+        },
+        {
+          "confidence" : 0.156,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 591.24,
+          "text" : "it"
+        },
+        {
+          "confidence" : 0.103,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 591.54,
+          "text" : "himself"
+        },
+        {
+          "confidence" : 0.46,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 591.78,
+          "text" : "in"
+        },
+        {
+          "confidence" : 0.29,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 591.9,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.125,
+          "durationSeconds" : 1.8,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 592.02,
+          "text" : "car..."
+        },
+        {
+          "confidence" : 0.209,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 593.82,
+          "text" : "Mm"
+        },
+        {
+          "confidence" : 0.294,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 594.06,
+          "text" : "hmm."
+        },
+        {
+          "confidence" : 0.129,
+          "durationSeconds" : 0.84,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 598.98,
+          "text" : "Telephone,"
+        },
+        {
+          "confidence" : 0.606,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 599.82,
+          "text" : "desktop"
+        },
+        {
+          "confidence" : 0.308,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 600.24,
+          "text" : "concern."
+        },
+        {
+          "confidence" : 0.194,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 634.38,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.149,
+          "durationSeconds" : 3.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 634.8,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.494,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "startSeconds" : 650.4,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.093,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 655.62,
+          "text" : "This"
+        },
+        {
+          "confidence" : 0.085,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 655.92,
+          "text" : "is"
+        },
+        {
+          "confidence" : 0.054,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 656.16,
+          "text" : "all"
+        },
+        {
+          "confidence" : 0.177,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 656.34,
+          "text" : "this"
+        },
+        {
+          "confidence" : 0.204,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 656.7,
+          "text" : "shop"
+        },
+        {
+          "confidence" : 0.332,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 656.76,
+          "text" : "is"
+        },
+        {
+          "confidence" : 0.126,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 656.94,
+          "text" : "done"
+        },
+        {
+          "confidence" : 0.422,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 657.06,
+          "text" : "there,"
+        },
+        {
+          "confidence" : 0.366,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 657.24,
+          "text" : "there."
+        },
+        {
+          "confidence" : 0.3,
+          "durationSeconds" : 0.72,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 657.6,
+          "text" : "Like"
+        },
+        {
+          "confidence" : 0.126,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 658.32,
+          "text" : "modus,"
+        },
+        {
+          "confidence" : 0.045,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 658.86,
+          "text" : "you"
+        },
+        {
+          "confidence" : 0.038,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 658.92,
+          "text" : "can,"
+        },
+        {
+          "confidence" : 0.13,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 659.16,
+          "text" : "sugar,"
+        },
+        {
+          "confidence" : 0.275,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 659.52,
+          "text" : "okay?"
+        },
+        {
+          "confidence" : 0.335,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 660.18,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.009,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 660.72,
+          "text" : "Okay,"
+        },
+        {
+          "confidence" : 0.027,
+          "durationSeconds" : 2.94,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 661.14,
+          "text" : "okay,"
+        },
+        {
+          "confidence" : 0.383,
+          "durationSeconds" : 1.8,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 664.08,
+          "text" : "okay."
+        },
+        {
+          "confidence" : 0.03,
+          "durationSeconds" : 2.46,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 670.56,
+          "text" : "Well,"
+        },
+        {
+          "confidence" : 0.534,
+          "durationSeconds" : 0.9,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 673.02,
+          "text" : "machine"
+        },
+        {
+          "confidence" : 0.156,
+          "durationSeconds" : 1.32,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 673.92,
+          "text" : "learning."
+        },
+        {
+          "confidence" : 0.288,
+          "durationSeconds" : 1.62,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 675.24,
+          "text" : "It's,"
+        },
+        {
+          "confidence" : 0.088,
+          "durationSeconds" : 0.6,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 676.86,
+          "text" : "um..."
+        },
+        {
+          "confidence" : 0.484,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 680.64,
+          "text" : "Who"
+        },
+        {
+          "confidence" : 0.507,
+          "durationSeconds" : 0.9,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 680.94,
+          "text" : "coming?"
+        },
+        {
+          "confidence" : 0.46,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "startSeconds" : 729.54,
+          "text" : "Okay."
+        },
+        {
+          "confidence" : 0.636,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "startSeconds" : 745.62,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.559,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 780.9,
+          "text" : "It's"
+        },
+        {
+          "confidence" : 0.273,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 781.32,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.478,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 781.44,
+          "text" : "very"
+        },
+        {
+          "confidence" : 0.194,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 781.56,
+          "text" : "fine"
+        },
+        {
+          "confidence" : 0.244,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 781.86,
+          "text" : "tuning"
+        },
+        {
+          "confidence" : 0.15,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 782.28,
+          "text" : "phone."
+        },
+        {
+          "confidence" : 0.115,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 782.64,
+          "text" : "Yeah,"
+        },
+        {
+          "confidence" : 0.091,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 783,
+          "text" : "stop"
+        },
+        {
+          "confidence" : 0.196,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 783.42,
+          "text" : "it."
+        },
+        {
+          "confidence" : 0.299,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 783.54,
+          "text" : "The"
+        },
+        {
+          "confidence" : 0.523,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 783.72,
+          "text" : "parameters."
+        },
+        {
+          "confidence" : 0.332,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1006.32,
+          "text" : "Okay."
+        },
+        {
+          "confidence" : 0.144,
+          "durationSeconds" : 1.14,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1006.8,
+          "text" : "Okay,"
+        },
+        {
+          "confidence" : 0.047,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1007.94,
+          "text" : "see,"
+        },
+        {
+          "confidence" : 0.062,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1008.36,
+          "text" : "you"
+        },
+        {
+          "confidence" : 0.215,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1008.48,
+          "text" : "call"
+        },
+        {
+          "confidence" : 0.065,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1008.66,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.101,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1008.84,
+          "text" : "Google"
+        },
+        {
+          "confidence" : 0.279,
+          "durationSeconds" : 0.6,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1009.02,
+          "text" : "workspace"
+        },
+        {
+          "confidence" : 0.139,
+          "durationSeconds" : 1.68,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1009.62,
+          "text" : "today."
+        },
+        {
+          "confidence" : 0.044,
+          "durationSeconds" : 5.22,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1047.36,
+          "text" : "Okay."
+        },
+        {
+          "confidence" : 0.35,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1052.58,
+          "text" : "Walk."
+        },
+        {
+          "confidence" : 0.217,
+          "durationSeconds" : 3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1053.24,
+          "text" : "The"
+        },
+        {
+          "confidence" : 0.154,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1056.24,
+          "text" : "microphone"
+        },
+        {
+          "confidence" : 0.089,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1056.6,
+          "text" : "is"
+        },
+        {
+          "confidence" : 0.003,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1056.78,
+          "text" : "my"
+        },
+        {
+          "confidence" : 0.018,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1056.9,
+          "text" : "state,"
+        },
+        {
+          "confidence" : 0.095,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1057.2,
+          "text" : "sir."
+        },
+        {
+          "confidence" : 0.398,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1137.06,
+          "text" : "Yeah,"
+        },
+        {
+          "confidence" : 0.192,
+          "durationSeconds" : 5.76,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1137.48,
+          "text" : "and..."
+        },
+        {
+          "confidence" : 0.326,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1167.3,
+          "text" : "I'm"
+        },
+        {
+          "confidence" : 0.219,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1167.72,
+          "text" : "beating"
+        },
+        {
+          "confidence" : 0.198,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1167.96,
+          "text" : "a"
+        },
+        {
+          "confidence" : 0.222,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1168.08,
+          "text" : "crash"
+        },
+        {
+          "confidence" : 0.185,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1168.26,
+          "text" : "of"
+        },
+        {
+          "confidence" : 0.271,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1168.44,
+          "text" : "tinder."
+        },
+        {
+          "confidence" : 0.194,
+          "durationSeconds" : 1.32,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1168.98,
+          "text" : "Getting"
+        },
+        {
+          "confidence" : 0.295,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1170.3,
+          "text" : "ambled"
+        },
+        {
+          "confidence" : 0.521,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1170.78,
+          "text" : "from"
+        },
+        {
+          "confidence" : 0.185,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1170.9,
+          "text" : "ECA,"
+        },
+        {
+          "confidence" : 0.397,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1171.56,
+          "text" : "go"
+        },
+        {
+          "confidence" : 0.054,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1171.62,
+          "text" : "to"
+        },
+        {
+          "confidence" : 0.254,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1171.68,
+          "text" : "the"
+        },
+        {
+          "confidence" : 0.123,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1171.8,
+          "text" : "bowl"
+        },
+        {
+          "confidence" : 0.208,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1171.98,
+          "text" : "in"
+        },
+        {
+          "confidence" : 0.064,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1172.04,
+          "text" : "Boston,"
+        },
+        {
+          "confidence" : 0.03,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1172.46,
+          "text" : "you"
+        },
+        {
+          "confidence" : 0.177,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1172.58,
+          "text" : "know."
+        },
+        {
+          "confidence" : 0.33,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1172.7,
+          "text" : "Yeah."
+        },
+        {
+          "confidence" : 0.237,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1173.18,
+          "text" : "Just"
+        },
+        {
+          "confidence" : 0.307,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1173.54,
+          "text" : "for"
+        },
+        {
+          "confidence" : 0.221,
+          "durationSeconds" : 7.02,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 1173.78,
+          "text" : "my..."
+        },
+        {
+          "confidence" : 0.193,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1195.74,
+          "text" : "Now,"
+        },
+        {
+          "confidence" : 0.074,
+          "durationSeconds" : 1.02,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1196.22,
+          "text" : "when"
+        },
+        {
+          "confidence" : 0.035,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1197.24,
+          "text" : "he"
+        },
+        {
+          "confidence" : 0.031,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1197.48,
+          "text" : "related"
+        },
+        {
+          "confidence" : 0.134,
+          "durationSeconds" : 2.04,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s2",
+          "startSeconds" : 1197.78,
+          "text" : "noise..."
+        }
+      ],
+      "sourceResourceID" : "source-recording",
+      "sourceRole" : "recording"
+    }
+  ]
+}
