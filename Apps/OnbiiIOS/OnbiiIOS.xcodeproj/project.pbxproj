@@ -10,15 +10,21 @@
 		3095FB2300C9079775B8F074 /* OnbiiWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7837BC1BB46426003C207CEC /* OnbiiWatchApp.swift */; };
 		3A352AAC2DC87E685E7F869F /* MobileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */; };
 		4AF0E6BBA232BFA11FA1A22F /* WatchRecordingReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */; };
+		5280041E78D9EC852D044827 /* OnbiiUI in Frameworks */ = {isa = PBXBuildFile; productRef = 06FA5C772A0627DD4D4A8104 /* OnbiiUI */; };
+		54A28DAB7EA5E55D296FD4A4 /* MobileObjectRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BCCF1F704D70DB0AF19B21 /* MobileObjectRow.swift */; };
+		5721F1F8C8DB9C43CC297D02 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE413D3D92D925971B92C02E /* Assets.xcassets */; };
 		578F4AD3AC93EEB80C315B58 /* WatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7583FFAB7781BE9676EBE5 /* WatchViewModel.swift */; };
 		63502158B6243A6A9DADA1C1 /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = F34DA394F7B4AA0C37377E25 /* OnbiiCapture */; };
 		66E96A59700146DF9681E224 /* OnbiiTranscription in Frameworks */ = {isa = PBXBuildFile; productRef = 5AB0D86C94A69EF5CCB3201E /* OnbiiTranscription */; };
 		6734D1A1DC35F235A2881264 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AABAAEBB8C0F6B75BBFE71F /* WatchContentView.swift */; };
 		7118FFBD07163A199AB9101C /* OnbiiIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150AA60AB772C3D311284402 /* OnbiiIOSApp.swift */; };
 		7612B9AE1E9DFD49E81B0BEC /* OnbiiWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 27D86F3915B6DEBA3F9EF4A2 /* OnbiiWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		823E08A302D208343EB05082 /* MobileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1D0D513C2BA238F356D4E9 /* MobileSettingsView.swift */; };
 		8A678FEBA88CE5439CD1C640 /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = 06A2A0B4D62AF8412EDDF849 /* OnbiiCapture */; };
+		D2EC4AAB55E5DEDA14EE1E83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AA0ADC649EDF6163684A13F /* Assets.xcassets */; };
 		DC23A4612169788C81F7A159 /* OnbiiArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 1E9F0BD521D5D66DFD988E03 /* OnbiiArchive */; };
 		FB75A29753B4674186A533BD /* MobileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23422C155771BC610732E1B /* MobileContentView.swift */; };
+		FE3FC19093A4C3EB4C5FD4C5 /* MobileObjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C593509792CBD532B6D27A1 /* MobileObjectDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,9 +56,14 @@
 		1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileViewModel.swift; sourceTree = "<group>"; };
 		27D86F3915B6DEBA3F9EF4A2 /* OnbiiWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnbiiWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AABAAEBB8C0F6B75BBFE71F /* WatchContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentView.swift; sourceTree = "<group>"; };
+		48BCCF1F704D70DB0AF19B21 /* MobileObjectRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileObjectRow.swift; sourceTree = "<group>"; };
 		51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRecordingReceiver.swift; sourceTree = "<group>"; };
 		5D776147F91F0F8B65720A25 /* OnbiiIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OnbiiIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C593509792CBD532B6D27A1 /* MobileObjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileObjectDetailView.swift; sourceTree = "<group>"; };
 		7837BC1BB46426003C207CEC /* OnbiiWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbiiWatchApp.swift; sourceTree = "<group>"; };
+		8AA0ADC649EDF6163684A13F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CB1D0D513C2BA238F356D4E9 /* MobileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSettingsView.swift; sourceTree = "<group>"; };
+		DE413D3D92D925971B92C02E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F23422C155771BC610732E1B /* MobileContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileContentView.swift; sourceTree = "<group>"; };
 		F414C7BC4150126A51166468 /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Packages; path = ../../Packages; sourceTree = SOURCE_ROOT; };
 		FA7583FFAB7781BE9676EBE5 /* WatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewModel.swift; sourceTree = "<group>"; };
@@ -74,6 +85,7 @@
 				DC23A4612169788C81F7A159 /* OnbiiArchive in Frameworks */,
 				8A678FEBA88CE5439CD1C640 /* OnbiiCapture in Frameworks */,
 				66E96A59700146DF9681E224 /* OnbiiTranscription in Frameworks */,
+				5280041E78D9EC852D044827 /* OnbiiUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +96,8 @@
 			isa = PBXGroup;
 			children = (
 				BEC821B6273463F2D7CC6A23 /* Packages */,
+				442F44214902307A1251C4C5 /* Resources */,
+				8BF3E9DEC261F318C327EECA /* Resources */,
 				51C149A69DCB6C83BE94C82C /* Sources */,
 				802C818C853FD3A87081D744 /* Sources */,
 				2AEB037CD9AECFC0F9D2C386 /* Products */,
@@ -99,10 +113,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		442F44214902307A1251C4C5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8AA0ADC649EDF6163684A13F /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		51C149A69DCB6C83BE94C82C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				F23422C155771BC610732E1B /* MobileContentView.swift */,
+				6C593509792CBD532B6D27A1 /* MobileObjectDetailView.swift */,
+				48BCCF1F704D70DB0AF19B21 /* MobileObjectRow.swift */,
+				CB1D0D513C2BA238F356D4E9 /* MobileSettingsView.swift */,
 				1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */,
 				150AA60AB772C3D311284402 /* OnbiiIOSApp.swift */,
 				51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */,
@@ -121,6 +146,15 @@
 			path = ../OnbiiWatch/Sources;
 			sourceTree = "<group>";
 		};
+		8BF3E9DEC261F318C327EECA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DE413D3D92D925971B92C02E /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = ../OnbiiWatch/Resources;
+			sourceTree = "<group>";
+		};
 		BEC821B6273463F2D7CC6A23 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +171,7 @@
 			buildConfigurationList = 41DD61A10729E30144A27AE0 /* Build configuration list for PBXNativeTarget "OnbiiIOS" */;
 			buildPhases = (
 				F4809F1351799C7341063E59 /* Sources */,
+				9D1F4D13E588E2076FC20AE1 /* Resources */,
 				D51C717A86B6BDA0FD605641 /* Frameworks */,
 				2813B633D736E82E3A430EBC /* Embed Watch Content */,
 			);
@@ -150,6 +185,7 @@
 				1E9F0BD521D5D66DFD988E03 /* OnbiiArchive */,
 				06A2A0B4D62AF8412EDDF849 /* OnbiiCapture */,
 				5AB0D86C94A69EF5CCB3201E /* OnbiiTranscription */,
+				06FA5C772A0627DD4D4A8104 /* OnbiiUI */,
 			);
 			productName = OnbiiIOS;
 			productReference = 5D776147F91F0F8B65720A25 /* OnbiiIOS.app */;
@@ -160,6 +196,7 @@
 			buildConfigurationList = 2C1E942DD7B00F128276CF51 /* Build configuration list for PBXNativeTarget "OnbiiWatch" */;
 			buildPhases = (
 				2C75E78579AA75C8D664B8FB /* Sources */,
+				DC667E1AD8F6473C3A4FE6E1 /* Resources */,
 				3CEB4E99EF54EE0BE6A0A1C3 /* Frameworks */,
 			);
 			buildRules = (
@@ -215,6 +252,25 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		9D1F4D13E588E2076FC20AE1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2EC4AAB55E5DEDA14EE1E83 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DC667E1AD8F6473C3A4FE6E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5721F1F8C8DB9C43CC297D02 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2C75E78579AA75C8D664B8FB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -231,6 +287,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB75A29753B4674186A533BD /* MobileContentView.swift in Sources */,
+				FE3FC19093A4C3EB4C5FD4C5 /* MobileObjectDetailView.swift in Sources */,
+				54A28DAB7EA5E55D296FD4A4 /* MobileObjectRow.swift in Sources */,
+				823E08A302D208343EB05082 /* MobileSettingsView.swift in Sources */,
 				3A352AAC2DC87E685E7F869F /* MobileViewModel.swift in Sources */,
 				7118FFBD07163A199AB9101C /* OnbiiIOSApp.swift in Sources */,
 				4AF0E6BBA232BFA11FA1A22F /* WatchRecordingReceiver.swift in Sources */,
@@ -317,6 +376,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = OnbiiIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
@@ -400,6 +460,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S52C3W4ZB8;
@@ -424,6 +485,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = OnbiiIOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -448,6 +510,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S52C3W4ZB8;
@@ -511,6 +574,10 @@
 		06A2A0B4D62AF8412EDDF849 /* OnbiiCapture */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OnbiiCapture;
+		};
+		06FA5C772A0627DD4D4A8104 /* OnbiiUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OnbiiUI;
 		};
 		1E9F0BD521D5D66DFD988E03 /* OnbiiArchive */ = {
 			isa = XCSwiftPackageProductDependency;

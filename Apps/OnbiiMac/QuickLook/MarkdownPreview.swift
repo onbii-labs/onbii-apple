@@ -26,7 +26,7 @@ enum MarkdownPreview {
                 flushParagraph()
                 appendBlock(
                     String(line.dropFirst(3)).uppercased(),
-                    font: h2Font, color: .secondaryLabelColor,
+                    font: h2Font, color: Brand.accent,
                     spacingBefore: 14, spacingAfter: 5, into: output
                 )
             } else if line.hasPrefix("# ") {
@@ -129,7 +129,39 @@ enum MarkdownPreview {
 
     // MARK: Fonts
 
-    private static var h1Font: NSFont { .systemFont(ofSize: 22, weight: .bold) }
-    private static var h2Font: NSFont { .systemFont(ofSize: 11, weight: .semibold) }
-    private static var bodyFont: NSFont { .systemFont(ofSize: 13) }
+    /// The preview's type scale. Deliberately the system font, not the brand
+    /// display serif: registering a font inside the Quick Look sandbox is risk
+    /// this panel does not need, and body text should match Finder's.
+    private enum Size {
+        /// The object's title.
+        static let title: CGFloat = 22
+        /// The all-caps section sub-header, matching the apps' sub-label scale.
+        static let subheader: CGFloat = 11
+        /// Body and list items.
+        static let body: CGFloat = 13
+    }
+
+    private static var h1Font: NSFont { .systemFont(ofSize: Size.title, weight: .bold) }
+    private static var h2Font: NSFont {
+        .systemFont(ofSize: Size.subheader, weight: .semibold)
+    }
+    private static var bodyFont: NSFont { .systemFont(ofSize: Size.body) }
+
+    // MARK: Brand
+
+    /// The one brand colour this extension uses, on the small all-caps
+    /// sub-headers where the guidelines want it.
+    ///
+    /// Duplicated from `OnbiiUI`'s `OnbiiAccent` on purpose: the Quick Look
+    /// extension is sandboxed down to read-only access to the previewed file,
+    /// and pulling in SwiftUI plus a resource bundle to colour two headings is
+    /// a bad trade. Keep the two values in step — see
+    /// `Packages/OnbiiUI/Sources/Resources/README.md`.
+    private enum Brand {
+        static let accent = NSColor(name: "OnbiiAccent") { appearance in
+            appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
+                ? NSColor(srgbRed: 0xE7 / 255, green: 0xD5 / 255, blue: 0xBE / 255, alpha: 1)
+                : NSColor(srgbRed: 0xB8 / 255, green: 0x85 / 255, blue: 0x52 / 255, alpha: 1)
+        }
+    }
 }

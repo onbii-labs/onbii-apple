@@ -106,7 +106,7 @@ thin UI shells.
 
 ## Package architecture
 
-Four libraries in `Packages/` (swift-tools 6.0, Swift 6 language mode; macOS 14 /
+Five libraries in `Packages/` (swift-tools 6.0, Swift 6 language mode; macOS 14 /
 iOS 17 / watchOS 10):
 
 - **`OnbiiCore`** — the logical model only: `OnbiiManifest`, `OnbiiResource`,
@@ -121,6 +121,13 @@ iOS 17 / watchOS 10):
   and Watch recording metadata. Much of it is `#if os(macOS)`-gated.
 - **`OnbiiTranscription`** (no deps) — the **replaceable processing boundary**:
   Apple on-device `Speech` transcription. Gated `#if os(macOS) || os(iOS)`.
+- **`OnbiiUI`** (depends on `OnbiiCore`, `OnbiiArchive`) — the shared **presentation
+  layer** for Mac and iPhone: the adaptive brand palette, the Prata display face,
+  the object-status badge, the brand mark, the shared empty state. Contains no
+  knowledge of how objects are written. App icons and each app's global accent
+  colour cannot live here (see
+  `docs/architecture/visual-identity.md`); the Watch deliberately does not depend
+  on it.
 
 These boundaries are deliberate: capture adapters *acquire* media, source
 adapters *normalize* it, the archive *preserves* it, transcription *derives*

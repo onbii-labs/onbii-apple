@@ -26,6 +26,7 @@ targets:
     platform: macOS
     sources:
       - path: Sources
+      - path: Resources
     dependencies:
       - package: OnbiiApple
         product: OnbiiArchive
@@ -33,6 +34,8 @@ targets:
         product: OnbiiCapture
       - package: OnbiiApple
         product: OnbiiTranscription
+      - package: OnbiiApple
+        product: OnbiiUI
       - target: OnbiiMacQuickLook
     settings:
       base:
@@ -42,6 +45,11 @@ targets:
         PRODUCT_MODULE_NAME: OnbiiMac
         MARKETING_VERSION: 0.1.0
         CURRENT_PROJECT_VERSION: 2
+        # The app icon and the global accent colour must come from a catalog
+        # compiled into this target; they cannot be served from the OnbiiUI
+        # package's resource bundle. See Packages/OnbiiUI/Sources/Resources.
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_FILE: Info.plist
         CODE_SIGN_ENTITLEMENTS: OnbiiMac.entitlements

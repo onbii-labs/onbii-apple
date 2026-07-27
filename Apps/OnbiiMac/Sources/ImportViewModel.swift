@@ -5,6 +5,7 @@ import OnbiiArchive
 import OnbiiCapture
 import OnbiiCore
 import OnbiiTranscription
+import OnbiiUI
 import UniformTypeIdentifiers
 
 @MainActor
@@ -36,7 +37,23 @@ final class ImportViewModel {
     private var recordingStartedAt: Date?
 
     var archiveURL: URL?
-    private(set) var selectedBundle: OnbiiBundle?
+
+    /// The objects in the chosen archive, newest first, plus anything the
+    /// person opened from outside it.
+    private(set) var objects: [OnbiiBundle] = []
+    var selectedObjectID: OnbiiObjectID?
+
+    /// Read from the archive directory on every reload.
+    private var archivedObjects: [OnbiiBundle] = []
+    /// Opened from outside the archive — a bundle double-clicked in Finder, say.
+    /// Applications are views: something the person opened should be visible
+    /// even when it does not live in the folder they chose.
+    private var externalObjects: [OnbiiBundle] = []
+
+    /// What this app is doing to an object right now. Session-only: never
+    /// encoded, never written to a manifest, gone when the app quits.
+    private(set) var activity: [OnbiiObjectID: OnbiiObjectActivity] = [:]
+
     private(set) var state: State = .idle
     private(set) var isCapturing = false
     private(set) var captureDuration: TimeInterval = 0
@@ -69,21 +86,45 @@ final class ImportViewModel {
         }
     }
 
+    /// Any operation that must finish before another one starts. Every action
+    /// in the app was already gated on exactly this combination; naming it once
+    /// keeps the toolbar, the menu and the detail pane from drifting apart.
+    var isBusy: Bool {
+        isImporting || isPreparingCapture || isCapturing || isTranscribing
+    }
+
+    /// Derived from the selection rather than stored, so a sidebar selection and
+    /// the detail pane cannot drift apart.
+    var selectedBundle: OnbiiBundle? {
+        guard let selectedObjectID else {
+            return nil
+        }
+        return objects.first { $0.manifest.objectID == selectedObjectID }
+    }
+
     var canTranscribeSelectedBundle: Bool {
         guard let selectedBundle else {
             return false
         }
-        let hasAudioSource = selectedBundle.manifest.resources.contains {
-            $0.role == .source && $0.mediaType.hasPrefix("audio/")
-        }
-        let alreadyHasTranscript = selectedBundle.manifest.resources.contains {
-            $0.id == "derived-transcript" || $0.id == "transcript-markdown"
-        }
-        return hasAudioSource && !alreadyHasTranscript
+        return selectedBundle.manifest.hasTranscribableAudio
+            && !selectedBundle.manifest.hasTranscript
     }
 
+    /// What a person should see about this object at a glance.
+    func indicator(for bundle: OnbiiBundle) -> OnbiiStatusIndicator {
+        OnbiiStatusIndicator(bundle.status, activity: activity[bundle.manifest.objectID])
+    }
+
+    /// The full path, for the place that has room to show it.
     var archiveDisplayName: String {
         archiveURL?.path(percentEncoded: false) ?? "No archive selected"
+    }
+
+    /// Just the folder, for the window subtitle — the full path lives in the
+    /// sidebar footer and in Settings, and repeating it in the title bar only
+    /// crowds it.
+    var archiveShortName: String {
+        archiveURL?.lastPathComponent ?? "No archive selected"
     }
 
     var captureDurationText: String {
@@ -93,7 +134,78 @@ final class ImportViewModel {
 
     init() {
         restoreArchive()
+        reloadObjects()
         Task { await loadLanguages() }
+    }
+
+    /// Re-reads the archive folder. The filesystem is the truth every time:
+    /// an object that arrived by any route — sync, Finder, another app — is
+    /// simply there on the next read.
+    func reloadObjects() {
+        guard let archiveURL else {
+            archivedObjects = []
+            rebuildObjects()
+            return
+        }
+
+        Task {
+            let loaded = await Task.detached(priority: .userInitiated) {
+                let hasAccess = archiveURL.startAccessingSecurityScopedResource()
+                defer {
+                    if hasAccess {
+                        archiveURL.stopAccessingSecurityScopedResource()
+                    }
+                }
+                return OnbiiArchiveIndex().objects(in: [archiveURL])
+            }.value
+
+            archivedObjects = loaded
+            rebuildObjects()
+        }
+    }
+
+    /// Records a bundle this session just wrote or read, without waiting for a
+    /// full reload.
+    private func upsert(_ bundle: OnbiiBundle) {
+        let objectID = bundle.manifest.objectID
+
+        if let index = archivedObjects.firstIndex(
+            where: { $0.manifest.objectID == objectID }
+        ) {
+            archivedObjects[index] = bundle
+        } else if let index = externalObjects.firstIndex(
+            where: { $0.manifest.objectID == objectID }
+        ) {
+            externalObjects[index] = bundle
+        } else if isInsideArchive(bundle.url) {
+            archivedObjects.append(bundle)
+        } else {
+            externalObjects.append(bundle)
+        }
+
+        rebuildObjects()
+    }
+
+    private func rebuildObjects() {
+        let archived = Set(archivedObjects.map(\.manifest.objectID))
+        objects = (
+            archivedObjects
+                + externalObjects.filter { !archived.contains($0.manifest.objectID) }
+        )
+        .sorted { $0.manifest.createdAt > $1.manifest.createdAt }
+
+        if let selectedObjectID,
+           !objects.contains(where: { $0.manifest.objectID == selectedObjectID }) {
+            self.selectedObjectID = nil
+        }
+    }
+
+    private func isInsideArchive(_ bundleURL: URL) -> Bool {
+        guard let archiveURL else {
+            return false
+        }
+        return bundleURL.standardizedFileURL.deletingLastPathComponent().path
+            == archiveURL.standardizedFileURL.path
     }
 
     var selectedTranscriptionLocale: Locale {
@@ -142,6 +254,8 @@ final class ImportViewModel {
                         + error.localizedDescription
                 )
             }
+
+            reloadObjects()
         }
     }
 
@@ -286,10 +400,24 @@ final class ImportViewModel {
     }
 
     func revealSelectedBundle() {
-        guard let bundleURL = selectedBundle?.url else {
+        guard let bundle = selectedBundle else {
             return
         }
-        NSWorkspace.shared.activateFileViewerSelecting([bundleURL])
+        reveal(bundle)
+    }
+
+    /// An object is an ordinary folder. Showing it in Finder is not an escape
+    /// hatch from the app; it is the point.
+    func reveal(_ bundle: OnbiiBundle) {
+        NSWorkspace.shared.activateFileViewerSelecting([bundle.url])
+    }
+
+    /// Reveals the archive folder itself, even when it holds nothing yet.
+    func revealArchive() {
+        guard let archiveURL else {
+            return
+        }
+        NSWorkspace.shared.activateFileViewerSelecting([archiveURL])
     }
 
     func transcribeSelectedBundle() {
@@ -307,11 +435,12 @@ final class ImportViewModel {
             return
         }
 
-        state = .transcribing(message: "Requesting speech recognition access…")
+        beginTranscribing("Requesting speech recognition access…", for: bundle)
         Task {
             let authorization: OnbiiSpeechAuthorization
             if AppleOnDeviceTranscriber.authorization == .notDetermined {
                 guard await confirmGenericSpeechPermissionWording() else {
+                    activity[bundle.manifest.objectID] = nil
                     state = .idle
                     return
                 }
@@ -320,8 +449,9 @@ final class ImportViewModel {
                 authorization = AppleOnDeviceTranscriber.authorization
             }
             guard authorization == .authorized else {
-                state = .failed(
-                    message: "Speech recognition permission is required to transcribe."
+                failTranscribing(
+                    "Speech recognition permission is required to transcribe.",
+                    for: bundle
                 )
                 return
             }
@@ -407,7 +537,8 @@ final class ImportViewModel {
                 try OnbiiBundleWriter().write(request)
                 return try OnbiiBundleReader().read(at: destinationURL)
             }.value
-            selectedBundle = bundle
+            upsert(bundle)
+            selectedObjectID = bundle.manifest.objectID
             state = .completed(bundleURL: destinationURL)
 
             if removeSourceAfterImport {
@@ -423,12 +554,26 @@ final class ImportViewModel {
         }
     }
 
+    /// Transcription progress is both app state and per-object activity: the
+    /// status pill says what the app is doing, the object's row says which
+    /// object it is doing it to.
+    private func beginTranscribing(_ message: String, for bundle: OnbiiBundle) {
+        state = .transcribing(message: message)
+        activity[bundle.manifest.objectID] = .working(message)
+    }
+
+    /// The object is untouched by a failure — only this session's attempt failed.
+    private func failTranscribing(_ message: String, for bundle: OnbiiBundle) {
+        state = .failed(message: message)
+        activity[bundle.manifest.objectID] = .failed(message)
+    }
+
     private func performTranscription(of bundle: OnbiiBundle) async {
         let sourceResources = bundle.manifest.resources.filter {
             $0.role == .source && $0.mediaType.hasPrefix("audio/")
         }
         guard !sourceResources.isEmpty else {
-            state = .failed(message: "This object contains no source audio.")
+            failTranscribing("This object contains no source audio.", for: bundle)
             return
         }
 
@@ -448,14 +593,16 @@ final class ImportViewModel {
             let locale = selectedTranscriptionLocale
             if !(await AppleOnDeviceTranscriber.isModelInstalled(for: locale)) {
                 let name = languageDisplayName(for: locale)
-                state = .transcribing(
-                    message: "Downloading the \(name) language model…"
+                beginTranscribing(
+                    "Downloading the \(name) language model…",
+                    for: bundle
                 )
                 try await AppleOnDeviceTranscriber.prepareModel(for: locale) { fraction in
                     Task { @MainActor [weak self] in
-                        self?.state = .transcribing(
-                            message: "Downloading the \(name) language model… "
-                                + "\(Int(fraction * 100))%"
+                        self?.beginTranscribing(
+                            "Downloading the \(name) language model… "
+                                + "\(Int(fraction * 100))%",
+                            for: bundle
                         )
                     }
                 }
@@ -468,9 +615,10 @@ final class ImportViewModel {
             ]()
 
             for (index, resource) in sourceResources.enumerated() {
-                state = .transcribing(
-                    message: "Transcribing track \(index + 1) of "
-                        + "\(sourceResources.count) on this Mac…"
+                beginTranscribing(
+                    "Transcribing track \(index + 1) of "
+                        + "\(sourceResources.count) on this Mac…",
+                    for: bundle
                 )
                 let role = transcriptRole(for: resource.id)
                 var transcript = try await transcriber.transcribe(
@@ -479,8 +627,9 @@ final class ImportViewModel {
                     sourceRole: role,
                     locale: locale
                 )
-                state = .transcribing(
-                    message: "Identifying speakers on track \(index + 1)…"
+                beginTranscribing(
+                    "Identifying speakers on track \(index + 1)…",
+                    for: bundle
                 )
                 transcript.segments = await Self.diarize(
                     transcript.segments,
@@ -496,8 +645,9 @@ final class ImportViewModel {
                 timelineInputs.append((transcript, offset: offset))
             }
             guard tracks.contains(where: { !$0.segments.isEmpty }) else {
-                state = .failed(
-                    message: "No speech was recognized in this recording."
+                failTranscribing(
+                    "No speech was recognized in this recording.",
+                    for: bundle
                 )
                 return
             }
@@ -512,7 +662,7 @@ final class ImportViewModel {
                 timeline: OnbiiTranscriptTimeline.merge(timelineInputs),
                 speakerModel: anyDiarized ? Self.speakerModelName : nil
             )
-            state = .transcribing(message: "Attaching transcript to the object…")
+            beginTranscribing("Attaching transcript to the object…", for: bundle)
             let processingDirectory = try makeProcessingDirectory()
             defer {
                 try? FileManager.default.removeItem(at: processingDirectory)
@@ -591,12 +741,14 @@ final class ImportViewModel {
             let enriched = try await Task.detached(priority: .userInitiated) {
                 try OnbiiBundleEnricher().enrich(request)
             }.value
-            selectedBundle = enriched
+            activity[bundle.manifest.objectID] = nil
+            upsert(enriched)
             state = .transcribed(bundleURL: bundle.url)
         } catch {
-            state = .failed(
-                message: error.localizedDescription
-                    + " The source recordings were not changed."
+            failTranscribing(
+                error.localizedDescription
+                    + " The source recordings were not changed.",
+                for: bundle
             )
         }
     }
@@ -694,7 +846,8 @@ final class ImportViewModel {
                 try OnbiiBundleWriter().write(request)
                 return try OnbiiBundleReader().read(at: destinationURL)
             }.value
-            selectedBundle = bundle
+            upsert(bundle)
+            selectedObjectID = bundle.manifest.objectID
             state = .completed(bundleURL: destinationURL)
 
             if let cleanupDirectory {
@@ -720,10 +873,11 @@ final class ImportViewModel {
             let bundle = try await Task.detached(priority: .userInitiated) {
                 try OnbiiBundleReader().read(at: bundleURL)
             }.value
-            selectedBundle = bundle
+            upsert(bundle)
+            selectedObjectID = bundle.manifest.objectID
             state = .opened(bundleURL: bundleURL)
         } catch {
-            selectedBundle = nil
+            selectedObjectID = nil
             state = .failed(message: error.localizedDescription)
         }
     }

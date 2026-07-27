@@ -14,6 +14,7 @@ let package = Package(
         .library(name: "OnbiiArchive", targets: ["OnbiiArchive"]),
         .library(name: "OnbiiCapture", targets: ["OnbiiCapture"]),
         .library(name: "OnbiiTranscription", targets: ["OnbiiTranscription"]),
+        .library(name: "OnbiiUI", targets: ["OnbiiUI"]),
     ],
     targets: [
         .target(
@@ -34,6 +35,22 @@ let package = Package(
             path: "OnbiiTranscription/Sources",
             resources: [.copy("Resources/CAMPlusEmbedder.mlmodelc")]
         ),
+        // The shared presentation layer for the Mac and iPhone apps. App icons
+        // and the global accent colour cannot live here — those build settings
+        // only resolve against a catalog compiled into the app target itself —
+        // so each app keeps a minimal catalog of its own.
+        .target(
+            name: "OnbiiUI",
+            dependencies: ["OnbiiCore", "OnbiiArchive"],
+            path: "OnbiiUI/Sources",
+            exclude: ["Resources/README.md"],
+            resources: [
+                .process("Resources/OnbiiBrand.xcassets"),
+                // .copy, not .process: the SIL Open Font License requires
+                // OFL.txt to travel with the font file it covers.
+                .copy("Resources/Fonts"),
+            ]
+        ),
         .testTarget(
             name: "OnbiiCoreTests",
             dependencies: ["OnbiiCore"],
@@ -53,6 +70,11 @@ let package = Package(
             name: "OnbiiCaptureTests",
             dependencies: ["OnbiiCapture"],
             path: "OnbiiCapture/Tests"
+        ),
+        .testTarget(
+            name: "OnbiiUITests",
+            dependencies: ["OnbiiUI", "OnbiiArchive", "OnbiiCore"],
+            path: "OnbiiUI/Tests"
         ),
     ]
 )

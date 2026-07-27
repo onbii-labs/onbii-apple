@@ -4,6 +4,7 @@ import OnbiiArchive
 import OnbiiCapture
 import OnbiiCore
 import OnbiiTranscription
+import OnbiiUI
 import UniformTypeIdentifiers
 
 @MainActor
@@ -29,6 +30,9 @@ final class MobileViewModel {
     private(set) var duration: TimeInterval = 0
     private(set) var objects = [OnbiiBundle]()
     private(set) var archiveDescription = "Connecting to iCloud Drive…"
+    /// What this app is doing to an object right now. Session-only: never
+    /// encoded, never written to a manifest.
+    private(set) var activity = [OnbiiObjectID: OnbiiObjectActivity]()
     var showsImporter = false
     private(set) var availableLanguages = [OnbiiTranscriptionLanguage]()
     var selectedLanguageID = ""
@@ -157,35 +161,52 @@ final class MobileViewModel {
         availableLanguages.first { $0.id == selectedLanguageID }?.locale ?? .current
     }
 
-    func hasTranscript(_ bundle: OnbiiBundle) -> Bool {
-        bundle.manifest.resources.contains { $0.id == "derived-transcript" }
+    /// What a person should see about this object at a glance.
+    func indicator(for bundle: OnbiiBundle) -> OnbiiStatusIndicator {
+        OnbiiStatusIndicator(bundle.status, activity: activity[bundle.manifest.objectID])
+    }
+
+    func canTranscribe(_ bundle: OnbiiBundle) -> Bool {
+        bundle.manifest.hasTranscribableAudio && !bundle.manifest.hasTranscript
     }
 
     func transcribe(_ bundle: OnbiiBundle) {
         guard !isBusy else {
             return
         }
-        let sources = bundle.manifest.resources.filter {
-            $0.role == .source && $0.mediaType.hasPrefix("audio/")
-        }
-        guard !sources.isEmpty else {
-            state = .failed("This object has no source audio to transcribe.")
+        guard bundle.manifest.hasTranscribableAudio else {
+            failTranscribing("This object has no source audio to transcribe.", for: bundle)
             return
         }
-        state = .transcribing("Requesting speech recognition access…")
+        beginTranscribing("Requesting speech recognition access…", for: bundle)
         Task {
             let authorization: OnbiiSpeechAuthorization =
                 AppleOnDeviceTranscriber.authorization == .notDetermined
                     ? await AppleOnDeviceTranscriber.requestAuthorization()
                     : AppleOnDeviceTranscriber.authorization
             guard authorization == .authorized else {
-                state = .failed(
-                    "Speech recognition permission is required to transcribe."
+                failTranscribing(
+                    "Speech recognition permission is required to transcribe.",
+                    for: bundle
                 )
                 return
             }
             await performTranscription(of: bundle)
         }
+    }
+
+    /// Transcription progress is both app state and per-object activity: the
+    /// status section says what the app is doing, the object's row says which
+    /// object it is doing it to.
+    private func beginTranscribing(_ message: String, for bundle: OnbiiBundle) {
+        state = .transcribing(message)
+        activity[bundle.manifest.objectID] = .working(message)
+    }
+
+    /// The object is untouched by a failure — only this session's attempt failed.
+    private func failTranscribing(_ message: String, for bundle: OnbiiBundle) {
+        state = .failed(message)
+        activity[bundle.manifest.objectID] = .failed(message)
     }
 
     private func languageDisplayName(for locale: Locale) -> String {
@@ -263,12 +284,13 @@ final class MobileViewModel {
             let locale = selectedTranscriptionLocale
             if !(await AppleOnDeviceTranscriber.isModelInstalled(for: locale)) {
                 let name = languageDisplayName(for: locale)
-                state = .transcribing("Downloading the \(name) language model…")
+                beginTranscribing("Downloading the \(name) language model…", for: bundle)
                 try await AppleOnDeviceTranscriber.prepareModel(for: locale) { fraction in
                     Task { @MainActor [weak self] in
-                        self?.state = .transcribing(
+                        self?.beginTranscribing(
                             "Downloading the \(name) language model… "
-                                + "\(Int(fraction * 100))%"
+                                + "\(Int(fraction * 100))%",
+                            for: bundle
                         )
                     }
                 }
@@ -282,8 +304,9 @@ final class MobileViewModel {
                 (transcript: OnbiiTrackTranscript, offset: TimeInterval)
             ]()
             for (index, resource) in sources.enumerated() {
-                state = .transcribing(
-                    "Transcribing on this iPhone… (\(index + 1)/\(sources.count))"
+                beginTranscribing(
+                    "Transcribing on this iPhone… (\(index + 1)/\(sources.count))",
+                    for: bundle
                 )
                 var transcript = try await transcriber.transcribe(
                     audioURL: bundle.url(for: resource),
@@ -291,8 +314,9 @@ final class MobileViewModel {
                     sourceRole: "recording",
                     locale: locale
                 )
-                state = .transcribing(
-                    "Identifying speakers… (\(index + 1)/\(sources.count))"
+                beginTranscribing(
+                    "Identifying speakers… (\(index + 1)/\(sources.count))",
+                    for: bundle
                 )
                 transcript.segments = await Self.diarize(
                     transcript.segments,
@@ -309,7 +333,10 @@ final class MobileViewModel {
                 timelineInputs.append((transcript, offset: offset))
             }
             guard tracks.contains(where: { !$0.segments.isEmpty }) else {
-                state = .failed("No speech was recognized in this recording.")
+                failTranscribing(
+                    "No speech was recognized in this recording.",
+                    for: bundle
+                )
                 return
             }
 
@@ -323,7 +350,7 @@ final class MobileViewModel {
                 timeline: OnbiiTranscriptTimeline.merge(timelineInputs),
                 speakerModel: anyDiarized ? Self.speakerModelName : nil
             )
-            state = .transcribing("Attaching transcript to the object…")
+            beginTranscribing("Attaching transcript to the object…", for: bundle)
             let processingDirectory = FileManager.default.temporaryDirectory
                 .appendingPathComponent(
                     "Transcribing-\(UUID().uuidString)",
@@ -408,6 +435,7 @@ final class MobileViewModel {
             let enriched = try await Task.detached(priority: .userInitiated) {
                 try OnbiiBundleEnricher().enrich(request)
             }.value
+            activity[bundle.manifest.objectID] = nil
             if let index = objects.firstIndex(where: {
                 $0.manifest.objectID == bundle.manifest.objectID
             }) {
@@ -415,9 +443,10 @@ final class MobileViewModel {
             }
             state = .completed(bundle.url.lastPathComponent)
         } catch {
-            state = .failed(
+            failTranscribing(
                 error.localizedDescription
-                    + " The source recording was not changed."
+                    + " The source recording was not changed.",
+                for: bundle
             )
         }
     }
@@ -506,32 +535,20 @@ final class MobileViewModel {
         state = .idle
     }
 
-    private func reloadObjects() {
+    /// Re-reads the archive folders. Both are listed even when iCloud is the
+    /// chosen home, so objects preserved locally during an outage stay visible.
+    func reloadObjects() {
         guard let archiveURL else {
             return
         }
 
-        do {
-            var archiveURLs = [archiveURL]
-            let localURL = try localArchiveDirectory()
-            if localURL.standardizedFileURL != archiveURL.standardizedFileURL {
-                archiveURLs.append(localURL)
-            }
-
-            objects = archiveURLs
-                .flatMap { directory in
-                    (try? FileManager.default.contentsOfDirectory(
-                        at: directory,
-                        includingPropertiesForKeys: [.contentModificationDateKey],
-                        options: [.skipsHiddenFiles]
-                    )) ?? []
-                }
-                .filter { $0.pathExtension.lowercased() == "onbii" }
-                .compactMap { try? OnbiiBundleReader().read(at: $0) }
-                .sorted { $0.manifest.createdAt > $1.manifest.createdAt }
-        } catch {
-            state = .failed(error.localizedDescription)
+        var directories = [archiveURL]
+        if let localURL = try? localArchiveDirectory(),
+           localURL.standardizedFileURL != archiveURL.standardizedFileURL {
+            directories.append(localURL)
         }
+
+        objects = OnbiiArchiveIndex().objects(in: directories)
     }
 
     private func localArchiveDirectory() throws -> URL {
