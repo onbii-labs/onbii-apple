@@ -15,6 +15,15 @@ Current implementation direction:
 
 Open questions still to answer here:
 
+- **Does watchOS grant a third-party app enough runtime to keep recording once it
+  loses the foreground — a background mode, an extended runtime session, or
+  nothing?** This decides the shape of the biggest fix in
+  [Milestone 1.6](../milestones/milestone-1.6.md), and it needs measurement on a
+  real device, not an assumption.
+- Does `.record` with `.measurement` recover the speech recognition is currently
+  dropping? Note that this cannot be tested against the existing field-test
+  fixtures — changing the audio session changes what gets recorded — so it needs
+  an A/B recording protocol.
 - Does the Core Audio system-audio probe work reliably for the first
   meeting applications tested?
 - What should the start/stop capture surface feel like on macOS? (Milestone 1.5

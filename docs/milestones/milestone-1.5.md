@@ -41,6 +41,12 @@ The milestone is therefore **half delivered**. What remains — the menu-bar
 service, the activation prompt, background processing — is the "always-ready"
 strand, and it is a coherent second slice rather than leftovers.
 
+**Paused, not abandoned.** The first field test
+([27 July 2026](../field-tests/2026-07-27-field-test-1.md)) found that the loop
+was presentable but not yet honest, and the work that answers it changes the
+object format — which this milestone explicitly says it does not do. That work is
+[Milestone 1.6](milestone-1.6.md), and the always-ready strand resumes after it.
+
 ## Current Implementation Slice
 
 The identity and home half:
