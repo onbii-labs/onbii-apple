@@ -41,7 +41,10 @@ let package = Package(
         // so each app keeps a minimal catalog of its own.
         .target(
             name: "OnbiiUI",
-            dependencies: ["OnbiiCore", "OnbiiArchive"],
+            // OnbiiTranscription is here only for its document model: a view
+            // that reads derived data has to know the shape it was written in.
+            // Nothing in OnbiiUI runs recognition.
+            dependencies: ["OnbiiCore", "OnbiiArchive", "OnbiiTranscription"],
             path: "OnbiiUI/Sources",
             exclude: ["Resources/README.md"],
             resources: [
@@ -73,7 +76,7 @@ let package = Package(
         ),
         .testTarget(
             name: "OnbiiUITests",
-            dependencies: ["OnbiiUI", "OnbiiArchive", "OnbiiCore"],
+            dependencies: ["OnbiiUI", "OnbiiArchive", "OnbiiCore", "OnbiiTranscription"],
             path: "OnbiiUI/Tests"
         ),
     ]

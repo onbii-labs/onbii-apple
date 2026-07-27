@@ -53,6 +53,18 @@ struct MobileObjectDetailView: View {
                 )
             }
 
+            if bundle.manifest.hasTranscript {
+                Section {
+                    NavigationLink {
+                        OnbiiTranscriptView(bundle: bundle)
+                            .navigationTitle("Transcript")
+                            .navigationBarTitleDisplayMode(.inline)
+                    } label: {
+                        Label("Read Transcript", systemImage: "text.alignleft")
+                    }
+                }
+            }
+
             Section {
                 if model.canTranscribe(bundle) {
                     Button {

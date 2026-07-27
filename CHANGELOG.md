@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   the shared one; only the mark artwork is Watch-specific, because a pale colour
   needs area to read on a small screen — see
   `docs/architecture/visual-identity.md`.
+- A transcript reader on iPhone: an object's transcript can now be read in the
+  app as speaker turns with timestamps, rather than only produced.
 - `OnbiiArchiveIndex` and `OnbiiObjectStatus` in `OnbiiArchive`: one shared,
   read-only listing of archive objects and one derivation of an object's status
   from its manifest.

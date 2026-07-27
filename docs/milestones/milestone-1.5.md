@@ -51,6 +51,12 @@ The identity and home half:
   re-reads the archive.
 - **Quick Look**: the accent on section sub-headers and a named type scale, with
   no package dependency added to the sandboxed extension.
+- **A transcript reader on iPhone.** Transcription could be started but its
+  result could not be read without leaving the app. `OnbiiTranscriptView` reads
+  the derived transcript back as speaker turns with timestamps, falling back to
+  the human-readable `transcript.md` when the structured artefact is absent. It
+  states when the transcript was generated, that the sources were unchanged, and
+  that speaker labels are opaque groupings rather than people.
 
 ## Known Milestone Gaps
 
