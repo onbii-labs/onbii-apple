@@ -120,7 +120,14 @@ Gated on evidence, not on effort:
   that has not reached the iPhone. In-app honesty landed; reaching a pocketed
   phone did not.
 - **Recognition and capture tuning** — the largest open question, and the one
-  most likely to change what people think of the product.
+  most likely to change what people think of the product. Note that measuring
+  the whole archive has since reframed it: see
+  [Capture Situations And Processing](../architecture/capture-situations-and-processing.md).
+  The same code produces 0% missed speech at a desk and 58–66% outdoors on the
+  same devices, so this is not "make the recogniser better" but "one fixed
+  processing configuration cannot serve every situation". Tuning the single
+  configuration against the walking fixtures would likely cost the desk case,
+  which currently works. Deliberately **not** in this milestone.
 
 ## The spikes
 

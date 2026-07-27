@@ -10,6 +10,7 @@ Current implementation direction:
 - [iPhone Capture And Import Direction](ios-capture-import-direction.md)
 - [On-device Transcription Spike](on-device-transcription-spike.md)
 - [Rough Speaker Turns](rough-speaker-turns.md)
+- [Capture Situations And Processing](capture-situations-and-processing.md)
 - [Core Audio System-Audio Spike](core-audio-system-audio-spike.md)
 - [Visual Identity](visual-identity.md)
 
@@ -23,7 +24,14 @@ Open questions still to answer here:
 - Does `.record` with `.measurement` recover the speech recognition is currently
   dropping? Note that this cannot be tested against the existing field-test
   fixtures — changing the audio session changes what gets recorded — so it needs
-  an A/B recording protocol.
+  an A/B recording protocol. And note the warning in
+  [Capture Situations And Processing](capture-situations-and-processing.md):
+  tuning one configuration against the worst recordings risks the desk case,
+  which currently works.
+- **How should processing vary with the situation an object was captured in?**
+  Measured across a real archive, the same code produces 0% missed speech at a
+  desk and 58–66% outdoors, on the same devices. That is an architectural
+  question, not a tuning one.
 - Does the Core Audio system-audio probe work reliably for the first
   meeting applications tested?
 - What should the start/stop capture surface feel like on macOS? (Milestone 1.5
