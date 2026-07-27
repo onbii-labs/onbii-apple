@@ -82,10 +82,23 @@ struct ObjectDetailView: View {
 
                 if model.canTranscribeSelectedBundle,
                    bundle.manifest.objectID == model.selectedObjectID {
-                    Button("Transcribe On Device") {
+                    // "Again" rather than a repeat of the same offer: the
+                    // person should know a second run is a new generation, not
+                    // a no-op, and that the existing transcript is kept.
+                    Button(
+                        model.wouldSupersedeTranscript
+                            ? "Transcribe Again"
+                            : "Transcribe On Device"
+                    ) {
                         model.transcribeSelectedBundle()
                     }
                     .disabled(model.isBusy)
+                    .help(
+                        model.wouldSupersedeTranscript
+                            ? "Makes a new transcript in the chosen language. "
+                                + "The current one is kept inside the object."
+                            : "Transcribes the source audio on this Mac."
+                    )
                 }
 
                 Button("Reveal in Finder") {
@@ -126,7 +139,10 @@ struct ObjectDetailView: View {
         ]
 
         if let location = bundle.manifest.location {
-            rows.append(("Location", location.name ?? coordinates(of: location)))
+            rows.append((
+                "Location",
+                location.resolvedName ?? coordinates(of: location)
+            ))
         }
 
         let applications = (bundle.manifest.sourceApplications ?? [])

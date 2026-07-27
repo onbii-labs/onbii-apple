@@ -88,12 +88,13 @@ public struct OnbiiTranscriptView: View {
 
     private func turns(of document: OnbiiTranscriptDocument) -> some View {
         LazyVStack(alignment: .leading, spacing: OnbiiTheme.Spacing.l) {
-            ForEach(Array(Self.turns(in: document).enumerated()), id: \.offset) { _, turn in
+            let turns = OnbiiTranscriptTurns.turns(in: document.timeline)
+            ForEach(Array(turns.enumerated()), id: \.offset) { _, turn in
                 VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.xs) {
                     HStack(spacing: OnbiiTheme.Spacing.s) {
                         Text(turn.speaker)
                             .onbiiSubheaderStyle()
-                        Text(Self.timestamp(turn.startSeconds))
+                        Text(OnbiiTranscriptTurns.timestamp(turn.startSeconds))
                             .font(.caption.monospacedDigit())
                             .foregroundStyle(.onbiiSecondaryText)
                     }
@@ -112,7 +113,8 @@ public struct OnbiiTranscriptView: View {
     }
 
     private func provenance(of document: OnbiiTranscriptDocument) -> some View {
-        VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.xs) {
+        let generations = bundle.manifest.transcriptGenerations
+        return VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.xs) {
             Divider().overlay(Color.onbiiDivider)
 
             Text(
@@ -121,11 +123,43 @@ public struct OnbiiTranscriptView: View {
                     + ". The original recordings were not changed."
             )
 
+            // What this transcript assumed. Spec decision 0033 exists so that
+            // "this transcript is wrong" can be told apart from "this transcript
+            // was made under the wrong assumption" — which is what actually
+            // happened when a Dutch conversation was read as Australian English.
+            if let current = generations.last(where: \.isCurrent),
+               let described = current.configuration?.spokenDescription {
+                Text(described)
+            }
+
             if document.speakerModel != nil {
                 Text(
                     "Speaker labels are a rough grouping by voice. They are not "
                         + "names, and they mean nothing outside this object."
                 )
+            }
+
+            // Earlier generations are retained rather than overwritten (0032),
+            // so what changed stays visible instead of being asserted.
+            if generations.count > 1 {
+                let earlier = generations.dropLast()
+                Text(
+                    earlier.count == 1
+                        ? "An earlier transcript is kept inside this object."
+                        : "\(earlier.count) earlier transcripts are kept inside "
+                            + "this object."
+                )
+                ForEach(Array(earlier.enumerated()), id: \.offset) { _, generation in
+                    if let described = generation.configuration?.spokenDescription {
+                        Text(
+                            "• \(described) Superseded "
+                                + generation.occurredAt.formatted(
+                                    date: .abbreviated, time: .shortened
+                                )
+                                + "."
+                        )
+                    }
+                }
             }
         }
         .font(.caption)
@@ -180,76 +214,4 @@ public struct OnbiiTranscriptView: View {
         )
     }
 
-    // MARK: Shaping
-
-    struct Turn: Equatable {
-        var speaker: String
-        var startSeconds: TimeInterval
-        var text: String
-    }
-
-    /// Collapses the segment timeline into readable turns: consecutive segments
-    /// from the same speaker (or, undiarized, the same capture track) become one
-    /// paragraph rather than one line per recognised phrase.
-    nonisolated static func turns(in document: OnbiiTranscriptDocument) -> [Turn] {
-        var turns: [Turn] = []
-        var currentKey: String?
-        // Diarization labels are internal strings like `t0s1` — track 0,
-        // speaker 1. They must stay opaque, but they should not be read aloud
-        // to anyone either, so they are numbered in order of first appearance.
-        // This is presentation only: the manifest keeps its own labels.
-        var ordinals: [String: Int] = [:]
-
-        for segment in document.timeline {
-            let key = segment.speakerID ?? segment.sourceRole
-            let text = segment.text.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !text.isEmpty else { continue }
-
-            if key == currentKey, var last = turns.popLast() {
-                last.text += " " + text
-                turns.append(last)
-            } else {
-                if let speakerID = segment.speakerID, ordinals[speakerID] == nil {
-                    ordinals[speakerID] = ordinals.count + 1
-                }
-                turns.append(
-                    Turn(
-                        speaker: label(
-                            for: segment,
-                            ordinal: segment.speakerID.flatMap { ordinals[$0] }
-                        ),
-                        startSeconds: segment.startSeconds,
-                        text: text
-                    )
-                )
-                currentKey = key
-            }
-        }
-
-        return turns
-    }
-
-    /// A speaker label, or honest track attribution when the object has not
-    /// been diarized. Track attribution is never presented as a speaker.
-    nonisolated static func label(
-        for segment: OnbiiTranscriptSegment,
-        ordinal: Int? = nil
-    ) -> String {
-        if segment.speakerID != nil {
-            return "Speaker \(ordinal ?? 1)"
-        }
-        return switch segment.sourceRole {
-        case "microphone": "Microphone"
-        case "system-audio": "System audio"
-        default: "Recording"
-        }
-    }
-
-    nonisolated static func timestamp(_ seconds: TimeInterval) -> String {
-        let total = Int(seconds.rounded(.down))
-        let hours = total / 3600
-        return hours > 0
-            ? String(format: "%d:%02d:%02d", hours, (total % 3600) / 60, total % 60)
-            : String(format: "%02d:%02d", total / 60, total % 60)
-    }
 }

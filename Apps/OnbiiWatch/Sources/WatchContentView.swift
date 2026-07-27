@@ -20,6 +20,7 @@ import SwiftUI
 /// strokes here. The Watch-specific mark exists for exactly that reason.
 struct WatchContentView: View {
     @State private var model = WatchViewModel()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack {
@@ -28,6 +29,15 @@ struct WatchContentView: View {
                 // puts the Forest field behind the navigation chrome, which is
                 // where the system draws the clock.
                 .containerBackground(Color("OnbiiForest"), for: .navigation)
+        }
+        // Becoming active is the first moment this app can tell whether a
+        // recording it believes is running actually survived being in the
+        // background. Nothing runs while watchOS has the process suspended, so
+        // there is no earlier honest opportunity.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                model.verifyRecordingIsStillRunning()
+            }
         }
     }
 

@@ -52,6 +52,13 @@ struct MobileSettingsView: View {
                                 .tag(language.id)
                             }
                         }
+                        // Remembered from now on. Left unremembered, every
+                        // launch reset this to the system language — which is
+                        // how a Dutch conversation came to be transcribed as
+                        // Australian English.
+                        .onChange(of: model.selectedLanguageID) { _, _ in
+                            model.rememberTranscriptionLanguage()
+                        }
                     }
                 } header: {
                     Text("Speech recognition")
@@ -61,7 +68,9 @@ struct MobileSettingsView: View {
                         "Transcription always runs on this iPhone. If the "
                             + "on-device recognizer is unavailable, "
                             + "transcription stops rather than sending your "
-                            + "recording to a server."
+                            + "recording to a server. The language is recorded "
+                            + "with each transcript, and a transcript made in "
+                            + "the wrong language can always be made again."
                     )
                 }
 

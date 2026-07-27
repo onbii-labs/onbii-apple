@@ -112,11 +112,20 @@ private struct StatusPill: View {
                 Text(message)
             }
 
-        case let .completed(bundleURL):
+        case let .completed(bundleURL, warning):
             pill {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.onbiiSuccess)
-                Text("\(bundleURL.lastPathComponent) is safely in your archive.")
+                if let warning {
+                    // Preserved, but not as expected. The source is safe; the
+                    // app saying so out loud is the point.
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundStyle(.onbiiWarning)
+                    Text("\(bundleURL.lastPathComponent): \(warning)")
+                        .textSelection(.enabled)
+                } else {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.onbiiSuccess)
+                    Text("\(bundleURL.lastPathComponent) is safely in your archive.")
+                }
             }
 
         case let .transcribed(bundleURL):

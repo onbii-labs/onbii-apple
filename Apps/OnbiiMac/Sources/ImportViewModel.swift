@@ -4,6 +4,7 @@ import Observation
 import OnbiiArchive
 import OnbiiCapture
 import OnbiiCore
+import OnbiiProcessing
 import OnbiiTranscription
 import OnbiiUI
 import UniformTypeIdentifiers
@@ -12,6 +13,7 @@ import UniformTypeIdentifiers
 @Observable
 final class ImportViewModel {
     private static let archiveBookmarkKey = "selectedArchiveBookmark"
+    private static let transcriptionLanguageKey = "selectedTranscriptionLanguage"
 
     enum CaptureKind: Equatable {
         case microphone
@@ -24,7 +26,12 @@ final class ImportViewModel {
         case preparingCapture
         case capturing
         case transcribing(message: String)
-        case completed(bundleURL: URL)
+        /// Preserved. `warning` carries anything the archive noticed while
+        /// preserving it — a capture that reported a duration the file does not
+        /// bear out, for instance. The object is safe either way; an app that
+        /// stayed quiet about this is how a twenty-minute recording came to be
+        /// filed as zero seconds.
+        case completed(bundleURL: URL, warning: String? = nil)
         case transcribed(bundleURL: URL)
         case opened(bundleURL: URL)
         case failed(message: String)
@@ -33,6 +40,10 @@ final class ImportViewModel {
     private let microphoneRecorder = OnbiiMicrophoneRecorder()
     private let dualCaptureSession = OnbiiDualAudioCaptureSession()
     private var durationTask: Task<Void, Never>?
+    private var interruptionTask: Task<Void, Never>?
+    /// Set when a capture ended without being asked to, and carried through to
+    /// the message shown once what was captured has been preserved.
+    private var pendingInterruption: String?
     private var dualCaptureDirectory: URL?
     private var recordingStartedAt: Date?
 
@@ -102,12 +113,20 @@ final class ImportViewModel {
         return objects.first { $0.manifest.objectID == selectedObjectID }
     }
 
+    /// Having a transcript is not a terminal state.
+    ///
+    /// It used to be — `hasTranscribableAudio && !hasTranscript` — and one
+    /// silent wrong language guess then degraded an object permanently, with a
+    /// perfectly good source sitting inside it. Under spec decision `0032`
+    /// offering to reprocess is a normal capability, not a recovery path; a
+    /// second transcript supersedes the first rather than replacing it.
     var canTranscribeSelectedBundle: Bool {
-        guard let selectedBundle else {
-            return false
-        }
-        return selectedBundle.manifest.hasTranscribableAudio
-            && !selectedBundle.manifest.hasTranscript
+        selectedBundle?.manifest.hasTranscribableAudio ?? false
+    }
+
+    /// Whether transcribing this object again would supersede something.
+    var wouldSupersedeTranscript: Bool {
+        selectedBundle?.manifest.hasTranscript ?? false
     }
 
     /// What a person should see about this object at a glance.
@@ -218,14 +237,37 @@ final class ImportViewModel {
             ?? locale.identifier
     }
 
+    /// Restores a remembered choice, or falls back to the system language for a
+    /// person who has never chosen.
+    ///
+    /// The language used to be ordinary view state, so every launch silently
+    /// reset it to whatever the device was set to. That is how a Dutch
+    /// conversation came to be transcribed as Australian English: nobody chose
+    /// it, and nothing said it had been chosen for them.
     private func loadLanguages() async {
         let languages = await AppleOnDeviceTranscriber.availableLanguages()
         availableLanguages = languages
+        let remembered = UserDefaults.standard.string(
+            forKey: Self.transcriptionLanguageKey
+        )
+        if let remembered, languages.contains(where: { $0.id == remembered }) {
+            selectedLanguageID = remembered
+            return
+        }
         if selectedLanguageID.isEmpty
             || !languages.contains(where: { $0.id == selectedLanguageID }) {
             selectedLanguageID = AppleOnDeviceTranscriber
                 .preferredLanguage(among: languages)?.id ?? ""
         }
+    }
+
+    /// Remembers what the person picked. Called by the settings picker.
+    func rememberTranscriptionLanguage() {
+        guard !selectedLanguageID.isEmpty else { return }
+        UserDefaults.standard.set(
+            selectedLanguageID,
+            forKey: Self.transcriptionLanguageKey
+        )
     }
 
     func chooseArchive() {
@@ -312,9 +354,34 @@ final class ImportViewModel {
                 isCapturing = true
                 state = .capturing
                 beginDurationUpdates()
+                observeMicrophoneInterruptions()
             } catch {
                 recordingStartedAt = nil
                 state = .failed(message: error.localizedDescription)
+            }
+        }
+    }
+
+    /// Listens for a microphone capture dying while the app is running.
+    ///
+    /// macOS does not suspend a foreground app the way iOS and watchOS do, so
+    /// the equivalent of the field test's silent death is rarer here — but the
+    /// audio stack can still be pulled out from underneath a recording, and an
+    /// app that would go on displaying a running timer is dishonest on every
+    /// platform.
+    private func observeMicrophoneInterruptions() {
+        interruptionTask?.cancel()
+        interruptionTask = Task { [weak self] in
+            guard let interruptions = self?.microphoneRecorder.interruptions else {
+                return
+            }
+            for await interruption in interruptions {
+                guard let self, isCapturing, captureKind == .microphone else {
+                    return
+                }
+                pendingInterruption = interruption.message
+                stopMicrophoneCapture()
+                return
             }
         }
     }
@@ -364,7 +431,10 @@ final class ImportViewModel {
             stopCallCapture()
             return
         }
+        stopMicrophoneCapture()
+    }
 
+    private func stopMicrophoneCapture() {
         let finalDuration = microphoneRecorder.duration
 
         guard let captureURL = microphoneRecorder.stopRecording() else {
@@ -378,6 +448,8 @@ final class ImportViewModel {
         captureKind = nil
         durationTask?.cancel()
         durationTask = nil
+        interruptionTask?.cancel()
+        interruptionTask = nil
 
         let title = OnbiiRecordingName(startedAt: startedAt).title
         Task {
@@ -426,9 +498,7 @@ final class ImportViewModel {
             return
         }
         guard canTranscribeSelectedBundle else {
-            state = .failed(
-                message: "This object has no untranscribed source audio."
-            )
+            state = .failed(message: "This object has no source audio to transcribe.")
             return
         }
         guard !isCapturing, !isImporting, !isPreparingCapture, !isTranscribing else {
@@ -533,13 +603,26 @@ final class ImportViewModel {
         }
 
         do {
-            let bundle = try await Task.detached(priority: .userInitiated) {
-                try OnbiiBundleWriter().write(request)
-                return try OnbiiBundleReader().read(at: destinationURL)
+            let preserved = try await Task.detached(priority: .userInitiated) {
+                let result = try OnbiiBundleWriter().preserve(request)
+                return (
+                    bundle: try OnbiiBundleReader().read(at: destinationURL),
+                    mismatches: result.durationMismatches
+                )
             }.value
-            upsert(bundle)
-            selectedObjectID = bundle.manifest.objectID
-            state = .completed(bundleURL: destinationURL)
+            upsert(preserved.bundle)
+            selectedObjectID = preserved.bundle.manifest.objectID
+            // Two independent witnesses: what the app saw happen, and what the
+            // archive found in the file. Either alone is worth saying.
+            let noticed = [
+                pendingInterruption,
+                preserved.mismatches.first?.recordedDescription,
+            ].compactMap(\.self)
+            pendingInterruption = nil
+            state = .completed(
+                bundleURL: destinationURL,
+                warning: noticed.isEmpty ? nil : noticed.joined(separator: " ")
+            )
 
             if removeSourceAfterImport {
                 try? FileManager.default.removeItem(at: sourceURL)
@@ -568,15 +651,13 @@ final class ImportViewModel {
         activity[bundle.manifest.objectID] = .failed(message)
     }
 
+    /// Runs the shared transcription pipeline and reports what it is doing.
+    ///
+    /// Everything this used to do by hand — recognise, diarize, render, attach —
+    /// now lives in `OnbiiProcessing`, alongside the identical copy the iPhone
+    /// had. What is left here is what genuinely belongs to a Mac app: what to
+    /// show, and what to do when it fails.
     private func performTranscription(of bundle: OnbiiBundle) async {
-        let sourceResources = bundle.manifest.resources.filter {
-            $0.role == .source && $0.mediaType.hasPrefix("audio/")
-        }
-        guard !sourceResources.isEmpty else {
-            failTranscribing("This object contains no source audio.", for: bundle)
-            return
-        }
-
         let hasBundleAccess = bundle.url.startAccessingSecurityScopedResource()
         let hasArchiveAccess = archiveURL?.startAccessingSecurityScopedResource() ?? false
         defer {
@@ -589,158 +670,18 @@ final class ImportViewModel {
         }
 
         do {
-            let transcriber = AppleOnDeviceTranscriber()
-            let locale = selectedTranscriptionLocale
-            if !(await AppleOnDeviceTranscriber.isModelInstalled(for: locale)) {
-                let name = languageDisplayName(for: locale)
-                beginTranscribing(
-                    "Downloading the \(name) language model…",
-                    for: bundle
-                )
-                try await AppleOnDeviceTranscriber.prepareModel(for: locale) { fraction in
-                    Task { @MainActor [weak self] in
-                        self?.beginTranscribing(
-                            "Downloading the \(name) language model… "
-                                + "\(Int(fraction * 100))%",
-                            for: bundle
-                        )
-                    }
+            let enriched = try await OnbiiTranscriptionRun().run(
+                on: bundle,
+                language: .init(locale: selectedTranscriptionLocale)
+            ) { progress in
+                Task { @MainActor [weak self] in
+                    self?.beginTranscribing(
+                        Self.describe(progress),
+                        for: bundle
+                    )
                 }
-                await loadLanguages()
             }
-            let firstStart = sourceResources.compactMap(\.captureStartedAt).min()
-            var tracks = [OnbiiTrackTranscript]()
-            var timelineInputs = [
-                (transcript: OnbiiTrackTranscript, offset: TimeInterval)
-            ]()
-
-            for (index, resource) in sourceResources.enumerated() {
-                beginTranscribing(
-                    "Transcribing track \(index + 1) of "
-                        + "\(sourceResources.count) on this Mac…",
-                    for: bundle
-                )
-                let role = transcriptRole(for: resource.id)
-                var transcript = try await transcriber.transcribe(
-                    audioURL: bundle.url(for: resource),
-                    sourceResourceID: resource.id,
-                    sourceRole: role,
-                    locale: locale
-                )
-                beginTranscribing(
-                    "Identifying speakers on track \(index + 1)…",
-                    for: bundle
-                )
-                transcript.segments = await Self.diarize(
-                    transcript.segments,
-                    audioURL: bundle.url(for: resource),
-                    labelPrefix: "t\(index)s"
-                )
-                let offset = if let firstStart, let resourceStart = resource.captureStartedAt {
-                    max(0.0, resourceStart.timeIntervalSince(firstStart))
-                } else {
-                    0.0
-                }
-                tracks.append(transcript)
-                timelineInputs.append((transcript, offset: offset))
-            }
-            guard tracks.contains(where: { !$0.segments.isEmpty }) else {
-                failTranscribing(
-                    "No speech was recognized in this recording.",
-                    for: bundle
-                )
-                return
-            }
-
-            let generatedAt = Date()
-            let anyDiarized = tracks.contains { track in
-                track.segments.contains { $0.speakerID != nil }
-            }
-            let document = OnbiiTranscriptDocument(
-                generatedAt: generatedAt,
-                tracks: tracks,
-                timeline: OnbiiTranscriptTimeline.merge(timelineInputs),
-                speakerModel: anyDiarized ? Self.speakerModelName : nil
-            )
-            beginTranscribing("Attaching transcript to the object…", for: bundle)
-            let processingDirectory = try makeProcessingDirectory()
-            defer {
-                try? FileManager.default.removeItem(at: processingDirectory)
-            }
-
-            let jsonURL = processingDirectory.appendingPathComponent("transcript.json")
-            let markdownURL = processingDirectory.appendingPathComponent("transcript.md")
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .iso8601
-            encoder.outputFormatting = [
-                .prettyPrinted,
-                .sortedKeys,
-                .withoutEscapingSlashes,
-            ]
-            try encoder.encode(document).write(to: jsonURL, options: .atomic)
-            try Data(
-                OnbiiTranscriptMarkdown.render(
-                    document,
-                    title: bundle.manifest.title
-                ).utf8
-            ).write(to: markdownURL, options: .atomic)
-
-            let contentURL = processingDirectory.appendingPathComponent("content.md")
-            let speakerCount = Set(document.timeline.compactMap(\.speakerID)).count
-            try Data(
-                OnbiiContentMarkdown.render(
-                    title: bundle.manifest.title,
-                    createdAt: bundle.manifest.createdAt,
-                    sources: bundle.manifest.resources
-                        .filter { $0.role == .source }
-                        .map {
-                            OnbiiContentMarkdown.Source(
-                                storedPath: $0.path,
-                                originalFilename: $0.originalFilename
-                            )
-                        },
-                    location: bundle.manifest.location,
-                    sourceApplications: bundle.manifest.sourceApplications,
-                    transcript: OnbiiTranscriptMarkdown.body(document),
-                    speakerCount: speakerCount > 0 ? speakerCount : nil
-                ).utf8
-            ).write(to: contentURL, options: .atomic)
-
-            let request = OnbiiBundleEnrichmentRequest(
-                bundleURL: bundle.url,
-                artifacts: [
-                    OnbiiBundleArtifact(
-                        sourceURL: jsonURL,
-                        resourceID: "derived-transcript",
-                        role: .derived,
-                        path: "derived/transcript.json",
-                        mediaType: "application/json"
-                    ),
-                    OnbiiBundleArtifact(
-                        sourceURL: markdownURL,
-                        resourceID: "transcript-markdown",
-                        role: .humanReadable,
-                        path: "transcript.md",
-                        mediaType: "text/markdown; charset=utf-8"
-                    ),
-                ],
-                replacements: [
-                    OnbiiBundleArtifact(
-                        sourceURL: contentURL,
-                        resourceID: "content-markdown",
-                        role: .humanReadable,
-                        path: "content.md",
-                        mediaType: "text/markdown; charset=utf-8"
-                    ),
-                ],
-                action: "transcribed",
-                occurredAt: generatedAt,
-                agent: .init(kind: "software", name: "Apple Speech on-device"),
-                inputResourceIDs: sourceResources.map(\.id)
-            )
-            let enriched = try await Task.detached(priority: .userInitiated) {
-                try OnbiiBundleEnricher().enrich(request)
-            }.value
+            await loadLanguages()
             activity[bundle.manifest.objectID] = nil
             upsert(enriched)
             state = .transcribed(bundleURL: bundle.url)
@@ -750,6 +691,23 @@ final class ImportViewModel {
                     + " The source recordings were not changed.",
                 for: bundle
             )
+        }
+    }
+
+    private static func describe(_ progress: OnbiiTranscriptionRun.Progress) -> String {
+        switch progress {
+        case let .downloadingModel(language, fraction):
+            "Downloading the \(language) language model… \(Int(fraction * 100))%"
+        case let .transcribing(track, total):
+            total > 1
+                ? "Transcribing track \(track) of \(total) on this Mac…"
+                : "Transcribing on this Mac…"
+        case let .identifyingSpeakers(track, total):
+            total > 1
+                ? "Identifying speakers on track \(track)…"
+                : "Identifying speakers…"
+        case .attaching:
+            "Attaching transcript to the object…"
         }
     }
 
@@ -842,13 +800,19 @@ final class ImportViewModel {
         }
 
         do {
-            let bundle = try await Task.detached(priority: .userInitiated) {
-                try OnbiiBundleWriter().write(request)
-                return try OnbiiBundleReader().read(at: destinationURL)
+            let preserved = try await Task.detached(priority: .userInitiated) {
+                let result = try OnbiiBundleWriter().preserve(request)
+                return (
+                    bundle: try OnbiiBundleReader().read(at: destinationURL),
+                    mismatches: result.durationMismatches
+                )
             }.value
-            upsert(bundle)
-            selectedObjectID = bundle.manifest.objectID
-            state = .completed(bundleURL: destinationURL)
+            upsert(preserved.bundle)
+            selectedObjectID = preserved.bundle.manifest.objectID
+            state = .completed(
+                bundleURL: destinationURL,
+                warning: preserved.mismatches.first?.recordedDescription
+            )
 
             if let cleanupDirectory {
                 try? FileManager.default.removeItem(at: cleanupDirectory)

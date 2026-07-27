@@ -75,7 +75,7 @@ public enum OnbiiContentMarkdown {
         let coordinates = String(
             format: "%.4f, %.4f", location.latitude, location.longitude
         )
-        if let name = location.name, !name.isEmpty {
+        if let name = location.resolvedName {
             return "\(name) (\(coordinates))"
         }
         return coordinates

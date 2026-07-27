@@ -23,6 +23,21 @@ public struct OnbiiLocation: Codable, Equatable, Sendable {
         self.name = name
         self.capturedAt = capturedAt
     }
+
+    /// The place name, or `nil` when there is not one to show.
+    ///
+    /// For a best-effort field, **absent and empty are the same thing**. A
+    /// geocoder can succeed and hand back an empty label — a park a few hundred
+    /// metres from a named city does exactly that — and every reader that
+    /// checked only for `nil` then rendered a blank row. Objects already written
+    /// carry `"name": ""`, so tolerating it on read is not optional.
+    ///
+    /// This is the single definition. Readers use it instead of `name`.
+    public var resolvedName: String? {
+        guard let name else { return nil }
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
 }
 
 /// An application whose audio was present in a system-audio capture. For a

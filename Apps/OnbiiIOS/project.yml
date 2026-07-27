@@ -35,6 +35,8 @@ targets:
       - package: OnbiiApple
         product: OnbiiTranscription
       - package: OnbiiApple
+        product: OnbiiProcessing
+      - package: OnbiiApple
         product: OnbiiUI
       - target: OnbiiWatch
     settings:

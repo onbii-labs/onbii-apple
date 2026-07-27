@@ -108,10 +108,55 @@ public struct OnbiiResource: Codable, Equatable, Sendable {
     }
 }
 
+/// The inputs that decided what a derived result says.
+///
+/// Required by spec decision `0033`: a derived result records the configuration
+/// that determined it, in the object's provenance — not only inside the derived
+/// artifact's own format. Field test 1 produced the case. A recording was
+/// transcribed as Australian English because that was the phone's system
+/// language; the conversation was Dutch. The locale was written only into
+/// `derived/transcript.json`, so reading the object could not distinguish
+/// "transcribed badly" from "transcribed under the wrong assumption" — and only
+/// the second was true.
+///
+/// Deliberately generic. `0033` constrains the *record*, never the technique:
+/// how a language is arrived at differs by platform and will keep changing, so
+/// implementation detail goes in ``parameters`` rather than growing fields here.
+public struct OnbiiDerivationConfiguration: Codable, Equatable, Sendable {
+    /// How the language was arrived at. Automatic detection is not required by
+    /// `0033`; an implementation that only ever asks a person is conformant, and
+    /// records that it asked.
+    public enum LanguageSelection: String, Codable, Sendable {
+        case chosen
+        case detected
+    }
+
+    /// BCP-47 tags. More than one must be expressible for a single result:
+    /// a conversation that runs Dutch and English together is the ordinary case.
+    public var languages: [String]?
+    public var languageSelection: LanguageSelection?
+    /// Implementation-specific detail. An implementation-specific derived
+    /// document may hold more; it may not be the only place the deciding inputs
+    /// appear.
+    public var parameters: [String: String]?
+
+    public init(
+        languages: [String]? = nil,
+        languageSelection: LanguageSelection? = nil,
+        parameters: [String: String]? = nil
+    ) {
+        self.languages = languages
+        self.languageSelection = languageSelection
+        self.parameters = parameters
+    }
+}
+
 public struct OnbiiProvenanceEvent: Codable, Equatable, Sendable {
     public struct Agent: Codable, Equatable, Sendable {
         public var kind: String
         public var name: String
+        /// Enough to tell two generations apart — required by `0033` for the
+        /// model or tool that produced a derived result.
         public var version: String?
 
         public init(kind: String, name: String, version: String? = nil) {
@@ -121,12 +166,20 @@ public struct OnbiiProvenanceEvent: Codable, Equatable, Sendable {
         }
     }
 
+    /// Reprocessing supersedes rather than overwriting or forking (`0032`).
+    /// A `superseded` event names which result replaced which.
+    public static let supersededAction = "superseded"
+
     public var id: String
     public var action: String
     public var occurredAt: Date
     public var agent: Agent
     public var inputResourceIDs: [String]
     public var outputResourceIDs: [String]
+    /// What determined this result, where it was a derivation. Travels with the
+    /// event rather than the resource, so a superseded generation keeps the
+    /// configuration it was made with instead of inheriting the current one.
+    public var configuration: OnbiiDerivationConfiguration?
 
     public init(
         id: String = UUID().uuidString.lowercased(),
@@ -134,7 +187,8 @@ public struct OnbiiProvenanceEvent: Codable, Equatable, Sendable {
         occurredAt: Date,
         agent: Agent,
         inputResourceIDs: [String] = [],
-        outputResourceIDs: [String] = []
+        outputResourceIDs: [String] = [],
+        configuration: OnbiiDerivationConfiguration? = nil
     ) {
         self.id = id
         self.action = action
@@ -142,5 +196,6 @@ public struct OnbiiProvenanceEvent: Codable, Equatable, Sendable {
         self.agent = agent
         self.inputResourceIDs = inputResourceIDs
         self.outputResourceIDs = outputResourceIDs
+        self.configuration = configuration
     }
 }

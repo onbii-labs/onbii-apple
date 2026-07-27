@@ -10,7 +10,8 @@
 		3095FB2300C9079775B8F074 /* OnbiiWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7837BC1BB46426003C207CEC /* OnbiiWatchApp.swift */; };
 		3A352AAC2DC87E685E7F869F /* MobileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1882EA93E5C0E8A18593B0F5 /* MobileViewModel.swift */; };
 		4AF0E6BBA232BFA11FA1A22F /* WatchRecordingReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51185C6FAD003FD5C06002CF /* WatchRecordingReceiver.swift */; };
-		5280041E78D9EC852D044827 /* OnbiiUI in Frameworks */ = {isa = PBXBuildFile; productRef = 06FA5C772A0627DD4D4A8104 /* OnbiiUI */; };
+		518348B7890F50560ED54556 /* OnbiiUI in Frameworks */ = {isa = PBXBuildFile; productRef = 06FA5C772A0627DD4D4A8104 /* OnbiiUI */; };
+		5280041E78D9EC852D044827 /* OnbiiProcessing in Frameworks */ = {isa = PBXBuildFile; productRef = 7B0FF5E9CEB9BBE73B07454A /* OnbiiProcessing */; };
 		54A28DAB7EA5E55D296FD4A4 /* MobileObjectRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BCCF1F704D70DB0AF19B21 /* MobileObjectRow.swift */; };
 		5721F1F8C8DB9C43CC297D02 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE413D3D92D925971B92C02E /* Assets.xcassets */; };
 		578F4AD3AC93EEB80C315B58 /* WatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7583FFAB7781BE9676EBE5 /* WatchViewModel.swift */; };
@@ -85,7 +86,8 @@
 				DC23A4612169788C81F7A159 /* OnbiiArchive in Frameworks */,
 				8A678FEBA88CE5439CD1C640 /* OnbiiCapture in Frameworks */,
 				66E96A59700146DF9681E224 /* OnbiiTranscription in Frameworks */,
-				5280041E78D9EC852D044827 /* OnbiiUI in Frameworks */,
+				5280041E78D9EC852D044827 /* OnbiiProcessing in Frameworks */,
+				518348B7890F50560ED54556 /* OnbiiUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +187,7 @@
 				1E9F0BD521D5D66DFD988E03 /* OnbiiArchive */,
 				06A2A0B4D62AF8412EDDF849 /* OnbiiCapture */,
 				5AB0D86C94A69EF5CCB3201E /* OnbiiTranscription */,
+				7B0FF5E9CEB9BBE73B07454A /* OnbiiProcessing */,
 				06FA5C772A0627DD4D4A8104 /* OnbiiUI */,
 			);
 			productName = OnbiiIOS;
@@ -586,6 +589,10 @@
 		5AB0D86C94A69EF5CCB3201E /* OnbiiTranscription */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OnbiiTranscription;
+		};
+		7B0FF5E9CEB9BBE73B07454A /* OnbiiProcessing */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OnbiiProcessing;
 		};
 		F34DA394F7B4AA0C37377E25 /* OnbiiCapture */ = {
 			isa = XCSwiftPackageProductDependency;

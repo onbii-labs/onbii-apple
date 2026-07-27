@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 struct MobileContentView: View {
     @State private var model = MobileViewModel()
     @State private var showsSettings = false
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack {
@@ -44,6 +45,15 @@ struct MobileContentView: View {
             }
         }
         .tint(.onbiiAccent)
+        // Becoming active is the first moment this app can tell whether a
+        // recording it believes is running survived the screen locking. Nothing
+        // runs while iOS has the process suspended, so there is no earlier
+        // honest opportunity.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                model.verifyRecordingIsStillRunning()
+            }
+        }
         .sheet(isPresented: $showsSettings) {
             MobileSettingsView(model: model)
         }
@@ -184,11 +194,19 @@ struct MobileContentView: View {
                 Text(message)
             }
 
-        case let .completed(filename):
+        case let .completed(filename, warning):
             statusRow {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.onbiiSuccess)
-                Text("\(filename) is safely stored.")
+                if let warning {
+                    // Preserved, but not as expected. The source is safe; the
+                    // app saying so out loud is the point.
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundStyle(.onbiiWarning)
+                    Text("\(filename): \(warning)")
+                } else {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.onbiiSuccess)
+                    Text("\(filename) is safely stored.")
+                }
             }
 
         case let .failed(message):

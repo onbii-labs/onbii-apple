@@ -29,28 +29,43 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
     /// Artifacts that overwrite an existing resource in place (matched by ID at
     /// the same path), e.g. rewriting `content.md` to reflect a new transcript.
     /// Unlike `artifacts`, each must already exist in the bundle.
+    ///
+    /// Use this only where nothing is lost by overwriting. Where the outgoing
+    /// content is a derived *result*, use ``supersessions`` — `0032` requires
+    /// that regenerating a result retains what it replaced.
     public var replacements: [OnbiiBundleArtifact]
+    /// Artifacts that take over an existing resource's path and ID while the
+    /// outgoing generation is retained under a new one. See
+    /// ``OnbiiBundleSupersession``.
+    public var supersessions: [OnbiiBundleSupersession]
     public var action: String
     public var occurredAt: Date
     public var agent: OnbiiProvenanceEvent.Agent
     public var inputResourceIDs: [String]
+    /// What determined this result — languages, how they were chosen, the model.
+    /// Required by `0033` for the inputs that decide what a derived result says.
+    public var configuration: OnbiiDerivationConfiguration?
 
     public init(
         bundleURL: URL,
         artifacts: [OnbiiBundleArtifact],
         replacements: [OnbiiBundleArtifact] = [],
+        supersessions: [OnbiiBundleSupersession] = [],
         action: String,
         occurredAt: Date = Date(),
         agent: OnbiiProvenanceEvent.Agent,
-        inputResourceIDs: [String]
+        inputResourceIDs: [String],
+        configuration: OnbiiDerivationConfiguration? = nil
     ) {
         self.bundleURL = bundleURL
         self.artifacts = artifacts
         self.replacements = replacements
+        self.supersessions = supersessions
         self.action = action
         self.occurredAt = occurredAt
         self.agent = agent
         self.inputResourceIDs = inputResourceIDs
+        self.configuration = configuration
     }
 }
 
@@ -62,6 +77,8 @@ public enum OnbiiBundleEnricherError: Error, Equatable, Sendable {
     case unknownReplacementResource(String)
     case replacementPathMismatch(String)
     case replacementFailed(String)
+    case unknownSupersededResource(String)
+    case supersessionPathMismatch(String)
 }
 
 extension OnbiiBundleEnricherError: LocalizedError {
@@ -81,6 +98,10 @@ extension OnbiiBundleEnricherError: LocalizedError {
             "The replacement path does not match the existing resource: \(id)"
         case .replacementFailed(let path):
             "The validated bundle update could not replace the bundle at \(path)."
+        case .unknownSupersededResource(let id):
+            "There is no existing result to supersede for: \(id)"
+        case .supersessionPathMismatch(let id):
+            "The new generation's path does not match the one it supersedes: \(id)"
         }
     }
 }
@@ -130,6 +151,64 @@ public struct OnbiiBundleEnricher: Sendable {
             )
         }
 
+        // Retire outgoing generations before the incoming ones take their
+        // paths. Retention is the default under 0032 — never a setting, and
+        // never conditional on there being room.
+        var retiredResourceIDs = [String]()
+        for supersession in request.supersessions {
+            guard let index = manifest.resources.firstIndex(
+                where: { $0.id == supersession.artifact.resourceID }
+            ) else {
+                throw OnbiiBundleEnricherError.unknownSupersededResource(
+                    supersession.artifact.resourceID
+                )
+            }
+            let outgoing = manifest.resources[index]
+            let retiredPath = OnbiiSupersededGeneration.path(
+                for: outgoing.path,
+                at: request.occurredAt
+            )
+            let retiredID = OnbiiSupersededGeneration.resourceID(
+                for: outgoing.id,
+                at: request.occurredAt
+            )
+            let retiredURL = stagingURL.appendingPathComponent(retiredPath)
+            try fileManager.createDirectory(
+                at: retiredURL.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            try fileManager.moveItem(
+                at: stagingURL.appendingPathComponent(outgoing.path),
+                to: retiredURL
+            )
+            var retired = outgoing
+            retired.id = retiredID
+            retired.path = retiredPath
+            manifest.resources.append(retired)
+            retiredResourceIDs.append(retiredID)
+
+            // The incoming generation takes the stable path and ID, so every
+            // existing reader keeps finding the current result unchanged.
+            let destinationURL = stagingURL.appendingPathComponent(
+                supersession.artifact.path
+            )
+            try fileManager.createDirectory(
+                at: destinationURL.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            try fileManager.copyItem(
+                at: supersession.artifact.sourceURL,
+                to: destinationURL
+            )
+            let attributes = try fileManager.attributesOfItem(
+                atPath: destinationURL.path
+            )
+            manifest.resources[index].role = supersession.artifact.role
+            manifest.resources[index].mediaType = supersession.artifact.mediaType
+            manifest.resources[index].byteCount =
+                (attributes[.size] as? NSNumber)?.int64Value
+        }
+
         for replacement in request.replacements {
             let destinationURL = stagingURL.appendingPathComponent(replacement.path)
             if fileManager.fileExists(atPath: destinationURL.path) {
@@ -162,8 +241,24 @@ public struct OnbiiBundleEnricher: Sendable {
                 inputResourceIDs: request.inputResourceIDs,
                 outputResourceIDs: request.artifacts.map(\.resourceID)
                     + request.replacements.map(\.resourceID)
+                    + request.supersessions.map(\.artifact.resourceID),
+                configuration: request.configuration
             )
         )
+        if !retiredResourceIDs.isEmpty {
+            // 0032: provenance must express supersession, not only creation —
+            // which result replaced which, produced by what, and when.
+            manifest.provenance.append(
+                OnbiiProvenanceEvent(
+                    action: OnbiiProvenanceEvent.supersededAction,
+                    occurredAt: request.occurredAt,
+                    agent: request.agent,
+                    inputResourceIDs: retiredResourceIDs,
+                    outputResourceIDs: request.supersessions
+                        .map(\.artifact.resourceID)
+                )
+            )
+        }
         try manifest.validate()
         try Self.write(manifest, to: stagingURL)
         _ = try OnbiiBundleReader().read(at: stagingURL)
@@ -187,7 +282,9 @@ public struct OnbiiBundleEnricher: Sendable {
         against manifest: OnbiiManifest,
         fileManager: FileManager
     ) throws {
-        guard !(request.artifacts.isEmpty && request.replacements.isEmpty) else {
+        guard !(request.artifacts.isEmpty
+            && request.replacements.isEmpty
+            && request.supersessions.isEmpty) else {
             throw OnbiiBundleEnricherError.noArtifacts
         }
 
@@ -216,6 +313,39 @@ public struct OnbiiBundleEnricher: Sendable {
                 throw OnbiiBundleEnricherError.replacementPathMismatch(
                     replacement.resourceID
                 )
+            }
+        }
+
+        for supersession in request.supersessions {
+            let artifact = supersession.artifact
+            try Self.assertRegularFile(artifact.sourceURL, fileManager: fileManager)
+            guard let existing = manifest.resources.first(
+                where: { $0.id == artifact.resourceID }
+            ) else {
+                // Nothing to supersede. That is a caller mistake worth
+                // surfacing: adding a first generation is `artifacts`.
+                throw OnbiiBundleEnricherError.unknownSupersededResource(
+                    artifact.resourceID
+                )
+            }
+            guard existing.path == artifact.path else {
+                throw OnbiiBundleEnricherError.supersessionPathMismatch(
+                    artifact.resourceID
+                )
+            }
+            let retiredID = OnbiiSupersededGeneration.resourceID(
+                for: existing.id,
+                at: request.occurredAt
+            )
+            guard resourceIDs.insert(retiredID).inserted else {
+                throw OnbiiBundleEnricherError.duplicateResourceID(retiredID)
+            }
+            let retiredPath = OnbiiSupersededGeneration.path(
+                for: existing.path,
+                at: request.occurredAt
+            )
+            guard resourcePaths.insert(retiredPath).inserted else {
+                throw OnbiiBundleEnricherError.duplicateResourcePath(retiredPath)
             }
         }
 

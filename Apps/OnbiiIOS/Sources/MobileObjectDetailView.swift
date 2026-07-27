@@ -81,12 +81,30 @@ struct MobileObjectDetailView: View {
 
             Section {
                 if model.canTranscribe(bundle) {
+                    // "Again" rather than a repeat of the same offer: the person
+                    // should know a second run is a new generation, not a no-op,
+                    // and that the existing transcript is kept.
+                    let supersedes = model.wouldSupersedeTranscript(bundle)
                     Button {
                         model.transcribe(bundle)
                     } label: {
-                        Label("Transcribe On Device", systemImage: "text.viewfinder")
+                        Label(
+                            supersedes ? "Transcribe Again" : "Transcribe On Device",
+                            systemImage: supersedes
+                                ? "arrow.clockwise" : "text.viewfinder"
+                        )
                     }
                     .disabled(model.isBusy)
+
+                    if supersedes {
+                        Text(
+                            "Makes a new transcript in the language set in "
+                                + "Settings. The current one is kept inside the "
+                                + "object."
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.onbiiSecondaryText)
+                    }
                 }
 
                 ShareLink(item: bundle.url) {
@@ -117,7 +135,7 @@ struct MobileObjectDetailView: View {
         if let location = bundle.manifest.location {
             rows.append((
                 "Location",
-                location.name
+                location.resolvedName
                     ?? String(
                         format: "%.4f, %.4f",
                         location.latitude,

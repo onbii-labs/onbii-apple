@@ -14,6 +14,7 @@ let package = Package(
         .library(name: "OnbiiArchive", targets: ["OnbiiArchive"]),
         .library(name: "OnbiiCapture", targets: ["OnbiiCapture"]),
         .library(name: "OnbiiTranscription", targets: ["OnbiiTranscription"]),
+        .library(name: "OnbiiProcessing", targets: ["OnbiiProcessing"]),
         .library(name: "OnbiiUI", targets: ["OnbiiUI"]),
     ],
     targets: [
@@ -34,6 +35,17 @@ let package = Package(
             name: "OnbiiTranscription",
             path: "OnbiiTranscription/Sources",
             resources: [.copy("Resources/CAMPlusEmbedder.mlmodelc")]
+        ),
+        // The processing pipeline: the stage that reads an object's sources,
+        // derives from them, and hands the result back to the archive. It is the
+        // one place allowed to know both `OnbiiTranscription` and
+        // `OnbiiArchive`, which is why it exists — `OnbiiTranscription` stays
+        // free of any knowledge of bundles, and `OnbiiArchive` stays free of any
+        // knowledge of recognition.
+        .target(
+            name: "OnbiiProcessing",
+            dependencies: ["OnbiiCore", "OnbiiArchive", "OnbiiTranscription"],
+            path: "OnbiiProcessing/Sources"
         ),
         // The shared presentation layer for the Mac and iPhone apps. App icons
         // and the global accent colour cannot live here — those build settings
@@ -73,6 +85,13 @@ let package = Package(
             name: "OnbiiCaptureTests",
             dependencies: ["OnbiiCapture"],
             path: "OnbiiCapture/Tests"
+        ),
+        .testTarget(
+            name: "OnbiiProcessingTests",
+            dependencies: [
+                "OnbiiProcessing", "OnbiiArchive", "OnbiiCore", "OnbiiTranscription",
+            ],
+            path: "OnbiiProcessing/Tests"
         ),
         .testTarget(
             name: "OnbiiUITests",
