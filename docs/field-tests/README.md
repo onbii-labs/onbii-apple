@@ -6,7 +6,9 @@ use revealed.
 - [Field Test 1 — 27 July 2026](2026-07-27-field-test-1.md) — a walk through a
   city and a conversation at a table. Watch and iPhone. Found silent capture
   death, a permanently mis-transcribed object, and most audible speech missing
-  from the transcripts.
+  from the transcripts. Its addendum records the first reprocessing of a real
+  object: correcting the language recovered 43% more words and was still not
+  enough, which separated the language problem from the recognition one.
 
 ## Why these are kept
 
