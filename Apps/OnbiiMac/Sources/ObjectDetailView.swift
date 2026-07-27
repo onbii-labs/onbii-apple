@@ -10,19 +10,62 @@ struct ObjectDetailView: View {
     let bundle: OnbiiBundle
     @Bindable var model: ImportViewModel
 
+    /// Folded away by default. The transcript is what the pane is for; the
+    /// metadata answers occasional questions and should not crowd it out.
+    @State private var showsDetails = false
+    @State private var showsResources = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.l) {
                 header
+
+                if bundle.manifest.hasTranscript {
+                    Divider().overlay(Color.onbiiDivider)
+                    transcript
+                }
+
                 Divider().overlay(Color.onbiiDivider)
-                facts
-                Divider().overlay(Color.onbiiDivider)
-                resources
+                fold("Details", isExpanded: $showsDetails) { facts }
+                fold("Resources", isExpanded: $showsResources) { resources }
             }
             .padding(OnbiiTheme.Spacing.xl)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(Color.onbiiBackground)
+        .id(bundle.manifest.objectID)
+    }
+
+    private var transcript: some View {
+        VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.s) {
+            Text("Transcript")
+                .onbiiSubheaderStyle()
+            // Not scrolling: this pane already does, and nesting the two would
+            // trap the scroll wheel over the transcript.
+            OnbiiTranscriptView(
+                bundle: bundle,
+                accessedThrough: model.archiveURL,
+                scrolls: false
+            )
+        }
+    }
+
+    private func fold(
+        _ title: String,
+        isExpanded: Binding<Bool>,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        // Built before the escaping closure so the builder need not escape.
+        let folded = content()
+            .padding(.top, OnbiiTheme.Spacing.s)
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+        return DisclosureGroup(isExpanded: isExpanded) {
+            folded
+        } label: {
+            Text(title)
+                .onbiiSubheaderStyle()
+        }
     }
 
     private var header: some View {
@@ -102,9 +145,6 @@ struct ObjectDetailView: View {
 
     private var resources: some View {
         VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.s) {
-            Text("Resources")
-                .onbiiSubheaderStyle()
-
             ForEach(bundle.manifest.resources, id: \.id) { resource in
                 HStack(spacing: OnbiiTheme.Spacing.m) {
                     Text(roleLabel(resource.role))

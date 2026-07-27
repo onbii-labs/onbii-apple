@@ -15,10 +15,27 @@ import SwiftUI
 /// this view leaves every object exactly as it was.
 public struct OnbiiTranscriptView: View {
     private let bundle: OnbiiBundle
+    private let scopeURL: URL?
+    private let scrolls: Bool
     @State private var state: LoadState = .loading
 
-    public init(bundle: OnbiiBundle) {
+    /// - Parameters:
+    ///   - accessedThrough: the security-scoped URL that grants access to this
+    ///     bundle, where one is needed. A sandboxed macOS app holds its
+    ///     permission against the *archive folder* the person chose, not against
+    ///     each object inside it, so reading a resource without it fails even
+    ///     though the file is plainly there.
+    ///   - scrolls: `true` for a screen of its own, as on iPhone. `false` when
+    ///     embedding inside a pane that already scrolls, as in the macOS object
+    ///     detail — nesting scroll views there would trap the wheel.
+    public init(
+        bundle: OnbiiBundle,
+        accessedThrough scopeURL: URL? = nil,
+        scrolls: Bool = true
+    ) {
         self.bundle = bundle
+        self.scopeURL = scopeURL
+        self.scrolls = scrolls
     }
 
     private enum LoadState {
@@ -33,59 +50,65 @@ public struct OnbiiTranscriptView: View {
 
     public var body: some View {
         Group {
-            switch state {
-            case .loading:
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            case let .document(document):
-                turns(of: document)
-
-            case let .plainText(text):
-                ScrollView {
-                    Text(text)
-                        .font(.body)
-                        .foregroundStyle(.onbiiPrimaryText)
-                        .textSelection(.enabled)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(OnbiiTheme.Spacing.l)
-                }
-
-            case let .unavailable(message):
-                OnbiiEmptyState(title: "No transcript to show.", message: message)
+            if scrolls {
+                ScrollView { content }
+                    .background(Color.onbiiBackground)
+            } else {
+                content
             }
         }
-        .background(Color.onbiiBackground)
         .task(id: bundle.manifest.objectID) { await load() }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch state {
+        case .loading:
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .padding(OnbiiTheme.Spacing.l)
+
+        case let .document(document):
+            turns(of: document)
+
+        case let .plainText(text):
+            Text(text)
+                .font(.body)
+                .foregroundStyle(.onbiiPrimaryText)
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(scrolls ? OnbiiTheme.Spacing.l : 0)
+
+        case let .unavailable(message):
+            OnbiiEmptyState(title: "No transcript to show.", message: message)
+        }
     }
 
     // MARK: Turns
 
     private func turns(of document: OnbiiTranscriptDocument) -> some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: OnbiiTheme.Spacing.l) {
-                ForEach(Array(Self.turns(in: document).enumerated()), id: \.offset) { _, turn in
-                    VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.xs) {
-                        HStack(spacing: OnbiiTheme.Spacing.s) {
-                            Text(turn.speaker)
-                                .onbiiSubheaderStyle()
-                            Text(Self.timestamp(turn.startSeconds))
-                                .font(.caption.monospacedDigit())
-                                .foregroundStyle(.onbiiSecondaryText)
-                        }
-
-                        Text(turn.text)
-                            .font(.body)
-                            .foregroundStyle(.onbiiPrimaryText)
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+        LazyVStack(alignment: .leading, spacing: OnbiiTheme.Spacing.l) {
+            ForEach(Array(Self.turns(in: document).enumerated()), id: \.offset) { _, turn in
+                VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.xs) {
+                    HStack(spacing: OnbiiTheme.Spacing.s) {
+                        Text(turn.speaker)
+                            .onbiiSubheaderStyle()
+                        Text(Self.timestamp(turn.startSeconds))
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.onbiiSecondaryText)
                     }
-                }
 
-                provenance(of: document)
+                    Text(turn.text)
+                        .font(.body)
+                        .foregroundStyle(.onbiiPrimaryText)
+                        .textSelection(.enabled)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
-            .padding(OnbiiTheme.Spacing.l)
+
+            provenance(of: document)
         }
+        .padding(scrolls ? OnbiiTheme.Spacing.l : 0)
     }
 
     private func provenance(of document: OnbiiTranscriptDocument) -> some View {
@@ -114,17 +137,22 @@ public struct OnbiiTranscriptView: View {
 
     private func load() async {
         let bundle = bundle
+        let scopeURL = scopeURL
         let loaded = await Task.detached(priority: .userInitiated) {
-            Self.read(bundle)
+            Self.read(bundle, accessedThrough: scopeURL)
         }.value
         state = loaded
     }
 
-    private nonisolated static func read(_ bundle: OnbiiBundle) -> LoadState {
-        let hasAccess = bundle.url.startAccessingSecurityScopedResource()
-        defer {
-            if hasAccess { bundle.url.stopAccessingSecurityScopedResource() }
-        }
+    private nonisolated static func read(
+        _ bundle: OnbiiBundle,
+        accessedThrough scopeURL: URL?
+    ) -> LoadState {
+        // Both: the archive scope covers objects inside the chosen folder, the
+        // bundle's own scope covers one opened directly from Finder.
+        let scopes = [scopeURL, bundle.url].compactMap(\.self)
+        let held = scopes.filter { $0.startAccessingSecurityScopedResource() }
+        defer { held.forEach { $0.stopAccessingSecurityScopedResource() } }
 
         // Prefer the structured artefact; it carries the turns and timings.
         if let resource = bundle.manifest.resources.first(where: {
@@ -166,6 +194,11 @@ public struct OnbiiTranscriptView: View {
     nonisolated static func turns(in document: OnbiiTranscriptDocument) -> [Turn] {
         var turns: [Turn] = []
         var currentKey: String?
+        // Diarization labels are internal strings like `t0s1` — track 0,
+        // speaker 1. They must stay opaque, but they should not be read aloud
+        // to anyone either, so they are numbered in order of first appearance.
+        // This is presentation only: the manifest keeps its own labels.
+        var ordinals: [String: Int] = [:]
 
         for segment in document.timeline {
             let key = segment.speakerID ?? segment.sourceRole
@@ -176,9 +209,15 @@ public struct OnbiiTranscriptView: View {
                 last.text += " " + text
                 turns.append(last)
             } else {
+                if let speakerID = segment.speakerID, ordinals[speakerID] == nil {
+                    ordinals[speakerID] = ordinals.count + 1
+                }
                 turns.append(
                     Turn(
-                        speaker: label(for: segment),
+                        speaker: label(
+                            for: segment,
+                            ordinal: segment.speakerID.flatMap { ordinals[$0] }
+                        ),
                         startSeconds: segment.startSeconds,
                         text: text
                     )
@@ -192,9 +231,12 @@ public struct OnbiiTranscriptView: View {
 
     /// A speaker label, or honest track attribution when the object has not
     /// been diarized. Track attribution is never presented as a speaker.
-    nonisolated static func label(for segment: OnbiiTranscriptSegment) -> String {
-        if let speakerID = segment.speakerID {
-            return "Speaker \(speakerID)"
+    nonisolated static func label(
+        for segment: OnbiiTranscriptSegment,
+        ordinal: Int? = nil
+    ) -> String {
+        if segment.speakerID != nil {
+            return "Speaker \(ordinal ?? 1)"
         }
         return switch segment.sourceRole {
         case "microphone": "Microphone"

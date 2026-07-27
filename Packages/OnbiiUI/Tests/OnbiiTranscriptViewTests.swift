@@ -53,12 +53,26 @@ func undiarizedSegmentsGroupByTrackAndAreLabelledHonestly() {
     #expect(turns[1].speaker == "System audio")
 }
 
+/// Diarization labels are internal strings like `t0s1`. They stay opaque — no
+/// names, no meaning outside the object — but they are numbered for reading
+/// rather than shown raw.
 @Test
-func speakerLabelsStayOpaque() {
-    #expect(
-        OnbiiTranscriptView.label(for: segment("x", at: 0, speaker: "S3"))
-            == "Speaker S3"
-    )
+func speakerLabelsAreNumberedNotLeaked() {
+    let document = makeDocument([
+        segment("First.", at: 0, speaker: "t0s2"),
+        segment("Second.", at: 1, speaker: "t0s1"),
+        segment("Third.", at: 2, speaker: "t0s2"),
+    ])
+
+    let turns = OnbiiTranscriptView.turns(in: document)
+
+    // Numbered by first appearance, so the raw label never reaches the screen.
+    #expect(turns.map(\.speaker) == ["Speaker 1", "Speaker 2", "Speaker 1"])
+    #expect(!turns.contains { $0.speaker.contains("t0s") })
+}
+
+@Test
+func trackAttributionIsNeverPresentedAsASpeaker() {
     #expect(
         OnbiiTranscriptView.label(for: segment("x", at: 0, speaker: nil, role: "recording"))
             == "Recording"

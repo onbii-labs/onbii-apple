@@ -10,6 +10,11 @@ struct MobileObjectDetailView: View {
     let bundle: OnbiiBundle
     @Bindable var model: MobileViewModel
 
+    /// Folded away by default. These answer "what exactly is in here?", which is
+    /// a question people ask occasionally and not on arrival.
+    @State private var showsDetails = false
+    @State private var showsResources = false
+
     var body: some View {
         List {
             Section {
@@ -19,40 +24,9 @@ struct MobileObjectDetailView: View {
                 OnbiiStatusBadge(model.indicator(for: bundle))
             }
 
-            Section {
-                ForEach(factRows, id: \.label) { row in
-                    LabeledContent(row.label) {
-                        Text(row.value)
-                            .foregroundStyle(.onbiiSecondaryText)
-                            .textSelection(.enabled)
-                    }
-                }
-            } header: {
-                Text("Details")
-                    .onbiiSubheaderStyle()
-            }
-
-            Section {
-                ForEach(bundle.manifest.resources, id: \.id) { resource in
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(roleLabel(resource.role))
-                            .font(.onbiiSubheader)
-                            .foregroundStyle(roleTint(resource.role))
-                        Text(resource.path)
-                            .font(.system(.footnote, design: .monospaced))
-                            .foregroundStyle(.onbiiPrimaryText)
-                    }
-                }
-            } header: {
-                Text("Resources")
-                    .onbiiSubheaderStyle()
-            } footer: {
-                Text(
-                    "The source is the original recording and cannot be "
-                        + "regenerated. Everything else was derived from it."
-                )
-            }
-
+            // What the person came for sits directly under the title. The
+            // metadata below is available but folded away — it answers
+            // questions rather than opening the screen.
             if bundle.manifest.hasTranscript {
                 Section {
                     NavigationLink {
@@ -62,6 +36,46 @@ struct MobileObjectDetailView: View {
                     } label: {
                         Label("Read Transcript", systemImage: "text.alignleft")
                     }
+                }
+            }
+
+            Section {
+                DisclosureGroup(isExpanded: $showsDetails) {
+                    ForEach(factRows, id: \.label) { row in
+                        LabeledContent(row.label) {
+                            Text(row.value)
+                                .foregroundStyle(.onbiiSecondaryText)
+                                .textSelection(.enabled)
+                        }
+                    }
+                } label: {
+                    Text("Details")
+                        .onbiiSubheaderStyle()
+                }
+            }
+
+            Section {
+                DisclosureGroup(isExpanded: $showsResources) {
+                    ForEach(bundle.manifest.resources, id: \.id) { resource in
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(roleLabel(resource.role))
+                                .font(.onbiiSubheader)
+                                .foregroundStyle(roleTint(resource.role))
+                            Text(resource.path)
+                                .font(.system(.footnote, design: .monospaced))
+                                .foregroundStyle(.onbiiPrimaryText)
+                        }
+                    }
+                } label: {
+                    Text("Resources")
+                        .onbiiSubheaderStyle()
+                }
+            } footer: {
+                if showsResources {
+                    Text(
+                        "The source is the original recording and cannot be "
+                            + "regenerated. Everything else was derived from it."
+                    )
                 }
             }
 
