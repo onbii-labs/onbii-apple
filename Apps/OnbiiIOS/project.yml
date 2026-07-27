@@ -80,7 +80,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.yepyr.onbii.watchkitapp
         PRODUCT_MODULE_NAME: OnbiiWatch
         MARKETING_VERSION: 0.1.0
-        CURRENT_PROJECT_VERSION: 1
+        CURRENT_PROJECT_VERSION: 2
         # The Watch takes no OnbiiUI dependency: an accent colour set is enough
         # to brand `Color.accentColor` in WatchContentView, with no Swift change.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
