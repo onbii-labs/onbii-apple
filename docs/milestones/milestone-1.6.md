@@ -60,6 +60,19 @@ than the last.
   opportunity.
 - An interruption preserves what reached the file and says so. It is never a
   reason to discard audio.
+- **The iPhone declares `UIBackgroundModes: [audio]`.** A recording has to
+  survive the ordinary things people do while talking: a screen that locks
+  itself, and looking something up mid-conversation. Without it the system
+  suspends the app and the recorder stops — which is why the 09:02 recording is
+  44 seconds long. Onbii's use of the mode is literal, and recording stays
+  explicit (`0023`).
+- **macOS holds a `ProcessInfo` activity for the length of a capture.** There is
+  no background mode to declare there, but there are two ways to stop a
+  recording that look exactly like the mobile failure: App Nap throttling an app
+  that is no longer frontmost, and the machine reaching its idle sleep timer
+  while two people are still talking. `.userInitiated` prevents both. The
+  display is still allowed to sleep, and closing the lid still sleeps the
+  machine — no assertion changes that.
 
 **Derived results can be made again, and say what made them.**
 
@@ -97,8 +110,12 @@ than the last.
 Gated on evidence, not on effort:
 
 - **Declared background runtime on watchOS.** Shape decided by the spike below.
-- **Declared background runtime on iPhone** (`UIBackgroundModes`), pending the
-  same measured-vs-wall-clock check.
+  The Watch's Info.plist is authored now so a mode can be declared, and says
+  what to try; nothing is declared until it has been measured.
+- **Confirmation that the iPhone and Mac claims hold in practice.** Both are
+  declared and correct on paper. Spike B measures whether a locked phone and a
+  napping Mac actually keep recording — the declaration is the prerequisite for
+  that measurement, not a substitute for it.
 - **System notifications** for capture interruption and for a Watch recording
   that has not reached the iPhone. In-app honesty landed; reaching a pocketed
   phone did not.
@@ -136,11 +153,17 @@ in the spec's decision log next to
 spike reports what is grantable and what each mode costs; the positioning choice
 is made deliberately, and recorded.
 
-### B. iPhone background capture
+### B. iPhone and Mac background capture
 
-`UIBackgroundModes: [audio]` is the well-trodden answer and almost certainly
-works. The point is to have it measured with the same harness rather than
-assumed: record, lock the screen, wait, stop, compare.
+Both claims are declared. The point is to have them measured with the same
+harness rather than assumed.
+
+- **iPhone:** record, lock the screen, switch to another app, wait, stop,
+  compare measured duration against wall clock.
+- **Mac:** record, put the window behind another app, leave the machine to reach
+  its idle sleep timer, stop, compare. The lid stays open — closing it sleeps
+  the machine regardless, and the app should be honest about that rather than
+  pretend otherwise.
 
 ### C. Recognition and capture tuning
 

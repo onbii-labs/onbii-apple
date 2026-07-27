@@ -78,6 +78,18 @@ public final class OnbiiMicrophoneRecorder: NSObject, @unchecked Sendable {
     private let interruptionContinuation:
         AsyncStream<OnbiiCaptureInterruption>.Continuation
     private var observers: [any NSObjectProtocol] = []
+    #if os(macOS)
+    /// Held for the length of a recording. macOS has no background mode to
+    /// declare, but it has two ways to stop a capture that look exactly like the
+    /// mobile failure: App Nap throttling an app that is no longer frontmost,
+    /// and the machine reaching its idle sleep timer while two people are still
+    /// talking. `.userInitiated` prevents both.
+    ///
+    /// The display is deliberately allowed to sleep — recording audio is no
+    /// reason to keep a screen lit. Closing the lid still sleeps the machine,
+    /// and no assertion an app can make changes that.
+    private var activityToken: (any NSObjectProtocol)?
+    #endif
 
     /// Interruptions, as they happen. Single-consumer: the app that started the
     /// recording listens, and is expected to stop and preserve what exists.
@@ -215,6 +227,12 @@ public final class OnbiiMicrophoneRecorder: NSObject, @unchecked Sendable {
         audioRecorder = recorder
         lastKnownDuration = 0
         isStopping = false
+        #if os(macOS)
+        activityToken = ProcessInfo.processInfo.beginActivity(
+            options: [.userInitiated],
+            reason: "Recording audio into an Onbii object"
+        )
+        #endif
         lock.unlock()
 
         observeInterruptions()
@@ -249,6 +267,13 @@ public final class OnbiiMicrophoneRecorder: NSObject, @unchecked Sendable {
         }
         isStopping = true
         self.audioRecorder = nil
+        #if os(macOS)
+        // Let the machine sleep and nap again the moment it may.
+        if let activityToken {
+            ProcessInfo.processInfo.endActivity(activityToken)
+            self.activityToken = nil
+        }
+        #endif
         lock.unlock()
 
         audioRecorder.stop()
