@@ -130,23 +130,18 @@ than the last.
 
 ### Still to do
 
-Gated on evidence, not on effort:
-
-- **An honest limit on the Watch.** Find what a recording actually survives
-  today (Spike A), then say it before recording rather than after: state the
-  limit, tap the wrist as it approaches, stop cleanly with everything preserved.
-  The Watch's Info.plist is authored now so `WKBackgroundModes: [audio]` can be
-  declared if it turns out to help; nothing is declared until it is measured.
-  Giving the Watch a *longer* claim on runtime is a feature, not a declaration —
-  see [Watch Capture Modes](../architecture/watch-capture-modes.md) — and is not
-  in this milestone.
-- **Confirmation that the iPhone and Mac claims hold in practice.** Both are
-  declared and correct on paper. Spike B measures whether a locked phone and a
-  napping Mac actually keep recording — the declaration is the prerequisite for
-  that measurement, not a substitute for it.
-- **System notifications** for capture interruption and for a Watch recording
-  that has not reached the iPhone. In-app honesty landed; reaching a pocketed
-  phone did not.
+- **System notifications.** The only unconditional code left. In-app honesty
+  landed — an interrupted recording says so, and an object says when its recorded
+  facts are wrong — but none of it reaches a phone in a pocket. Two cases:
+  a capture that stopped without being asked, and a Watch recording that has not
+  arrived on the iPhone. Local notifications only, so nothing is needed beyond
+  runtime authorisation: no entitlement, no Info.plist key, no usage string.
+- **Whatever Spike A turns out to need — possibly nothing.** The Watch records
+  in the background with no declaration at all, so there may be no limit to state
+  honestly. If the next walk shows capture surviving the workout, this item
+  disappears. If the workout kills it, the fix is that collision specifically, not
+  a general claim on runtime.
+- **Field test 2**, which is the gate rather than a task. See *Verification*.
 
 ## The spikes
 
