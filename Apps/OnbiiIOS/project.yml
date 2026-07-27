@@ -85,12 +85,12 @@ targets:
         # to brand `Color.accentColor` in WatchContentView, with no Swift change.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        GENERATE_INFOPLIST_FILE: true
-        INFOPLIST_KEY_CFBundleDisplayName: Onbii
-        INFOPLIST_KEY_NSMicrophoneUsageDescription: Onbii records audio only after you tap Record, then transfers the original recording to your iPhone.
-        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: Onbii records where a recording was captured, so you can remember where a conversation happened. Location is optional and travels with the recording to your iPhone.
-        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.yepyr.onbii
-        INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp: false
+        # An authored Info.plist rather than INFOPLIST_KEY_* settings, because
+        # the runtime claim a Watch recording needs — WKBackgroundModes — is an
+        # array. See Apps/OnbiiWatch/Info.plist, which explains what goes in it
+        # and why nothing is declared yet.
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: ../OnbiiWatch/Info.plist
         CODE_SIGN_STYLE: Automatic
 
 schemes:
