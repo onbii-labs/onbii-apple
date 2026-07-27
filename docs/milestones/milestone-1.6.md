@@ -142,15 +142,6 @@ Gated on evidence, not on effort:
 - **System notifications** for capture interruption and for a Watch recording
   that has not reached the iPhone. In-app honesty landed; reaching a pocketed
   phone did not.
-- **Recognition and capture tuning** — the largest open question, and the one
-  most likely to change what people think of the product. Note that measuring
-  the whole archive has since reframed it: see
-  [Capture Situations And Processing](../architecture/capture-situations-and-processing.md).
-  The same code produces 0% missed speech at a desk and 58–66% outdoors on the
-  same devices, so this is not "make the recogniser better" but "one fixed
-  processing configuration cannot serve every situation". Tuning the single
-  configuration against the walking fixtures would likely cost the desk case,
-  which currently works. Deliberately **not** in this milestone.
 
 ## The spikes
 
@@ -173,15 +164,27 @@ against wall-clock elapsed — which the writer now provides for free.
 | `WKExtendedRuntimeSession` `.selfCare` | Same, different declared purpose |
 | `HKWorkoutSession` (control) | Establishes the ceiling to compare against; not a candidate |
 
-**On the self-care framing.** A system whose purpose is to let someone stop
-holding thoughts in their head has a real claim on that territory, and for the
-use case above it may be a truthful description rather than a workaround. But it
-is a *positioning* claim. If it is used to justify a background mode it belongs
-in the spec's decision log next to
+**The decision this spike sets up**, so it is answerable at a glance when the
+measurements come back:
+
+> Should the Watch declare itself a **mindfulness** or **self-care** app in order
+> to keep recording in the background?
+
+Those are the two `WKExtendedRuntimeSession` types that plausibly fit. The
+question is not technical — it is whether the claim is *true*. A system whose
+purpose is to let someone stop holding thoughts in their head has a real claim on
+that territory, and for the walk-and-talk case above it may be an honest
+description rather than a workaround. It may equally read as a stretch to
+someone who did not build it, including App Review.
+
+Answering it needs the spike first, because "does it even work, and for how
+long?" changes what is being weighed. If `audio` alone turns out to be enough,
+the question does not arise. If nothing works, the honest answer is that the
+Watch cannot hold a background recording and should say so.
+
+Whichever way it goes, it belongs in the spec's decision log next to
 [`0023`](../spec/docs/decisions/0023-no-hidden-retrospective-recording.md)
-(recording is always explicit, never hidden), which stays true either way. The
-spike reports what is grantable and what each mode costs; the positioning choice
-is made deliberately, and recorded.
+(recording is always explicit, never hidden), which stays true regardless.
 
 ### B. iPhone and Mac background capture
 
@@ -195,43 +198,37 @@ harness rather than assumed.
   the machine regardless, and the app should be honest about that rather than
   pretend otherwise.
 
-### C. Recognition and capture tuning
+## Not in this milestone: recognition quality
 
-**Step zero, and it decides everything downstream:** listen to 25–44 s of the
-09:02 source. Nine continuous seconds of −13 to −18 dBFS produced no words at
-all. If that is intelligible Dutch, recognition is dropping real speech. If it is
-traffic and chairs, the 66% figure is inflated and the question moves to the
-walking recordings.
+The field test's fourth finding — most audible speech producing no words — is
+deliberately **not** scoped here, and not treated as a tuning task.
 
-Then split by what is actually testable. The record suggests testing the
-`.record`/`.measurement` change against the three fixtures; that works for the
-recognition half and is impossible for the capture half, because changing the
-audio session changes what gets recorded.
+Measuring every transcribed object in the archive reframed it. The same code
+produces 0% missed speech at a desk and 58–66% outdoors, on the same devices;
+the ambient floor predicts the outcome and the hardware does not. That is not
+"make the recogniser better", it is "one fixed processing configuration cannot
+serve a walk, a desk and a table on a main road" — and it carries a warning:
+tuning that single configuration against three walking fixtures would likely cost
+the desk case, which currently works.
 
-- **Recognition-side, testable on the fixtures.** Locale form, module choice
-  (`DictationTranscriber` against `SpeechTranscriber` — worth re-checking whether
-  Dutch has landed in the better model), content hints, and audio
-  pre-normalisation. First run: re-transcribe 09:02 today. If the stop at 25.2 s
-  does not reproduce, the original run terminated early and that is a bug in
-  `AppleOnDeviceTranscriber.analyze`, not a tuning problem.
-- **Capture-side, needs new recordings.** `.record` + `.measurement` against
-  today's `.playAndRecord` + `.spokenAudio` + `.defaultToSpeaker`; sample rate;
-  explicit input and data-source selection instead of expecting the hardware to
-  help unasked. Needs an A/B protocol: same room, same people, same script, back
-  to back.
+The learnings live where they belong rather than as a milestone item:
 
-What the fixtures already settle: in all three, `formattedText` word count equals
-the timed-segment count exactly, so nothing is lost between the recogniser and
-our extraction — the loss is inside recognition. And 08:57 produced words to
-143.0 s of a 143.4 s file, so there is no fixed cutoff. Note also that 09:02's
-ambient floor is 13 dB above either Watch recording, so the coverage script's
-"+8 dB above floor" margin is not comparable across the two devices.
+- the measurement and what it showed, in
+  [the field test record](../field-tests/2026-07-27-field-test-1.md) and its
+  addendum, with the scripts beside them;
+- the direction it points to, in
+  [Capture Situations And Processing](../architecture/capture-situations-and-processing.md).
+
+That work is its own thing, and it starts from the architecture question rather
+than from a knob.
 
 ## Deliberately not yet
 
 - **Automatic language detection.** `0033` does not require it, and Apple's
-  capability here is an assumption worth checking rather than a finding. Spike C
-  checks it; the decision comes after.
+  capability here is an assumption worth checking rather than a finding. It also
+  belongs with the recognition-quality work rather than here — detecting a
+  language is a determination made in the processing pipeline, the same shape as
+  detecting a situation.
 - **Mixed Dutch/English within one object.** The *record* can already hold
   several languages, because `0033` requires that. The technique is not built.
 - **A person choosing which generation is current** — `0032` defers it.
@@ -258,12 +255,23 @@ supersession end to end — earlier generation retained, declared, on disk and
 provenanced; new generation at the stable path; reader still validating; retired
 identifiers not counting as a transcript.
 
-Supersession was also run against a real field-test object copied out of the
-archive: the reader accepted it before and after, the current generation stayed
-at `derived/transcript.json`, and the earlier one landed under
-`superseded/<timestamp>/` with the object's own layout mirrored.
+Both format changes were also run against real field-test objects copied out of
+the archive rather than only synthetic ones. Supersession: the reader accepted
+the object before and after, the current generation stayed at
+`derived/transcript.json`, and the earlier one landed under
+`superseded/<timestamp>/` with the object's own layout mirrored. Correction: the
+08:02 object's `durationSeconds: 0` became 1200.098, its empty place name became
+a real one, and its `content.md` stopped showing coordinates — with the
+transcript still current.
 
-What remains is device work. The gate on this milestone is a **second field
+What remains is device work, and the gate on this milestone is a **second field
 test** — the same walk, the same conditions, written up per
 [the field-test conventions](../field-tests/README.md). A green suite is not the
 same as a morning outdoors.
+
+Note that the second field test now has two jobs, and they should not be confused
+in the write-up. It verifies this milestone: did the recording survive the whole
+walk, and where it did not, did the app say so. It also produces fresh evidence
+for the recognition-quality work, which is a separate thread. A walk where
+capture holds for the full duration is the first recording that can say anything
+useful about the second question.

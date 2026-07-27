@@ -114,11 +114,20 @@ None of these are answered, and the shape of the eventual design depends on them
   something is processed is a separate question, and
   [`0032`](../spec/docs/decisions/0032-reprocessing-supersedes-and-retains.md)
   already requires reprocessing to be deliberate.
-- **When would that analysis run — at capture, or at processing?** Analysing
-  before recording could pick a capture profile; analysing the preserved file
-  could pick a processing profile and can be re-run later with better methods.
-  The second is more in keeping with derived data being regenerable, and does not
-  require getting it right in the moment.
+**Where the analysis runs is settled, as far as this note is concerned: in the
+processing pipeline, not at capture.** Analysing the preserved file can be re-run
+later with better methods, needs nothing to be got right in the moment, and keeps
+capture doing the one job it must not fail at. Capture stays as simple and as
+robust as it can be; everything clever happens to a file that is already safe.
+That also fits the shape Onbii already has — a stage between the source and the
+derived result, which is what `OnbiiProcessing` is.
+
+It leaves a real limitation, worth stating rather than discovering later: a
+processing stage cannot undo a capture-side decision. If the audio session
+applied speakerphone processing or automatic gain while recording, no later
+analysis recovers what that removed. Choosing a *capture* profile is therefore a
+separate question, and a harder one, because it has to be answered before anyone
+knows what the recording will contain.
 - **Does a profile span capture and processing, or are they separate things?**
   They are separate boundaries and separately replaceable, but a person thinks
   "I am going for a walk" once, not twice.
