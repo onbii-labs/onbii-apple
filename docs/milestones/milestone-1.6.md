@@ -184,19 +184,44 @@ tunnel. An on-device sysdiagnose retrieved through the paired iPhone remains
 theoretically possible, and is more work than the experiment below, which answers
 the question directly.
 
-**The measurement is a desk experiment, not a walk**, because the app is now the
-instrument: an interrupted capture announces itself, and the preserved object
-records the true duration. One run is enough — no need to bisect, the file says
-where it stopped.
+**First result, 27 July evening: the Watch records in the background with no
+declaration at all.** The shipped binary contains no `WKBackgroundModes` — it was
+deliberately left out — and the microphone stays live after leaving the app, with
+the system's own recording indicator visible. Invoking Siri and setting a timer
+did not stop it, and tapping the indicator returns to Onbii.
+
+That contradicts part of the field test's diagnosis, which reasoned that with no
+declared mode "watchOS was entitled to suspend it". Entitled, perhaps; it does
+not appear to exercise the entitlement immediately. The observed fact this
+morning was 1200.098 s of audio and then nothing — and the alternative
+explanation the record already offered, that the Workout app took over, is now
+the more likely one.
+
+So the question narrows again, and the honest form of it is:
+
+> Does the Watch keep recording indefinitely, or until something else claims the
+> microphone or the runtime?
+
+**The measurement**, because the app is now the instrument: an interrupted
+capture announces itself and the preserved object records the true duration. One
+run is enough — no need to bisect, the file says where it stopped.
 
 1. Start a recording on the Watch.
 2. Press the Digital Crown to leave the app, or drop the wrist.
-3. Wait ~15 minutes.
+3. Wait — and, on a walk, **let the workout prompt do whatever it wants**. That
+   is the variable now, not the clock.
 4. Return to Onbii and stop.
 
 The Watch must be running a build that reports interruptions. Its build number is
 the check, which is why it was bumped away from 1 — an experiment run against the
 old build fails silently and looks exactly like the app failing to report.
+
+**If it survives a walk with the workout running**, the Watch needs no new claim
+on runtime, `WKBackgroundModes` stays undeclared, and
+[Watch Capture Modes](../architecture/watch-capture-modes.md) becomes a
+genuinely optional feature rather than a fix. **If the workout kills it**, that
+is the specific thing to solve, and it is exactly the collision that note
+predicts: one workout session at a time, and Onbii does not hold it.
 
 **What it decides.** Around twenty minutes means a stated limit is a good enough
 answer for now and the Watch stays useful. A couple of minutes means the Watch is
@@ -209,10 +234,9 @@ recording rather than after, tap the wrist as it approaches, and stop cleanly
 with everything preserved. An app that says "you have about four minutes left" is
 honest. One that stops silently is the failure this milestone exists to remove.
 
-### B. iPhone and Mac background capture
+### B. iPhone and Mac background capture — closed, 27 July
 
-Both claims are declared. The point is to have them measured with the same
-harness rather than assumed.
+Both claims were declared, and both hold.
 
 - **iPhone: confirmed working, 27 July.** A recording survives the screen
   locking and continues while the phone is closed. iOS shows its own microphone
@@ -222,10 +246,19 @@ harness rather than assumed.
   [audio]` does what it says on iPhone Air / iOS 26.
   *Method, for repeating it:* record, lock the screen, switch to another app,
   wait, stop, compare measured duration against wall clock.
-- **Mac:** record, put the window behind another app, leave the machine to reach
-  its idle sleep timer, stop, compare. The lid stays open — closing it sleeps
-  the machine regardless, and the app should be honest about that rather than
-  pretend otherwise.
+- **Mac: confirmed working, 27 July.** A capture continues with the app in the
+  background, with the system's recording indicator visible. The `ProcessInfo`
+  activity holds.
+
+  *Method, for repeating it:* record, put the window behind another app, leave
+  the machine to reach its idle sleep timer, stop, compare. The lid stays open —
+  closing it sleeps the machine regardless, and the app should be honest about
+  that rather than pretend otherwise.
+
+Worth noting what both platforms do for free: the system shows its own recording
+indicator. That is a better guarantee than anything Onbii can offer about itself,
+because it is the operating system telling the person the microphone is live,
+whether or not the app is telling the truth.
 
 ## Not in this milestone: recognition quality
 
