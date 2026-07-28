@@ -189,6 +189,17 @@ this one directly, and the offer is the feature.
 whether `OnbiiNotifier` becomes a shared package now that a second real caller
 exists.
 
+**And one piece of housekeeping that belongs with the branding pass:** rename the
+app targets `OnbiiMac` / `OnbiiIOS` to **`Onbii`**, keeping `PRODUCT_MODULE_NAME`
+so no Swift module name changes, and updating the scheme target references and
+dependencies. XcodeGen names the product file reference after the target, so with
+`PRODUCT_NAME: Onbii` set but the target still called `OnbiiMac`, Xcode goes on
+"correcting" `OnbiiMac.app` to `Onbii.app` on open. That is the last remaining
+source of churn in the generated projects — the recommended-settings and
+`LastUpgradeCheck` churn was fixed in `ab32529` with `options.xcodeVersion` and
+declared recommended settings in both `project.yml`. A person installing a public
+alpha should also just see *Onbii*, not *OnbiiMac*.
+
 Carried over from Milestone 1 and **now closed**: physical-device validation of
 the iPhone and Watch capture paths. Two field tests did it in conditions no desk
 run reproduces — [27 July](../field-tests/2026-07-27-field-test-1.md) and
