@@ -1,8 +1,8 @@
 # Milestone 1.5: Ready To Show
 
-Status: **Resumed 28 July, in progress.** The identity-and-home half shipped and
-the archive watcher is done; background processing, the menu-bar service and the
-activation prompt remain. See *What Is Left* for the order and why it is fixed.
+Status: **Feature-complete, 28 July.** Every roadmap requirement is built. What
+remains is a device pass over the always-ready half and two brand items with the
+designer — see *What Is Left*.
 
 Milestone 1 proved the capture-certainty loop. Milestone 1.5 turns that loop into
 something presentable enough to put in front of early users as a public alpha —
@@ -33,17 +33,18 @@ From the roadmap:
 | Clear visual indicators of an object's status at a glance | **Done** |
 | The same presentable home and status view on iPhone | **Done** |
 | No change to the object format; the archive stays the source of truth | **Held** |
-| A macOS menu-bar service that is always at the ready | Deferred |
-| An explicit offer to record when a chosen application becomes active | Deferred |
-| Background processing of new recordings and files on the desktop | Deferred |
+| A macOS menu-bar service that is always at the ready | **Done** |
+| An explicit offer to record when a chosen application becomes active | **Done** |
+| Background processing of new recordings and files on the desktop | **Done** |
 
 Beyond the roadmap, one gap found while using it: transcription could be started
 on iPhone but the result could not be read without leaving the app. A transcript
 reader was added on both platforms.
 
-The milestone is therefore **half delivered**. What remains — the menu-bar
-service, the activation prompt, background processing — is the "always-ready"
-strand, and it is a coherent second slice rather than leftovers.
+The milestone was **half delivered** for three days: the identity-and-home half
+shipped on 25 July, and the always-ready half — menu-bar service, activation
+prompt, background processing — landed on 28 July once
+[Milestone 1.6](milestone-1.6.md) had made the pieces it needed possible.
 
 **Paused 27 July, resumed 28 July.** The first field test
 ([27 July 2026](../field-tests/2026-07-27-field-test-1.md)) found that the loop
@@ -148,10 +149,11 @@ The identity and home half:
   On both platforms the transcript sits directly under the title, with details
   and resources folded away.
 
-## What Is Left
+## What Was Left, And What Still Is
 
-These were not in the first slice, and they are what is left to build. In the
-order they depend on each other:
+The four that were not in the first slice, in the order they depend on each
+other. All four are built; what each one refuses to do is usually the part worth
+reading.
 
 **1. A watcher on the archive — done.** `OnbiiArchiveWatcher` in `OnbiiArchive`
 reports that the archive may have changed; the apps re-read when it does. It
@@ -206,19 +208,67 @@ The rule for what needs work is `OnbiiManifest.awaitsFirstTranscript` in
 whole thing off, and each finished object sends a notification, because the
 premise is that nobody was watching.
 
-**3. The macOS menu-bar service.** Always at the ready, which is the roadmap's
-phrase and the point of the strand: capture should not require finding a window.
-This is also where a background-processing indicator naturally lives.
+**3. The macOS menu-bar service — done.** A `MenuBarExtra` alongside the window,
+not instead of it: the window is the inspector, the menu bar is the always-ready
+capture surface. Starting a recording never requires finding an app first, which
+matters because a conversation does not wait while somebody hunts through Mission
+Control.
 
-**4. The application-activation prompt** that *offers* to record when a chosen
-app becomes active. Never hidden and never automatic — spec decision
-[`0023`](../spec/docs/decisions/0023-no-hidden-retrospective-recording.md) governs
-this one directly, and the offer is the feature.
+It is a view over the same view model, not a second app — one archive access, one
+set of security-scoped bookmarks, one answer to what Onbii is doing. The menu-bar
+icon itself shows the recording state, because an app that is recording and does
+not look like it is the failure Milestone 1.6 is named for. Closing the window no
+longer means quitting; the menu-bar item brings it back.
 
-**Also owed here, inherited from 1.6:** sweeping the archive with
-`OnbiiObjectRepair` rather than offering it one object at a time, and deciding
-whether `OnbiiNotifier` becomes a shared package now that a second real caller
-exists.
+**4. The application-activation prompt — done.** Naming an application in
+Settings means Onbii *offers* to record when it becomes active. It posts a
+notification with a Record button and does nothing else: ignoring it records
+nothing, and there is no buffer anywhere in the app to record retrospectively
+from even if someone wanted it.
+
+Spec decision
+[`0023`](../spec/docs/decisions/0023-no-hidden-retrospective-recording.md) is the
+design rather than a constraint on it — "contextual detection may suggest
+capture, but actual audio capture should be explicit". Three consequences worth
+keeping:
+
+- **The notification action is the only route from a suggestion to a recording.**
+  A delegate that started on delivery rather than on the press would quietly turn
+  a suggestion into surveillance.
+- **A notification rather than an alert**, because an alert would steal focus
+  from the application the person just switched to.
+- **An ignored offer stands for half an hour** before the same application asks
+  again, and nothing is offered while a capture, import or transcription is
+  already running.
+
+The Settings wording is part of the feature: someone reading it must come away
+certain that naming an application does not mean Onbii is listening while it is
+open.
+
+*Needs a device check rather than a test:* whether
+`NSWorkspace.didActivateApplicationNotification` reports other applications from
+inside the sandbox. It builds and it is the documented API; it has not been
+watched working.
+
+### Still outstanding
+
+**A device pass over the always-ready half.** Everything above builds and the
+package logic is tested, but three things can only be confirmed by using them:
+whether `NSWorkspace.didActivateApplicationNotification` reports other
+applications from inside the sandbox, whether an `NSMetadataQuery` on the iCloud
+container reports an object arriving from iPhone, and whether the menu-bar item
+behaves once the window is closed. None is exotic; none has been watched working.
+
+**Sweeping the archive**, inherited from 1.6: running `OnbiiObjectRepair` across
+everything rather than offering it one object at a time. Background processing
+now provides the place for it to live. Related and deliberately separate:
+transcribing the *backlog*, which automatic processing pointedly does not do —
+an explicit "transcribe everything not yet transcribed" is the honest shape.
+
+**Whether `OnbiiNotifier` becomes a shared package.** The condition 1.6 set has
+been met — the desktop background-processing caller now exists, and so does the
+capture-suggestion one. It is still app-local; the decision can now be made on
+evidence rather than deferred.
 
 **And one piece of housekeeping that belongs with the branding pass:** rename the
 app targets `OnbiiMac` / `OnbiiIOS` to **`Onbii`**, keeping `PRODUCT_MODULE_NAME`

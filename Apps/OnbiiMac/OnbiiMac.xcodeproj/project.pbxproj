@@ -20,7 +20,9 @@
 		AB5D1C79F475437897501244 /* OnbiiTranscription in Frameworks */ = {isa = PBXBuildFile; productRef = EB4390CDE262CEA947ACC7D9 /* OnbiiTranscription */; };
 		B1426CE2F81F5F2B51197A2B /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD276A3C1636C835753FAAC /* PreviewViewController.swift */; };
 		B229143EBCD116918DA148BA /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = 567F509BEE64234E3F4780B3 /* OnbiiCapture */; };
+		B5E60D602F5BACA0B95413BB /* CaptureSuggestionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72393487F58B3519DF10ABF8 /* CaptureSuggestionDelegate.swift */; };
 		B761177102BE17C8DF2478F2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52801286B477F2050F9F36CB /* ContentView.swift */; };
+		CFF73E86D8A00EA2C90CC34B /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0941AA8519CDE834B2C1DD65 /* MenuBarView.swift */; };
 		DD4DC582AA7BC826150C1531 /* ObjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E35D4FB5270FF66DDA64A700 /* ObjectDetailView.swift */; };
 		F551594D228197C147937581 /* OnbiiProcessing in Frameworks */ = {isa = PBXBuildFile; productRef = 99722455BE9D04D67E07958D /* OnbiiProcessing */; };
 /* End PBXBuildFile section */
@@ -50,12 +52,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0941AA8519CDE834B2C1DD65 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		174652EF0D04236BF111E7E7 /* OnbiiMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbiiMacApp.swift; sourceTree = "<group>"; };
 		2156C83A8030443EE49F948E /* MacSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettingsView.swift; sourceTree = "<group>"; };
 		3F92E817FE8390B8CD1EB432 /* MarkdownPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreview.swift; sourceTree = "<group>"; };
 		52801286B477F2050F9F36CB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		612A72BB4A022FC2F60A10E1 /* CaptureToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureToolbar.swift; sourceTree = "<group>"; };
 		67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OnbiiMacQuickLook.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		72393487F58B3519DF10ABF8 /* CaptureSuggestionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSuggestionDelegate.swift; sourceTree = "<group>"; };
 		92A3FB2C964D600AB1CE259A /* ImportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportViewModel.swift; sourceTree = "<group>"; };
 		9D7ECE7B63B906066DA969EF /* Packages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Packages; path = ../../Packages; sourceTree = SOURCE_ROOT; };
 		B32C42FFCACB75D8D32EE7A7 /* ObjectListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectListView.swift; sourceTree = "<group>"; };
@@ -101,10 +105,12 @@
 		BDDC61901B68A1A8D3ACB068 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				72393487F58B3519DF10ABF8 /* CaptureSuggestionDelegate.swift */,
 				612A72BB4A022FC2F60A10E1 /* CaptureToolbar.swift */,
 				52801286B477F2050F9F36CB /* ContentView.swift */,
 				92A3FB2C964D600AB1CE259A /* ImportViewModel.swift */,
 				2156C83A8030443EE49F948E /* MacSettingsView.swift */,
+				0941AA8519CDE834B2C1DD65 /* MenuBarView.swift */,
 				E35D4FB5270FF66DDA64A700 /* ObjectDetailView.swift */,
 				B32C42FFCACB75D8D32EE7A7 /* ObjectListView.swift */,
 				174652EF0D04236BF111E7E7 /* OnbiiMacApp.swift */,
@@ -244,10 +250,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5E60D602F5BACA0B95413BB /* CaptureSuggestionDelegate.swift in Sources */,
 				90201373B7E86640DB04396F /* CaptureToolbar.swift in Sources */,
 				B761177102BE17C8DF2478F2 /* ContentView.swift in Sources */,
 				84090A1F44058C77B3A50829 /* ImportViewModel.swift in Sources */,
 				63D27A35A85589918A19B7F1 /* MacSettingsView.swift in Sources */,
+				CFF73E86D8A00EA2C90CC34B /* MenuBarView.swift in Sources */,
 				DD4DC582AA7BC826150C1531 /* ObjectDetailView.swift in Sources */,
 				44D0E067AD96E9787A34C18D /* ObjectListView.swift in Sources */,
 				21F21392C17625B1B6D9C344 /* OnbiiMacApp.swift in Sources */,

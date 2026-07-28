@@ -15,6 +15,7 @@ final class ImportViewModel {
     private static let archiveBookmarkKey = "selectedArchiveBookmark"
     private static let transcriptionLanguageKey = "selectedTranscriptionLanguage"
     private static let automaticTranscriptionKey = "transcribesNewObjectsAutomatically"
+    private static let watchedApplicationsKey = "watchedApplications"
 
     enum CaptureKind: Equatable {
         case microphone
@@ -86,6 +87,26 @@ final class ImportViewModel {
             }
         }
     }
+
+    /// Applications whose becoming frontmost should prompt an offer to record.
+    ///
+    /// Stored as bundle identifiers with the name the person will read, because
+    /// an identifier is not something to show anyone and a name is not stable
+    /// enough to match on.
+    struct WatchedApplication: Codable, Equatable, Identifiable, Sendable {
+        var bundleIdentifier: String
+        var name: String
+        var id: String { bundleIdentifier }
+    }
+
+    private(set) var watchedApplications: [WatchedApplication] = []
+    private var activationObserver: (any NSObjectProtocol)?
+    /// When each application was last offered, so switching back and forth does
+    /// not produce a stream of prompts.
+    private var lastSuggestedAt: [String: Date] = [:]
+    /// How long an ignored offer stands before the same application may ask
+    /// again. Long enough that declining once is respected for a meeting.
+    private static let suggestionQuietPeriod: TimeInterval = 30 * 60
 
     /// Objects seen in the archive at least once.
     ///
@@ -207,7 +228,9 @@ final class ImportViewModel {
             forKey: Self.automaticTranscriptionKey
         ) as? Bool ?? true
         restoreArchive()
+        restoreWatchedApplications()
         startWatchingArchive()
+        startWatchingApplications()
         reloadObjects()
         Task { await loadLanguages() }
     }
@@ -329,6 +352,120 @@ final class ImportViewModel {
                 )
             }
         }
+    }
+
+    // MARK: Offering to record when a chosen application appears
+
+    /// Watches for the applications a person named, and offers — never starts.
+    ///
+    /// Spec decision `0023` is the whole design of this feature: contextual
+    /// detection may *suggest* capture, and the capture itself must be explicit.
+    /// So this posts a notification with a Record button and does nothing else.
+    /// Ignoring it records nothing. There is no timer, no buffer, and no
+    /// retrospective audio anywhere in the app to make "record from when it
+    /// started" possible even if someone wanted it.
+    private func startWatchingApplications() {
+        if let activationObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(activationObserver)
+            self.activationObserver = nil
+        }
+        guard !watchedApplications.isEmpty else { return }
+
+        activationObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let application = notification.userInfo?[
+                NSWorkspace.applicationUserInfoKey
+            ] as? NSRunningApplication else {
+                return
+            }
+            MainActor.assumeIsolated {
+                self?.considerSuggesting(for: application)
+            }
+        }
+    }
+
+    private func considerSuggesting(for application: NSRunningApplication) {
+        guard let bundleIdentifier = application.bundleIdentifier,
+              let watched = watchedApplications.first(
+                  where: { $0.bundleIdentifier == bundleIdentifier }
+              ) else {
+            return
+        }
+        // Never while something is already happening. Offering to record during
+        // a recording is noise, and offering during an import is a distraction
+        // from work the person did ask for.
+        guard !isBusy, archiveURL != nil else { return }
+
+        let now = Date()
+        if let last = lastSuggestedAt[bundleIdentifier],
+           now.timeIntervalSince(last) < Self.suggestionQuietPeriod {
+            return
+        }
+        lastSuggestedAt[bundleIdentifier] = now
+
+        let name = application.localizedName ?? watched.name
+        Task { await OnbiiNotifier.suggestCapture(for: name) }
+    }
+
+    /// Adds an application to watch, chosen from the ones on this Mac.
+    func chooseApplicationToWatch() {
+        Task {
+            let panel = NSOpenPanel()
+            panel.title = "Choose an Application"
+            panel.prompt = "Watch This App"
+            panel.message =
+                "Onbii will offer to record when this application becomes active. "
+                + "It never starts recording on its own."
+            panel.canChooseDirectories = false
+            panel.canChooseFiles = true
+            panel.allowsMultipleSelection = false
+            panel.allowedContentTypes = [.application]
+            panel.directoryURL = URL(fileURLWithPath: "/Applications")
+
+            guard await present(panel) == .OK, let url = panel.url,
+                  let bundle = Bundle(url: url),
+                  let identifier = bundle.bundleIdentifier else {
+                return
+            }
+            let name = (bundle.infoDictionary?["CFBundleName"] as? String)
+                ?? url.deletingPathExtension().lastPathComponent
+            guard !watchedApplications.contains(
+                where: { $0.bundleIdentifier == identifier }
+            ) else {
+                return
+            }
+            watchedApplications.append(
+                WatchedApplication(bundleIdentifier: identifier, name: name)
+            )
+            persistWatchedApplications()
+            startWatchingApplications()
+        }
+    }
+
+    func stopWatching(_ application: WatchedApplication) {
+        watchedApplications.removeAll {
+            $0.bundleIdentifier == application.bundleIdentifier
+        }
+        persistWatchedApplications()
+        startWatchingApplications()
+    }
+
+    private func persistWatchedApplications() {
+        let data = try? JSONEncoder().encode(watchedApplications)
+        UserDefaults.standard.set(data, forKey: Self.watchedApplicationsKey)
+    }
+
+    private func restoreWatchedApplications() {
+        guard let data = UserDefaults.standard.data(
+            forKey: Self.watchedApplicationsKey
+        ) else {
+            return
+        }
+        watchedApplications =
+            (try? JSONDecoder().decode([WatchedApplication].self, from: data)) ?? []
     }
 
     /// The same assertion a capture holds, for the same reason: App Nap

@@ -15,8 +15,53 @@ struct MacSettingsView: View {
             Form { transcriptionSection }
                 .formStyle(.grouped)
                 .tabItem { Label("Transcription", systemImage: "text.viewfinder") }
+
+            Form { suggestionsSection }
+                .formStyle(.grouped)
+                .tabItem { Label("Suggestions", systemImage: "bell.badge") }
         }
-        .frame(width: 520, height: 300)
+        .frame(width: 520, height: 340)
+    }
+
+    /// Onbii offers; it never starts.
+    ///
+    /// Spec decision `0023` allows contextual detection to *suggest* capture and
+    /// requires the capture itself to be explicit. The wording here is part of
+    /// the feature rather than decoration: someone reading this screen must come
+    /// away certain that naming an application does not mean Onbii will be
+    /// listening while it is open.
+    @ViewBuilder
+    private var suggestionsSection: some View {
+        Section {
+            if model.watchedApplications.isEmpty {
+                Text("No applications chosen.")
+                    .foregroundStyle(.onbiiSecondaryText)
+            } else {
+                ForEach(model.watchedApplications) { application in
+                    HStack {
+                        Text(application.name)
+                        Spacer()
+                        Button("Remove") { model.stopWatching(application) }
+                            .buttonStyle(.link)
+                    }
+                }
+            }
+
+            Button("Add Application…") { model.chooseApplicationToWatch() }
+        } header: {
+            Text("Offer to record when these open")
+                .onbiiSubheaderStyle()
+        } footer: {
+            Text(
+                "When one of these becomes the active application, Onbii asks "
+                    + "whether to record. It never starts on its own, and it "
+                    + "keeps no audio from before you say yes — there is nothing "
+                    + "to record retrospectively from. Declining, or ignoring "
+                    + "the question, records nothing."
+            )
+            .font(.caption)
+            .foregroundStyle(.onbiiSecondaryText)
+        }
     }
 
     @ViewBuilder
