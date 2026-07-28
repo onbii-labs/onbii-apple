@@ -97,7 +97,16 @@ struct MobileContentView: View {
                 Text("Objects")
                     .onbiiSubheaderStyle()
             } footer: {
-                Text("Stored in \(model.archiveDescription).")
+                // An object present but not yet readable is still an object.
+                // Omitting it silently presents an incomplete list as complete.
+                if model.objectsStillArriving > 0 {
+                    Text(
+                        "Stored in \(model.archiveDescription). "
+                            + arrivingDescription
+                    )
+                } else {
+                    Text("Stored in \(model.archiveDescription).")
+                }
             }
         }
         .listStyle(.insetGrouped)
@@ -153,6 +162,12 @@ struct MobileContentView: View {
         .padding(.horizontal, OnbiiTheme.Spacing.l)
         .padding(.vertical, OnbiiTheme.Spacing.m)
         .background(.bar)
+    }
+
+    private var arrivingDescription: String {
+        model.objectsStillArriving == 1
+            ? "1 object is still arriving from iCloud."
+            : "\(model.objectsStillArriving) objects are still arriving from iCloud."
     }
 
     @ViewBuilder

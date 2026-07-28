@@ -39,10 +39,15 @@ final class MobileViewModel {
     /// Set when a recording ended without being asked to, and carried through to
     /// the message shown once what was captured has been preserved.
     private var pendingInterruption: String?
+    private var archiveWatcher: OnbiiArchiveWatcher?
+    private var archiveWatchTask: Task<Void, Never>?
 
     private(set) var state: State = .preparingArchive
     private(set) var duration: TimeInterval = 0
     private(set) var objects = [OnbiiBundle]()
+    /// Objects present in the archive that could not be read yet — almost always
+    /// still arriving from another device. Shown rather than swallowed.
+    private(set) var objectsStillArriving = 0
     private(set) var archiveDescription = "Connecting to iCloud Drive…"
     /// What this app is doing to an object right now. Session-only: never
     /// encoded, never written to a manifest.
@@ -656,8 +661,35 @@ final class MobileViewModel {
             }
         }
 
+        startWatchingArchive()
         reloadObjects()
         state = .idle
+    }
+
+    /// Watches the archive so a list left open stops being a snapshot.
+    ///
+    /// The iPhone already re-reads when it becomes active and on pull to
+    /// refresh, which covers most of it — but an object can arrive from the
+    /// Watch or from the Mac while someone is looking straight at the list, and
+    /// "it is not there" is the wrong thing for the app to be saying at that
+    /// moment.
+    private func startWatchingArchive() {
+        archiveWatchTask?.cancel()
+        archiveWatchTask = nil
+        archiveWatcher?.stop()
+        archiveWatcher = nil
+
+        guard let archiveURL else { return }
+
+        let watcher = OnbiiArchiveWatcher(directoryURL: archiveURL)
+        archiveWatcher = watcher
+        archiveWatchTask = Task { [weak self] in
+            for await _ in watcher.changes {
+                guard !Task.isCancelled else { return }
+                self?.reloadObjects()
+            }
+        }
+        watcher.start()
     }
 
     /// Re-reads the archive folders. Both are listed even when iCloud is the
@@ -673,7 +705,13 @@ final class MobileViewModel {
             directories.append(localURL)
         }
 
-        objects = OnbiiArchiveIndex().objects(in: directories)
+        let index = OnbiiArchiveIndex()
+        let listing = index.contents(in: directories)
+        // Present but not yet readable is almost always an object arriving from
+        // another device. Ask for it, say how many, and never quietly omit it.
+        index.requestDownload(of: listing.unreadable)
+        objects = listing.objects
+        objectsStillArriving = listing.unreadable.count
     }
 
     private func localArchiveDirectory() throws -> URL {

@@ -51,7 +51,23 @@ final class ImportViewModel {
     private var dualCaptureDirectory: URL?
     private var recordingStartedAt: Date?
 
-    var archiveURL: URL?
+    var archiveURL: URL? {
+        didSet {
+            guard archiveURL != oldValue else { return }
+            startWatchingArchive()
+        }
+    }
+
+    /// Objects present in the archive that could not be read yet — almost always
+    /// still arriving from another device.
+    ///
+    /// Shown rather than swallowed. An app that quietly omits an object it can
+    /// see is presenting an incomplete list as a complete one, which is the same
+    /// failure as reading the folder once and never again.
+    private(set) var objectsStillArriving = 0
+
+    private var archiveWatcher: OnbiiArchiveWatcher?
+    private var archiveWatchTask: Task<Void, Never>?
 
     /// The objects in the chosen archive, newest first, plus anything the
     /// person opened from outside it.
@@ -157,6 +173,7 @@ final class ImportViewModel {
 
     init() {
         restoreArchive()
+        startWatchingArchive()
         reloadObjects()
         Task { await loadLanguages() }
     }
@@ -167,24 +184,56 @@ final class ImportViewModel {
     func reloadObjects() {
         guard let archiveURL else {
             archivedObjects = []
+            objectsStillArriving = 0
             rebuildObjects()
             return
         }
 
         Task {
-            let loaded = await Task.detached(priority: .userInitiated) {
+            let listing = await Task.detached(priority: .userInitiated) {
                 let hasAccess = archiveURL.startAccessingSecurityScopedResource()
                 defer {
                     if hasAccess {
                         archiveURL.stopAccessingSecurityScopedResource()
                     }
                 }
-                return OnbiiArchiveIndex().objects(in: [archiveURL])
+                let index = OnbiiArchiveIndex()
+                let listing = index.contents(in: [archiveURL])
+                // Ask for anything that is present but not downloaded. The
+                // watcher will report when it lands; nothing here waits.
+                index.requestDownload(of: listing.unreadable)
+                return listing
             }.value
 
-            archivedObjects = loaded
+            archivedObjects = listing.objects
+            objectsStillArriving = listing.unreadable.count
             rebuildObjects()
         }
+    }
+
+    /// Watches the chosen archive so the window stops being a snapshot.
+    ///
+    /// Reading the folder once at launch and presenting that list as *the
+    /// archive* is how a recording made on a walk was missing from a freshly
+    /// launched window (field test 2). The watcher only ever says "look again" —
+    /// the read is still the same read, and the filesystem is still the truth.
+    private func startWatchingArchive() {
+        archiveWatchTask?.cancel()
+        archiveWatchTask = nil
+        archiveWatcher?.stop()
+        archiveWatcher = nil
+
+        guard let archiveURL else { return }
+
+        let watcher = OnbiiArchiveWatcher(directoryURL: archiveURL)
+        archiveWatcher = watcher
+        archiveWatchTask = Task { [weak self] in
+            for await _ in watcher.changes {
+                guard !Task.isCancelled else { return }
+                self?.reloadObjects()
+            }
+        }
+        watcher.start()
     }
 
     /// Records a bundle this session just wrote or read, without waiting for a

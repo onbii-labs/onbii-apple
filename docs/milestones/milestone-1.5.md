@@ -1,8 +1,8 @@
 # Milestone 1.5: Ready To Show
 
-Status: **Half delivered, resumed 28 July.** The identity-and-home half shipped;
-the always-ready half is what remains. See *What Is Left* for the order
-it should be built in.
+Status: **Resumed 28 July, in progress.** The identity-and-home half shipped and
+the archive watcher is done; background processing, the menu-bar service and the
+activation prompt remain. See *What Is Left* for the order and why it is fixed.
 
 Milestone 1 proved the capture-certainty loop. Milestone 1.5 turns that loop into
 something presentable enough to put in front of early users as a public alpha —
@@ -99,9 +99,9 @@ objects that have **no** transcript and stop there. Anything that would create a
 second generation needs someone to ask for it. This is a constraint on the
 feature, not a detail of it.
 
-**The watcher is a precondition, not a nice-to-have.** Background processing
+**The watcher was a precondition, not a nice-to-have** — background processing
 cannot process what it never notices, and field test 2 showed the Mac does not
-notice. See the gap below.
+notice. It is now built; see *What Is Left*.
 
 ## Current Implementation Slice
 
@@ -153,21 +153,29 @@ The identity and home half:
 These were not in the first slice, and they are what is left to build. In the
 order they depend on each other:
 
-**1. A watcher on the archive.** The macOS home currently refreshes after every
-write, on archive selection, at window appearance, when the window becomes active
-again, and on ⌘⇧R. The activation refresh was added after
-[field test 2](../field-tests/2026-07-28-field-test-2.md), where an object made on
-a walk was missing from a freshly launched window. It is not the whole answer,
-because a window left in front for an hour still will not notice — and background
-processing cannot process what it never notices, which is why this comes first.
+**1. A watcher on the archive — done.** `OnbiiArchiveWatcher` in `OnbiiArchive`
+reports that the archive may have changed; the apps re-read when it does. It
+carries no objects and holds no state about them, so `OnbiiArchiveIndex` remains
+the only thing that reads and the filesystem remains the truth every time it is
+asked. Deleting it would cost freshness and nothing else.
 
-The archive is an iCloud container, so the right instrument is an
-`NSMetadataQuery` rather than a local filesystem watcher: a filesystem watcher
-reports nothing until a remote object has already materialised, and an object
-that exists but has not been downloaded is precisely the case that needs
-handling. It should also stop the listing silently skipping an object it can see
-but cannot read — `OnbiiArchiveIndex` swallows an unreadable bundle today, which
-is right for a corrupt folder and wrong for one that is still arriving.
+It picks its mechanism by inspection rather than configuration, because an
+archive is not always one kind of place. The default archive lives in the app's
+iCloud Drive container, where objects arrive from other devices and exist before
+they are downloaded — that needs `NSMetadataQuery`, the only API that reports an
+item the filesystem cannot yet open. A person may equally point Onbii at an
+ordinary folder, where there is no sync and a directory watch is exactly right.
+Reports are coalesced over a short quiet period, because iCloud narrates a single
+arriving object as a stream of progress updates.
+
+The second half of the same finding went with it: `OnbiiArchiveIndex` used to
+skip a folder it could not read, which is right for a damaged object and wrong
+for one still arriving. `contents(in:)` now returns both lists, the apps ask
+iCloud for anything present but not downloaded, and both say *"N objects are
+still arriving from iCloud"* rather than quietly presenting an incomplete list as
+a complete one.
+
+The Mac's activation refresh from 1.6 stays as a cheap backstop.
 
 **2. Background processing of new archive files.** Transcribing what arrives,
 without a window. Constrained as described above: first transcript only, never an
