@@ -1,7 +1,8 @@
 # Localization
 
-Status: **Not started.** The apps are English-only, and the development region is
-the default `en`. There is no String Catalog, no `.lproj`, no
+Status: **English only, deliberately, 28 July.** Considered when Milestone 1.5
+closed and deferred — not overlooked. The apps are English-only and the
+development region is the default `en`. There is no String Catalog, no `.lproj`, no
 `defaultLocalization` on the package, and not one `String(localized:)` in the
 repository. Recorded now because a Dutch localization is wanted, and because the
 first decision in it is one that could quietly damage every object a person owns.
@@ -67,7 +68,10 @@ catalog: a package's strings resolve against the package bundle, not the app's.
 
 ## Not decided
 
-- Whether Dutch ships before a public alpha or after.
+- **When Dutch happens.** Deferred on 28 July rather than ruled out: English is
+  enough for the first alpha, and the mechanical half of the work (unpicking the
+  concatenations, adding catalogs) is worth doing in one pass rather than
+  alongside feature work that keeps adding more copy to it.
 - Whether the Watch app is localized at all — it has very little text.
 - Whether the *transcription language* default should follow the interface
   language. It should probably not: which language a recording is in is a

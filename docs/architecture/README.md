@@ -43,7 +43,8 @@ Open questions still to answer here:
   language, `DictationTranscriber` returned nothing where `SpeechTranscriber`
   returned six words, and audio treatments that recovered words for one made the
   other worse. Both are architectural questions, not tuning ones.
-- **Should Onbii ship a Dutch localization, and when?** Nothing is localized
+- **When should Onbii ship a Dutch localization?** Deferred 28 July: English
+  only for the first alpha. Nothing is localized
   today — English only, no String Catalog anywhere. The interface side is mostly
   mechanical, with one self-inflicted obstacle (concatenated `Text` literals do
   not localize and fail silently). The part that needs a decision rather than
