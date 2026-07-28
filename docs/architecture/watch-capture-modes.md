@@ -1,17 +1,30 @@
 # Watch Capture Modes
 
-Status: Direction. Not scoped, not built, and gated on a measurement.
+Status: Direction, and the reason for it has changed. Gathered into
+[Milestone 1.7](../milestones/milestone-1.7.md).
 
-## The problem
+## The problem — restated after field test 2
 
-An Apple Watch app has no runtime once it stops being frontmost unless it holds
-a sanctioned claim on one. The first field test lost twenty-five minutes of a
-walk to exactly that: watchOS offered to record an outdoor walk, attention moved
-to the Workout app, Onbii was suspended, and the recorder stopped without anyone
-noticing. See [Milestone 1.6](../milestones/milestone-1.6.md).
+This note was written to solve a runtime problem, and **that problem does not
+exist.** [Field test 2](../field-tests/2026-07-28-field-test-2.md) recorded for
+nineteen minutes on the wrist with no `WKBackgroundModes` declared at all,
+through app switches and through the Workout app starting mid-walk. The Watch
+grants an ordinary app enough runtime to record a walk.
 
-Making the app honest about that is 1.6's job. Giving it a legitimate claim on
-the runtime is this note's.
+What actually ends a recording is **another app taking the audio session**. On
+that walk it was Apple Fitness announcing the first split — and it will do that
+roughly every kilometre, so on a longer walk the recording is cut again and
+again.
+
+That relocates this note's value entirely. A reflection-walk mode is not a way to
+buy runtime the Watch already gives. It is a way for Onbii to **own the walk**,
+so the Workout app never offers to record one and never speaks over the
+recording. It removes the cause instead of surviving it.
+
+The original problem statement, kept because the reasoning below was built on it:
+an Apple Watch app was assumed to have no runtime once it stopped being
+frontmost. The first field test lost twenty-five minutes of a walk and that was
+read as watchOS suspending an unentitled app. It was the Workout app all along.
 
 ## What was considered and rejected
 
@@ -68,35 +81,49 @@ walking workout recorded stationary is the wrong claim.
 and is robust to the bench. It is a softer claim, and it likely credits
 differently in Health.
 
-## The risk that decides the shape
+## The exclusivity, which is now the point rather than the risk
 
-**watchOS runs one workout session at a time.** If Onbii holds one, the Watch's
-own offer to record an outdoor walk becomes a conflict rather than a
-coincidence — and that offer is precisely what killed the first field test's
-recording. Whichever session starts second displaces or is refused.
+**watchOS runs one workout session at a time.** This note originally listed that
+as the risk that might sink the idea. Field test 2 turned it into the argument
+for it: if Onbii holds the session, the Watch never offers to record an outdoor
+walk, so Fitness never announces a split, so nothing interrupts the recording.
+The exclusivity *is* the mechanism.
 
-So the person cannot have Onbii's reflection walk *and* the Workout app's walk.
-That is not obviously bad: if Onbii saves the workout, the walk is still
-credited, by Onbii instead of by Apple's app. But it means Onbii is writing
-fitness data, which is a role this project would rather not take on, and it must
-not silently cost someone the walk they thought they were recording.
+The cost is unchanged and still real. The person cannot have Onbii's reflection
+walk *and* the Workout app's walk. If Onbii saves the workout the walk is still
+credited — by Onbii rather than by Apple's app — but that means Onbii writes
+fitness data, a role this project would rather not take on, and it must never
+silently cost someone the walk they thought they were recording.
 
-Untested, and testable in the same walk that answers the runtime question:
+**Answered by field test 2:**
 
-- Does starting an Onbii session block, or get blocked by, the Workout app?
-- What actually lands in Health when the session is saved?
+- *Does audio recording survive inside a workout session at all?* **Yes.** A
+  Fitness-owned outdoor walk ran alongside an Onbii recording for the rest of the
+  walk with the microphone live throughout. Only the spoken split announcement
+  interrupted it, and that is audio output, not the workout.
+- *Does starting an Onbii session block, or get blocked by, the Workout app?*
+  Still untested — but the walk showed the two coexist when Fitness owns the
+  session, which is the easier half of the answer.
+
+**Still untested:**
+
+- What actually lands in Health when Onbii saves the session?
 - Does `.mindAndBody` credit differently from `.walking`?
-- Does audio recording survive inside a workout session at all?
+- Does holding the session actually suppress the Watch's own walk offer, or does
+  it appear anyway?
+- Does Fitness still announce splits for a workout Onbii owns? If it does, the
+  mechanism above fails and the mode is worth much less.
 
-## The gate
+## Where this sits now
 
-None of this is scoped until one number is known: **how long a Watch recording
-survives today, with no new entitlement at all.** That is Spike A in
-[Milestone 1.6](../milestones/milestone-1.6.md).
+The gate this note waited on — how long a Watch recording survives with no
+entitlement — was answered by field test 2, and the answer removed the urgency
+rather than creating it. Nothing here is a fix for a broken thing.
 
-- If the answer is around twenty minutes, a stated limit is a perfectly good
-  answer for now, and this becomes a deliberate enhancement.
-- If it is a couple of minutes, the Watch is effectively broken for the use case
-  that matters most, and this becomes urgent.
+It is now one half of [Milestone 1.7](../milestones/milestone-1.7.md), whose
+other half is segmented continuation. The two do different jobs and both are
+needed: segmented continuation handles *any* interruption and cannot be avoided,
+this removes the one predictable, recurring interruption on the walk that matters
+most.
 
-Design the UX after that number exists, not before.
+Design the UX against the questions above once they have answers, not before.

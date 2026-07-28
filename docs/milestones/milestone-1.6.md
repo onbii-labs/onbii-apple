@@ -1,5 +1,8 @@
 # Milestone 1.6: It Doesn't Lie To Me
 
+Status: **Complete.** Gated on a second field test, walked
+[28 July 2026](../field-tests/2026-07-28-field-test-2.md).
+
 Milestone 1 proved the capture-certainty loop and
 [Milestone 1.5](milestone-1.5.md) made it presentable. The first field test —
 [27 July 2026](../field-tests/2026-07-27-field-test-1.md) — found that it was not
@@ -26,7 +29,8 @@ contradicting what 1.5 is.
 
 Milestone 1.5 is **paused with its always-ready strand intact** — the menu-bar
 service, the application-activation prompt, and desktop background processing —
-not abandoned. Those resume after this.
+not abandoned. Those resume after this, and
+[Milestone 1.7](milestone-1.7.md) follows them.
 
 ## The use case that raises the stakes
 
@@ -170,22 +174,13 @@ run read all nineteen minutes and there was nothing to find.
 
 ### Still to do
 
-- **A decision, not a task: should a foreign interruption end a recording or
-  continue it?** Field test 2 answered the runtime question and raised this one.
-  Fitness announces a split roughly every kilometre, so "stop honestly" cuts a
-  reflection walk at the first one.
+Nothing. **This milestone is complete**, and its gate — a second field test —
+was walked on 28 July.
 
-  The recommendation is **segmented continuation**: keep the walk as one object
-  and start a *new source resource* when the session comes back, rather than
-  appending across an undeclared seam. Onbii is already shaped for it — dual-source
-  call capture puts two sources in one object, and `OnbiiTranscriptionRun` already
-  merges several tracks by `captureStartedAt`. What is missing is the capture
-  side. Reasoning in the field test's
-  [Unanswered](../field-tests/2026-07-28-field-test-2.md#unanswered) section.
-
-  **It does not block this milestone.** What ships — preserve, stop, say so — is
-  honest. Segmented continuation is capture work on three platforms plus its own
-  field test, and it should be built deliberately rather than to close 1.6.
+The one question that walk raised has been decided and moved out:
+[Milestone 1.7](milestone-1.7.md) holds segmented continuation and the reflection
+walk mode. What ships here — preserve, stop, say so — is honest, and it is what
+made the interruption legible enough to design against in the first place.
 
 ## The spikes
 
@@ -201,10 +196,12 @@ app took the audio session, and the recording stopped gracefully, preserved
 everything, and said so.
 
 So the limit this spike set out to measure and state does not appear to exist.
-`WKBackgroundModes` stays undeclared, and
-[Watch Capture Modes](../architecture/watch-capture-modes.md) stays an optional
-feature rather than a fix. What replaces the question is a decision about
-interruptions, listed under *Still to do*.
+`WKBackgroundModes` stays undeclared. What replaces the question is
+interruptions, and both answers to it moved to
+[Milestone 1.7](milestone-1.7.md) — including
+[Watch Capture Modes](../architecture/watch-capture-modes.md), which was written
+for this runtime problem and found a better reason to exist once the runtime
+problem turned out not to.
 
 The rest of this section is kept as the record of how it was framed and why the
 framing changed.
@@ -378,6 +375,10 @@ Field test 2 sharpened it in two ways, both in the same thread and neither here:
 - **Promoting the supersession layout into the spec** — `0025` is open.
 - **An `OnbiiNotifications` package** — keep it app-local until there is a second
   real user for it.
+- **Continuing a recording through an interruption**, and a reflection-walk mode
+  that stops the recurring one happening. Both are
+  [Milestone 1.7](milestone-1.7.md). This milestone's job was to make the
+  interruption visible; acting on it is the next one's.
 
 ## Verification
 

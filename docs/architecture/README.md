@@ -17,12 +17,18 @@ Current implementation direction:
 
 Open questions still to answer here:
 
-- **How long does a Watch recording actually survive today?** One number, and a
-  lot hangs on it: whether a stated limit is a good enough answer for now, or
-  whether [Watch Capture Modes](watch-capture-modes.md) becomes urgent. Needs
-  measurement on a real device — or possibly just the Watch's own logs from
-  27 July, which is cheaper and decays by the day. Spike A in
-  [Milestone 1.6](../milestones/milestone-1.6.md).
+- ~~**How long does a Watch recording actually survive today?**~~ **Answered
+  28 July, and the premise was wrong.** A Watch recording survives losing the
+  foreground indefinitely as far as
+  [field test 2](../field-tests/2026-07-28-field-test-2.md) goes — nineteen
+  minutes with no `WKBackgroundModes` declared, through app switches and a
+  workout starting. What ends a recording is another app taking the audio
+  session. The open question that replaces it is what to do about that:
+  [Milestone 1.7](../milestones/milestone-1.7.md).
+- **Does holding an `HKWorkoutSession` stop the Watch offering to record a
+  walk — and does Fitness still announce splits over a workout Onbii owns?**
+  The whole value of [Watch Capture Modes](watch-capture-modes.md) now rests on
+  these two, and neither is tested.
 - Does `.record` with `.measurement` recover the speech recognition is currently
   dropping? Note that this cannot be tested against the existing field-test
   fixtures — changing the audio session changes what gets recorded — so it needs
@@ -30,10 +36,13 @@ Open questions still to answer here:
   [Capture Situations And Processing](capture-situations-and-processing.md):
   tuning one configuration against the worst recordings risks the desk case,
   which currently works.
-- **How should processing vary with the situation an object was captured in?**
-  Measured across a real archive, the same code produces 0% missed speech at a
-  desk and 58–66% outdoors, on the same devices. That is an architectural
-  question, not a tuning one.
+- **How should processing vary with the situation an object was captured in —
+  and with which recogniser is running?** Measured across a real archive, the
+  same code produces 0% missed speech at a desk and 58–66% outdoors, on the same
+  devices. Field test 2 added the second axis: on the same file, in the same
+  language, `DictationTranscriber` returned nothing where `SpeechTranscriber`
+  returned six words, and audio treatments that recovered words for one made the
+  other worse. Both are architectural questions, not tuning ones.
 - Does the Core Audio system-audio probe work reliably for the first
   meeting applications tested?
 - What should the start/stop capture surface feel like on macOS? (Milestone 1.5
