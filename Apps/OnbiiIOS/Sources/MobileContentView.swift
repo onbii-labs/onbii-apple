@@ -209,6 +209,15 @@ struct MobileContentView: View {
                 }
             }
 
+        case let .foundNoSpeech(message):
+            statusRow {
+                // Not the error triangle. Nothing is broken, and the icon is
+                // the first thing read.
+                Image(systemName: "waveform.slash")
+                    .foregroundStyle(.onbiiSecondaryText)
+                Text(message)
+            }
+
         case let .failed(message):
             statusRow {
                 Image(systemName: "exclamationmark.triangle.fill")

@@ -94,17 +94,77 @@ public extension OnbiiManifest {
     var transcriptGenerations: [OnbiiDerivationGeneration] {
         generations(of: "transcribed")
     }
+
+    /// Runs that completed and produced nothing, oldest first.
+    ///
+    /// An object with none of these has never been processed. An object with
+    /// some has, and the configuration each was made under is the useful part —
+    /// it is the difference between "nobody has tried" and "Dutch was tried and
+    /// there was no speech to find".
+    var emptyDerivations: [OnbiiDerivationGeneration] {
+        generations(of: OnbiiProvenanceEvent.foundNothingAction)
+    }
+
+    /// One sentence for everything this object has been through that produced
+    /// nothing, or `nil` if it has been through none.
+    ///
+    /// The languages are the point. "Nothing was found" invites trying again
+    /// with the same setting; "nothing was found in Dutch" is something a person
+    /// can act on. The single definition lives here because both apps show it
+    /// and they must not word it differently.
+    var emptyDerivationSummary: String? {
+        let runs = emptyDerivations
+        guard let latest = runs.last else { return nil }
+
+        var languages = [String]()
+        for run in runs {
+            for tag in run.configuration?.languages ?? [] {
+                let name = OnbiiDerivationConfiguration.languageName(for: tag)
+                if !languages.contains(name) {
+                    languages.append(name)
+                }
+            }
+        }
+        let formatted = DateFormatter()
+        formatted.dateStyle = .medium
+        formatted.timeStyle = .none
+        let when = formatted.string(from: latest.occurredAt)
+
+        guard !languages.isEmpty else {
+            return "Transcribing this recording on \(when) found no speech."
+        }
+        let joined = languages.count == 1
+            ? languages[0]
+            : languages.dropLast().joined(separator: ", ")
+                + " and " + languages[languages.count - 1]
+        let occasion = runs.count == 1 ? "on \(when)" : "most recently on \(when)"
+        return "Transcribing in \(joined) found no speech, \(occasion). "
+            + "The recording is unchanged."
+    }
 }
 
 public extension OnbiiDerivationConfiguration {
+    /// A language tag as a person would say it: "Dutch", not "Dutch
+    /// (Netherlands)" and not `nl-NL`.
+    ///
+    /// The region belongs in the manifest, where it is a fact, and not in a
+    /// sentence about which language was tried. A recogniser resolves a request
+    /// to whichever regional model it has, so the region often says more about
+    /// Apple's model catalogue than about the recording.
+    static func languageName(for tag: String) -> String {
+        let code = Locale(identifier: tag).language.languageCode?.identifier
+        if let code, let name = Locale.current.localizedString(forLanguageCode: code) {
+            return name
+        }
+        return Locale.current.localizedString(forIdentifier: tag) ?? tag
+    }
+
     /// How to say what this transcript assumed, in a sentence a person can act
     /// on. `0033` exists so that "this transcript is wrong" can be told apart
     /// from "this transcript was made under the wrong assumption".
     var spokenDescription: String? {
         guard let languages, !languages.isEmpty else { return nil }
-        let names = languages.map { tag in
-            Locale.current.localizedString(forIdentifier: tag) ?? tag
-        }
+        let names = languages.map { Self.languageName(for: $0) }
         let joined = names.count == 1
             ? names[0]
             : names.dropLast().joined(separator: ", ") + " and " + names[names.count - 1]

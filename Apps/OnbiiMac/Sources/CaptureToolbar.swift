@@ -135,6 +135,16 @@ private struct StatusPill: View {
                 Text("\(bundleURL.lastPathComponent) now has an on-device transcript.")
             }
 
+        case let .foundNoSpeech(_, message):
+            pill {
+                // Not the error triangle. Nothing is broken, and the icon is
+                // the first thing read.
+                Image(systemName: "waveform.slash")
+                    .foregroundStyle(.onbiiSecondaryText)
+                Text(message)
+                    .textSelection(.enabled)
+            }
+
         case let .opened(bundleURL):
             pill {
                 Image(systemName: "doc.text.magnifyingglass")

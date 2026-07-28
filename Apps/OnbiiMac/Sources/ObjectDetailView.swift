@@ -21,6 +21,7 @@ struct ObjectDetailView: View {
             VStack(alignment: .leading, spacing: OnbiiTheme.Spacing.l) {
                 header
                 repairOffer
+                emptyResultNote
 
                 if bundle.manifest.hasTranscript {
                     Divider().overlay(Color.onbiiDivider)
@@ -82,7 +83,18 @@ struct ObjectDetailView: View {
                 .textSelection(.enabled)
 
             HStack(spacing: OnbiiTheme.Spacing.m) {
-                OnbiiStatusBadge(model.indicator(for: bundle))
+                let indicator = model.indicator(for: bundle)
+                OnbiiStatusBadge(indicator)
+
+                // The badge can only fit two words. Where there is a reason,
+                // this is the place with room for it.
+                if let detail = indicator.detail {
+                    Text(detail)
+                        .font(.callout)
+                        .foregroundStyle(.onbiiSecondaryText)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
 
                 Spacer()
 
@@ -95,6 +107,35 @@ struct ObjectDetailView: View {
                     model.reveal(bundle)
                 }
             }
+        }
+    }
+
+    /// What the object remembers about being processed and finding nothing.
+    ///
+    /// Read from provenance rather than from this session, so it is still here
+    /// tomorrow. Without it an object that has been transcribed twice in the
+    /// wrong language is indistinguishable from one nobody has opened, and the
+    /// person is left to remember which languages they already tried.
+    @ViewBuilder
+    private var emptyResultNote: some View {
+        if !bundle.manifest.hasTranscript,
+           let summary = bundle.manifest.emptyDerivationSummary {
+            HStack(spacing: OnbiiTheme.Spacing.m) {
+                Image(systemName: "waveform.slash")
+                    .foregroundStyle(.onbiiSecondaryText)
+                Text(summary)
+                    .foregroundStyle(.onbiiSecondaryText)
+                    .textSelection(.enabled)
+                Spacer()
+            }
+            .font(.callout)
+            .padding(OnbiiTheme.Spacing.m)
+            .background(
+                Color.onbiiSecondaryText.opacity(0.08),
+                in: RoundedRectangle(
+                    cornerRadius: OnbiiTheme.Radius.badge, style: .continuous
+                )
+            )
         }
     }
 

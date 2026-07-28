@@ -33,6 +33,10 @@ final class ImportViewModel {
         /// filed as zero seconds.
         case completed(bundleURL: URL, warning: String? = nil)
         case transcribed(bundleURL: URL)
+        /// Transcription ran to completion and recognised no speech. Not a
+        /// failure: nothing is wrong with the object, and saying otherwise
+        /// blames a recording for a quiet morning (field test 2).
+        case foundNoSpeech(bundleURL: URL, message: String)
         case opened(bundleURL: URL)
         case failed(message: String)
     }
@@ -808,7 +812,7 @@ final class ImportViewModel {
         }
 
         do {
-            let enriched = try await OnbiiTranscriptionRun().run(
+            let outcome = try await OnbiiTranscriptionRun().run(
                 on: bundle,
                 language: .init(locale: locale)
             ) { progress in
@@ -821,8 +825,15 @@ final class ImportViewModel {
             }
             await loadLanguages()
             activity[bundle.manifest.objectID] = nil
-            upsert(enriched)
-            state = .transcribed(bundleURL: bundle.url)
+            upsert(outcome.bundle)
+            // A run that found nothing did not fail. The object now records the
+            // attempt, so the detail pane can say so long after this pill is
+            // gone — which is the part that lasts.
+            state = if let summary = outcome.spokenSummary {
+                .foundNoSpeech(bundleURL: bundle.url, message: summary)
+            } else {
+                .transcribed(bundleURL: bundle.url)
+            }
         } catch {
             failTranscribing(
                 error.localizedDescription

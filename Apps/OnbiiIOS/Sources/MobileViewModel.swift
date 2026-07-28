@@ -24,6 +24,10 @@ final class MobileViewModel {
         /// app that stayed quiet about this is how a twenty-minute recording
         /// came to be filed as zero seconds.
         case completed(String, warning: String? = nil)
+        /// Transcription ran to completion and recognised no speech. Not a
+        /// failure: nothing is wrong with the object, and saying otherwise
+        /// blames a recording for a quiet morning (field test 2).
+        case foundNoSpeech(String)
         case failed(String)
     }
 
@@ -510,7 +514,7 @@ final class MobileViewModel {
         }
 
         do {
-            let enriched = try await OnbiiTranscriptionRun().run(
+            let outcome = try await OnbiiTranscriptionRun().run(
                 on: bundle,
                 language: .init(locale: locale)
             ) { progress in
@@ -523,9 +527,16 @@ final class MobileViewModel {
             if let index = objects.firstIndex(where: {
                 $0.manifest.objectID == bundle.manifest.objectID
             }) {
-                objects[index] = enriched
+                objects[index] = outcome.bundle
             }
-            state = .completed(bundle.url.lastPathComponent)
+            // Recognising nothing is an outcome, not a failure. The object
+            // records the attempt, so the detail screen can still say which
+            // language was tried once this line is gone.
+            state = if let summary = outcome.spokenSummary {
+                .foundNoSpeech(summary)
+            } else {
+                .completed(bundle.url.lastPathComponent)
+            }
         } catch {
             failTranscribing(
                 error.localizedDescription

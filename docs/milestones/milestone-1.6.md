@@ -143,20 +143,65 @@ than the last.
 - The windower gives the embedder a wider *audio* range around a too-short
   window, bounded by the neighbouring words so it only ever borrows silence.
 
+**Nothing found is an outcome, not a fault.**
+
+Added after [field test 2](../field-tests/2026-07-28-field-test-2.md), which
+transcribed a quiet walk in Dutch, recognised no speech, and was told by both
+apps that the object **needs attention**. Nothing was wrong with the object. The
+run read all nineteen minutes and there was nothing to find.
+
+- `OnbiiTranscriptionRun` returns an `Outcome` rather than throwing. Recognising
+  nothing is not an error, and modelling it as one is what let it reach the
+  person as damage.
+- The object records the run as a `found-nothing` provenance event carrying the
+  configuration it ran under, and declares no resource. See
+  [the bundle profile](../architecture/milestone-1-bundle-profile.md#processing-that-produced-nothing).
+  This is the durable half: a status line disappears, a manifest does not, and
+  without it an object transcribed twice in the wrong language looks exactly like
+  one nobody has opened.
+- Both apps say which language found nothing and how long it listened for, in
+  their own voice and with their own icon — never the error triangle.
+- `OnbiiStatusIndicator.detail` exists because a badge reading "Needs attention"
+  can carry two words and the reason is the whole value. Both detail views show
+  it beside the badge.
+- The Mac re-reads the archive when its window becomes active, which the iPhone
+  already did. Reading the folder once at launch and then presenting that list as
+  *the archive* is how a recording made an hour earlier was missing from it.
+
 ### Still to do
 
-- **Whatever the next walk turns out to need — possibly nothing.** The Watch
-  records in the background with no declaration at all, so there may be no limit
-  to state honestly. If capture survives the workout, this disappears. If the
-  workout kills it, the fix is that collision specifically, not a general claim
-  on runtime.
-- **Field test 2**, which is the gate rather than a task. See *Verification*.
+- **A decision, not a task: should a foreign interruption end a recording or
+  pause it?** Field test 2 answered the runtime question and raised this one. See
+  its [Unanswered](../field-tests/2026-07-28-field-test-2.md#unanswered) section —
+  Fitness announces a split roughly every kilometre, so "stop honestly" cuts a
+  reflection walk at the first one. The options differ in kind, and one of them
+  runs straight into *preserve sources*.
 
 ## The spikes
 
-### A. How long does a Watch recording actually survive?
+### A. How long does a Watch recording actually survive? — closed, 28 July
 
-One question, and everything else waits on its answer:
+**Answered by [field test 2](../field-tests/2026-07-28-field-test-2.md), and the
+answer is not the one this spike was designed to find.**
+
+Nineteen minutes on the wrist with nothing declared, through app switches and
+through the Workout app starting mid-walk, with the system's microphone indicator
+visible the whole time. What ended it was not runtime and not watchOS: another
+app took the audio session, and the recording stopped gracefully, preserved
+everything, and said so.
+
+So the limit this spike set out to measure and state does not appear to exist.
+`WKBackgroundModes` stays undeclared, and
+[Watch Capture Modes](../architecture/watch-capture-modes.md) stays an optional
+feature rather than a fix. What replaces the question is a decision about
+interruptions, listed under *Still to do*.
+
+The rest of this section is kept as the record of how it was framed and why the
+framing changed.
+
+---
+
+One question, and everything else waited on its answer:
 
 > **How long does a Watch recording survive today — with nothing declared, and
 > with `WKBackgroundModes: [audio]`?**
@@ -288,6 +333,11 @@ The learnings live where they belong rather than as a milestone item:
 That work is its own thing, and it starts from the architecture question rather
 than from a knob.
 
+Field test 2 added a second thing that is not a knob either: **Dutch is not among
+`SpeechTranscriber`'s supported locales at all**, so every Dutch transcript Onbii
+has produced came from `DictationTranscriber` instead. That is a structural
+property of the recognition boundary and it belongs to the same thread.
+
 ## Deliberately not yet
 
 - **Automatic language detection.** `0033` does not require it, and Apple's
@@ -319,7 +369,11 @@ falling below the minimum or crossing a neighbouring word, unplaced words joinin
 their neighbouring turn while track labels survive an undiarized transcript, and
 supersession end to end — earlier generation retained, declared, on disk and
 provenanced; new generation at the stable path; reader still validating; retired
-identifiers not counting as a transcript.
+identifiers not counting as a transcript. They also cover a run that found
+nothing: the event is recorded with its configuration, no resource is added, the
+object still reads as awaiting transcription, every language tried is named back
+to the person, and an enrichment that genuinely changes nothing is still
+rejected.
 
 Both format changes were also run against real field-test objects copied out of
 the archive rather than only synthetic ones. Supersession: the reader accepted
@@ -330,14 +384,17 @@ the object before and after, the current generation stayed at
 a real one, and its `content.md` stopped showing coordinates — with the
 transcript still current.
 
-What remains is device work, and the gate on this milestone is a **second field
-test** — the same walk, the same conditions, written up per
-[the field-test conventions](../field-tests/README.md). A green suite is not the
-same as a morning outdoors.
+The `found-nothing` path was run against the real 28 July object copied out of
+the archive: the reader accepted it before and after, its resources were
+byte-identical, `content.md` still said *Transcription pending*, and provenance
+gained one event naming `nl-NL` as chosen.
 
-Note that the second field test now has two jobs, and they should not be confused
-in the write-up. It verifies this milestone: did the recording survive the whole
-walk, and where it did not, did the app say so. It also produces fresh evidence
-for the recognition-quality work, which is a separate thread. A walk where
-capture holds for the full duration is the first recording that can say anything
-useful about the second question.
+The gate on this milestone was a **second field test**, and it happened on
+[28 July](../field-tests/2026-07-28-field-test-2.md). It verified the milestone —
+a recording survived nineteen minutes on the wrist through everything the walk
+threw at it, and when something finally took the microphone the app said so and
+lost nothing. Field test 1's worst finding does not reproduce.
+
+It also produced three findings of its own, because that is what field tests do.
+Two are addressed above. The third — that Dutch never reaches Apple's long-form
+recogniser — belongs to the recognition thread below, not here.

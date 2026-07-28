@@ -51,6 +51,18 @@ public enum OnbiiStatusIndicator: Equatable, Sendable {
         }
     }
 
+    /// The reason, where the short form has one and cannot carry it.
+    ///
+    /// A badge reading "Needs attention" and nothing else tells a person that
+    /// something is wrong and gives them no way to find out what — which is
+    /// what field test 2 ran into. Anywhere there is room, show this beside it.
+    public var detail: String? {
+        switch self {
+        case .working, .needsAttention: title
+        default: nil
+        }
+    }
+
     /// The short form for a dense row, where the message would not fit.
     public var shortTitle: String {
         switch self {

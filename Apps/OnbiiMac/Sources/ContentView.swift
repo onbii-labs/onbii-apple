@@ -6,6 +6,7 @@ import SwiftUI
 /// it shows is read back from there, and nothing it shows lives only here.
 struct ContentView: View {
     @Bindable var model: ImportViewModel
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationSplitView {
@@ -29,6 +30,22 @@ struct ContentView: View {
         }
         .task {
             model.reloadObjects()
+        }
+        // An object can arrive while this window sits open — from a walk, over
+        // iCloud, or because someone moved a folder in Finder. Reading the
+        // archive once at launch and then presenting that list as *the archive*
+        // is how a recording made an hour earlier was missing from it (field
+        // test 2). Coming back to the window is the first honest moment to look
+        // again, and it is what the iPhone already does.
+        //
+        // It is not the whole answer: a window left in front for an hour still
+        // will not notice. Watching an iCloud container properly means an
+        // `NSMetadataQuery`, which belongs with Milestone 1.5's always-ready
+        // strand rather than here.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                model.reloadObjects()
+            }
         }
     }
 

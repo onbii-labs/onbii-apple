@@ -1,0 +1,28 @@
+20260728-0908 Recording.onbii
+  length                 1156 s
+  ambient floor         -47.6 dBFS
+  median level          -43.5 dBFS
+  90th percentile       -35.4 dBFS
+  above floor +8 dB       23% of the file
+  sustained runs           24 of >= 2 s  (146 s total)
+20260727-0802 Recording.onbii
+  length                 1200 s
+  ambient floor         -44.3 dBFS
+  median level          -37.0 dBFS
+  90th percentile       -30.8 dBFS
+  above floor +8 dB       45% of the file
+  sustained runs           95 of >= 2 s  (326 s total)
+20260727-0857 Recording.onbii
+  length                  143 s
+  ambient floor         -42.3 dBFS
+  median level          -33.1 dBFS
+  90th percentile       -21.2 dBFS
+  above floor +8 dB       56% of the file
+  sustained runs           13 of >= 2 s  (54 s total)
+20260727-0902 Recording.onbii
+  length                   44 s
+  ambient floor         -31.3 dBFS
+  median level          -22.1 dBFS
+  90th percentile       -16.6 dBFS
+  above floor +8 dB       60% of the file
+  sustained runs            6 of >= 2 s  (20 s total)

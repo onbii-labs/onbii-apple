@@ -1,0 +1,65 @@
+{
+  "createdAt" : "2026-07-28T07:08:50Z",
+  "location" : {
+    "capturedAt" : "2026-07-28T07:08:50Z",
+    "horizontalAccuracyMeters" : 27.042454494904845,
+    "latitude" : 51.58005606662042,
+    "longitude" : 4.776249316551861,
+    "name" : "Breda, Netherlands"
+  },
+  "objectID" : "5e7a710f-53b0-4486-8597-6d4b8b9a33e6",
+  "objectType" : "recorded-conversation",
+  "provenance" : [
+    {
+      "action" : "captured",
+      "agent" : {
+        "kind" : "source-adapter",
+        "name" : "Apple Watch microphone capture"
+      },
+      "id" : "b63a1e5f-48d9-4bda-89cb-f48a6d1d8f1a",
+      "inputResourceIDs" : [
+
+      ],
+      "occurredAt" : "2026-07-28T07:08:50Z",
+      "outputResourceIDs" : [
+        "source-recording"
+      ]
+    },
+    {
+      "action" : "rendered",
+      "agent" : {
+        "kind" : "software",
+        "name" : "OnbiiArchive"
+      },
+      "id" : "e96abcf5-fbf4-43d6-a3dc-be4604c559e1",
+      "inputResourceIDs" : [
+        "source-recording"
+      ],
+      "occurredAt" : "2026-07-28T07:08:50Z",
+      "outputResourceIDs" : [
+        "content-markdown"
+      ]
+    }
+  ],
+  "resources" : [
+    {
+      "byteCount" : 9331344,
+      "captureStartedAt" : "2026-07-28T07:08:50Z",
+      "durationSeconds" : 1156.4451700680272,
+      "id" : "source-recording",
+      "mediaType" : "audio/mp4",
+      "originalFilename" : "watch-e2273128-f278-486a-986c-3e7cadc88861.m4a",
+      "path" : "source/recording.m4a",
+      "role" : "source"
+    },
+    {
+      "byteCount" : 243,
+      "id" : "content-markdown",
+      "mediaType" : "text/markdown; charset=utf-8",
+      "path" : "content.md",
+      "role" : "human-readable"
+    }
+  ],
+  "schemaVersion" : "0.1.0-draft",
+  "title" : "20260728-0908 Recording"
+}

@@ -178,6 +178,20 @@ public struct OnbiiProvenanceEvent: Codable, Equatable, Sendable {
     /// correction changes what the object says about itself, so it says so.
     public static let correctedAction = "corrected"
 
+    /// Processing ran to completion and produced nothing to preserve — a
+    /// transcription that recognised no speech, for instance.
+    ///
+    /// It is a real event in the object's history and belongs in provenance for
+    /// the same reason a successful one does: without it, an object is
+    /// indistinguishable from one nobody has ever tried, and the person is left
+    /// to remember what they attempted and under what configuration. `0033`
+    /// asks a derived result to record what determined it; an empty result is
+    /// still a result, and the configuration is the most useful part of it.
+    ///
+    /// Distinct from an error. Nothing failed and nothing needs attention: the
+    /// answer was simply nothing.
+    public static let foundNothingAction = "found-nothing"
+
     public var id: String
     public var action: String
     public var occurredAt: Date

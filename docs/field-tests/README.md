@@ -9,6 +9,14 @@ use revealed.
   from the transcripts. Its addendum records the first reprocessing of a real
   object: correcting the language recovered 43% more words and was still not
   enough, which separated the language problem from the recognition one.
+- [Field Test 2 — 28 July 2026](2026-07-28-field-test-2.md) — a second walk on
+  the Milestone 1.6 builds. Capture held for nineteen minutes through a workout
+  and announced itself when another app took the microphone, which closed the
+  watchOS runtime question. Found that an empty recognition result is reported
+  as a broken object, and that the Mac reads the archive once and then never
+  again. It also put a first measurement on the known Dutch recogniser gap, and
+  it leaves an open decision: whether an interruption should end a recording or
+  pause it.
 
 ## Why these are kept
 

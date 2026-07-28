@@ -138,6 +138,15 @@ knows what the recording will contain.
 - **How would a profile be evaluated?** The archive is the test set, and
   `archive-coverage.py` is the beginning of a way to see whether a change helps
   overall or only helps one situation at the expense of another.
+- **Are two languages even comparable?** Dutch is not among `SpeechTranscriber`'s
+  supported locales, so it falls through to `DictationTranscriber` while English
+  gets the long-form model — a gap
+  [Milestone 1.5](../milestones/milestone-1.5.md#known-milestone-gaps) already
+  noted and [field test 2](../field-tests/2026-07-28-field-test-2.md#2-dutch-never-gets-the-better-recogniser--known-now-measured)
+  first measured on a real object. A profile tuned against Dutch fixtures is
+  tuned against a different recogniser than the English ones use, and an
+  evaluation that mixes them will read a model difference as a situation
+  difference.
 
 ## Where this came from
 

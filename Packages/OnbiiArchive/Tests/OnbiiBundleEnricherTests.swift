@@ -223,3 +223,87 @@ private func makeEnrichmentTemporaryDirectory() throws -> URL {
     )
     return url
 }
+
+/// Processing that completes and produces nothing is still something that
+/// happened. Without this the object cannot tell "nobody has tried" from
+/// "Dutch was tried and there was no speech in it" — which is what field test 2
+/// ran into, and what left a person with no way to know their next move was to
+/// try a different language.
+@Test
+func anOutcomeWithNoArtifactIsRecordedInProvenance() throws {
+    let temporaryDirectory = try makeEnrichmentTemporaryDirectory()
+    defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
+
+    let sourceURL = temporaryDirectory.appendingPathComponent("recording.m4a")
+    try Data("irreplaceable source audio".utf8).write(to: sourceURL)
+    let bundleURL = temporaryDirectory.appendingPathComponent("Quiet.onbii")
+    try OnbiiBundleWriter().write(
+        OnbiiImportRequest(
+            sourceAudioURL: sourceURL,
+            destinationBundleURL: bundleURL,
+            objectID: .init(rawValue: "quiet-object"),
+            title: "Quiet",
+            mediaType: "audio/mp4"
+        )
+    )
+    let resourcesBefore = try OnbiiBundleReader().read(at: bundleURL)
+        .manifest.resources
+
+    let enriched = try OnbiiBundleEnricher().enrich(
+        OnbiiBundleEnrichmentRequest(
+            bundleURL: bundleURL,
+            artifacts: [],
+            action: OnbiiProvenanceEvent.foundNothingAction,
+            occurredAt: Date(timeIntervalSince1970: 20),
+            agent: .init(kind: "software", name: "Apple Speech on-device"),
+            inputResourceIDs: ["source-recording"],
+            configuration: OnbiiDerivationConfiguration(
+                languages: ["nl-NL"],
+                languageSelection: .chosen
+            ),
+            recordsOutcomeOnly: true
+        )
+    )
+
+    // Nothing was added, removed or renamed. An empty result is not a resource.
+    #expect(enriched.manifest.resources == resourcesBefore)
+    #expect(!enriched.manifest.hasTranscript)
+    #expect(enriched.status == .awaitingTranscription)
+
+    let recorded = try #require(enriched.manifest.emptyDerivations.last)
+    #expect(recorded.configuration?.languages == ["nl-NL"])
+    #expect(recorded.configuration?.languageSelection == .chosen)
+    #expect(enriched.manifest.provenance.last?.outputResourceIDs.isEmpty == true)
+}
+
+/// The guard still catches the caller who asked for nothing at all. Recording an
+/// outcome is deliberate, never what happens when a request is empty by mistake.
+@Test
+func aRequestThatChangesNothingIsStillRejected() throws {
+    let temporaryDirectory = try makeEnrichmentTemporaryDirectory()
+    defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
+
+    let sourceURL = temporaryDirectory.appendingPathComponent("recording.m4a")
+    try Data("irreplaceable source audio".utf8).write(to: sourceURL)
+    let bundleURL = temporaryDirectory.appendingPathComponent("Empty.onbii")
+    try OnbiiBundleWriter().write(
+        OnbiiImportRequest(
+            sourceAudioURL: sourceURL,
+            destinationBundleURL: bundleURL,
+            objectID: .init(rawValue: "empty-object"),
+            title: "Empty"
+        )
+    )
+
+    #expect(throws: OnbiiBundleEnricherError.noArtifacts) {
+        try OnbiiBundleEnricher().enrich(
+            OnbiiBundleEnrichmentRequest(
+                bundleURL: bundleURL,
+                artifacts: [],
+                action: "transcribed",
+                agent: .init(kind: "software", name: "Apple Speech on-device"),
+                inputResourceIDs: ["source-recording"]
+            )
+        )
+    }
+}

@@ -84,13 +84,104 @@ private let audioSource = OnbiiResource(
     mediaType: "audio/mp4"
 )
 
-private func makeManifest(resources: [OnbiiResource]) -> OnbiiManifest {
+private func makeManifest(
+    resources: [OnbiiResource],
+    provenance: [OnbiiProvenanceEvent] = []
+) -> OnbiiManifest {
     OnbiiManifest(
         objectID: .init(rawValue: "status-object"),
         objectType: "recording",
         title: "Status",
         createdAt: Date(timeIntervalSince1970: 0),
         resources: resources,
-        provenance: []
+        provenance: provenance
+    )
+}
+
+// MARK: Runs that found nothing
+
+/// An object nobody has processed says nothing about processing.
+@Test
+func anUntouchedObjectRecordsNoEmptyRuns() {
+    let manifest = makeManifest(resources: [audioSource])
+
+    #expect(manifest.emptyDerivations.isEmpty)
+    #expect(manifest.emptyDerivationSummary == nil)
+}
+
+/// The language is the actionable part. "Nothing was found" invites trying the
+/// same setting again; naming the language is what lets a person choose a
+/// different one.
+@Test
+func anEmptyRunIsSummarisedWithTheLanguageItUsed() {
+    let manifest = makeManifest(
+        resources: [audioSource],
+        provenance: [
+            makeEmptyRun(languages: ["nl-NL"], at: 1_000_000)
+        ]
+    )
+
+    let summary = manifest.emptyDerivationSummary
+    #expect(summary?.contains("Dutch") == true)
+    #expect(summary?.contains("found no speech") == true)
+    #expect(summary?.contains("unchanged") == true)
+    #expect(manifest.status == .awaitingTranscription)
+}
+
+/// Every language tried is worth naming, because the whole point is knowing
+/// which ones are already ruled out.
+@Test
+func severalEmptyRunsNameEveryLanguageTried() {
+    let manifest = makeManifest(
+        resources: [audioSource],
+        provenance: [
+            makeEmptyRun(languages: ["nl-NL"], at: 1_000_000),
+            makeEmptyRun(languages: ["en-US"], at: 2_000_000),
+        ]
+    )
+
+    let summary = try? #require(manifest.emptyDerivationSummary)
+    #expect(summary?.contains("Dutch") == true)
+    #expect(summary?.contains("English") == true)
+    #expect(summary?.contains("most recently") == true)
+    #expect(manifest.emptyDerivations.count == 2)
+}
+
+/// A transcript makes the earlier empty runs history rather than the object's
+/// current condition — the views ask for this only when there is no transcript,
+/// and the reading stays available either way.
+@Test
+func anEmptyRunSurvivesALaterSuccessfulTranscript() {
+    let manifest = makeManifest(
+        resources: [
+            audioSource,
+            OnbiiResource(
+                id: "derived-transcript",
+                role: .derived,
+                path: "derived/transcript.json",
+                mediaType: "application/json"
+            ),
+        ],
+        provenance: [makeEmptyRun(languages: ["nl-NL"], at: 1_000_000)]
+    )
+
+    #expect(manifest.status == .transcribed)
+    #expect(manifest.emptyDerivations.count == 1)
+}
+
+private func makeEmptyRun(
+    languages: [String],
+    at seconds: TimeInterval
+) -> OnbiiProvenanceEvent {
+    OnbiiProvenanceEvent(
+        action: OnbiiProvenanceEvent.foundNothingAction,
+        occurredAt: Date(timeIntervalSince1970: seconds),
+        agent: .init(kind: "software", name: "Apple Speech on-device"),
+        inputResourceIDs: ["source-recording"],
+        outputResourceIDs: [],
+        configuration: OnbiiDerivationConfiguration(
+            languages: languages,
+            languageSelection: .chosen
+        )
     )
 }

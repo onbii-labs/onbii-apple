@@ -48,6 +48,15 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
     /// Corrections to what the object records about itself. See
     /// ``OnbiiRecordedFactCorrections``.
     public var corrections: OnbiiRecordedFactCorrections?
+    /// Record the action even though it produces no resource.
+    ///
+    /// Normally a request that would change nothing is a caller mistake, and
+    /// saying so is more useful than writing an empty event. But processing that
+    /// completes and finds nothing is a genuine event with nothing to preserve —
+    /// see ``OnbiiProvenanceEvent/foundNothingAction`` — and an object that
+    /// cannot record it cannot tell "not tried" from "tried, and there was
+    /// nothing there". Set deliberately; it is never the default.
+    public var recordsOutcomeOnly: Bool
 
     public init(
         bundleURL: URL,
@@ -59,7 +68,8 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
         agent: OnbiiProvenanceEvent.Agent,
         inputResourceIDs: [String],
         configuration: OnbiiDerivationConfiguration? = nil,
-        corrections: OnbiiRecordedFactCorrections? = nil
+        corrections: OnbiiRecordedFactCorrections? = nil,
+        recordsOutcomeOnly: Bool = false
     ) {
         self.bundleURL = bundleURL
         self.artifacts = artifacts
@@ -71,6 +81,7 @@ public struct OnbiiBundleEnrichmentRequest: Sendable {
         self.inputResourceIDs = inputResourceIDs
         self.configuration = configuration
         self.corrections = corrections
+        self.recordsOutcomeOnly = recordsOutcomeOnly
     }
 }
 
@@ -289,10 +300,11 @@ public struct OnbiiBundleEnricher: Sendable {
         against manifest: OnbiiManifest,
         fileManager: FileManager
     ) throws {
-        guard !(request.artifacts.isEmpty
-            && request.replacements.isEmpty
-            && request.supersessions.isEmpty
-            && (request.corrections?.isEmpty ?? true)) else {
+        guard request.recordsOutcomeOnly
+            || !(request.artifacts.isEmpty
+                && request.replacements.isEmpty
+                && request.supersessions.isEmpty
+                && (request.corrections?.isEmpty ?? true)) else {
             throw OnbiiBundleEnricherError.noArtifacts
         }
 

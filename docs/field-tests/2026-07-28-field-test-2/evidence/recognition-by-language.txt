@@ -1,0 +1,74 @@
+Recognition over the same source, one variable changed: the language.
+Produced by recognise.swift (see its header for how to build and run it).
+
+--- 20260728-0908, nl-NL ---
+== speech ==
+  authorization: notDetermined
+  requested: authorized
+  requested locale: nl-NL
+  SpeechTranscriber locale: unsupported
+  DictationTranscriber locale: nl-NL
+  SpeechTranscriber installed: ["en-IN", "de-AT", "de-CH", "it-CH", "fr-BE", "en-AU", "fr-FR", "en-US", "fr-CH", "it-IT", "en-GB", "fr-CA", "de-DE", "en-CA", "en-SG", "en-ZA", "en-IE", "en-NZ"]
+  DictationTranscriber installed: ["en-US", "en-GB", "nl-NL"]
+  reserved locales: ["nl-NL"]
+  maximum reserved: 5
+  module chosen: DictationTranscriber(nl-NL)
+  AssetInventory.status: installed
+  installation request: nil (nothing to install)
+  AssetInventory.status after: installed
+== recognition ==
+  audio: recording.m4a
+  format: <AVAudioFormat 0x7bfd8343c0:  1 ch,  44100 Hz, Float32>
+  frames: 50999232
+  locale used: nl-NL
+  segments: 0
+  formattedText length: 0
+  first 300 chars: 
+
+--- 20260728-0908, en-US ---
+== speech ==
+  authorization: authorized
+  requested locale: en-US
+  SpeechTranscriber locale: en-US
+  DictationTranscriber locale: en-US
+  SpeechTranscriber installed: ["de-DE", "en-NZ", "en-IN", "en-IE", "en-CA", "it-CH", "en-US", "fr-CH", "en-GB", "fr-FR", "en-ZA", "de-CH", "de-AT", "en-SG", "en-AU", "fr-BE", "fr-CA", "it-IT"]
+  DictationTranscriber installed: ["en-GB", "en-US", "nl-NL"]
+  reserved locales: ["nl-NL"]
+  maximum reserved: 5
+  module chosen: SpeechTranscriber(en-US)
+  AssetInventory.status: supported
+  installation request: nil (nothing to install)
+  AssetInventory.status after: installed
+== recognition ==
+  audio: recording.m4a
+  format: <AVAudioFormat 0x75718003c0:  1 ch,  44100 Hz, Float32>
+  frames: 50999232
+  locale used: en-US
+  segments: 6
+  formattedText length: 40
+  first 300 chars: Yeah.  Good  Martha.  Good morning. Hey.
+  last segment at: 448.56
+
+--- 20260727-0802, nl-NL (field test 1's walk, as a control) ---
+== speech ==
+  authorization: authorized
+  requested locale: nl-NL
+  SpeechTranscriber locale: unsupported
+  DictationTranscriber locale: nl-NL
+  SpeechTranscriber installed: ["it-CH", "fr-BE", "en-ZA", "fr-CA", "en-CA", "de-CH", "en-SG", "en-IN", "en-IE", "de-AT", "it-IT", "fr-CH", "fr-FR", "en-NZ", "en-US", "en-GB", "de-DE", "en-AU"]
+  DictationTranscriber installed: ["en-GB", "en-US", "nl-NL"]
+  reserved locales: ["nl-NL"]
+  maximum reserved: 5
+  module chosen: DictationTranscriber(nl-NL)
+  AssetInventory.status: installed
+  installation request: nil (nothing to install)
+  AssetInventory.status after: installed
+== recognition ==
+  audio: recording.m4a
+  format: <AVAudioFormat 0x7ca7448370:  1 ch,  44100 Hz, Float32>
+  frames: 52924352
+  locale used: nl-NL
+  segments: 535
+  formattedText length: 2761
+  first 300 chars: Maar die hebben we best die is heel goed in een andere die gaat gewoon uit de andere kant eentje open gemaakt om die spek voor me heel makkelijk te kunnen synchroniseren en gewoon gewoon toe en dan in de toekomst kan niet bij mij komen die op jouw stem ook  kon opbouwen van wie was dat eigenlijk doe
+  last segment at: 1192.77

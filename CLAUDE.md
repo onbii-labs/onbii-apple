@@ -188,6 +188,13 @@ Invariants that the writer/reader enforce and that new code must uphold:
   whether they were chosen or detected, and the model identity live in the
   object's provenance — not only inside `derived/transcript.json`. Each
   generation keeps the configuration it was made with.
+- **Processing that finds nothing is an outcome, not an error.** A run that
+  completes and produces no result records a `found-nothing` provenance event
+  carrying the configuration it ran under, declares no resource, and leaves the
+  object's status alone. No empty artifact is ever written — an empty transcript
+  would make the object claim to be transcribed. `OnbiiTranscriptionRun` returns
+  an `Outcome` rather than throwing, and an app that renders it as damage is
+  describing a quiet recording as a defect.
 - **Absent and empty are the same thing** for best-effort fields, and the check
   belongs where the value is produced. Read them through `resolvedName`-style
   accessors, never `?? fallback` on a raw optional.

@@ -27,15 +27,59 @@ public struct OnbiiTranscriptionRun: Sendable {
 
     public enum RunError: Error, LocalizedError, Equatable {
         case noTranscribableAudio
-        case noSpeechRecognized
 
         public var errorDescription: String? {
             switch self {
             case .noTranscribableAudio:
                 "This object has no source audio to transcribe."
-            case .noSpeechRecognized:
-                "No speech was recognized in this recording."
             }
+        }
+    }
+
+    /// What a completed run produced.
+    ///
+    /// Recognising no speech is not an error. The run did everything it was
+    /// asked to, the object is untouched apart from the record of the attempt,
+    /// and the reason is usually the situation rather than anything wrong: a
+    /// quiet walk, a recording of a room. Field test 2 showed what happens when
+    /// this is thrown instead — the apps rendered it as *Needs attention*, which
+    /// blames the object for a quiet morning.
+    public enum Outcome: Sendable {
+        /// A transcript was produced and attached.
+        case transcribed(OnbiiBundle)
+        /// Every second was read and no speech was recognised. The bundle is
+        /// returned because it now records the attempt.
+        case foundNoSpeech(
+            bundle: OnbiiBundle,
+            language: String,
+            secondsListened: TimeInterval
+        )
+
+        /// The object as it now stands on disk, either way.
+        public var bundle: OnbiiBundle {
+            switch self {
+            case let .transcribed(bundle): bundle
+            case let .foundNoSpeech(bundle, _, _): bundle
+            }
+        }
+
+        /// What to tell a person, where there is anything worth telling them.
+        public var spokenSummary: String? {
+            switch self {
+            case .transcribed:
+                nil
+            case let .foundNoSpeech(_, language, seconds):
+                "No speech was recognised in \(language) across "
+                    + "\(Self.spoken(seconds)). The recording is unchanged — "
+                    + "try another language if this one is wrong."
+            }
+        }
+
+        private static func spoken(_ seconds: TimeInterval) -> String {
+            let whole = Int(seconds.rounded())
+            let minutes = whole / 60
+            guard minutes > 0 else { return "\(whole) seconds" }
+            return String(format: "%d:%02d", minutes, whole % 60)
         }
     }
 
@@ -70,7 +114,7 @@ public struct OnbiiTranscriptionRun: Sendable {
         on bundle: OnbiiBundle,
         language: Language,
         progress: @escaping @Sendable (Progress) -> Void = { _ in }
-    ) async throws -> OnbiiBundle {
+    ) async throws -> Outcome {
         let sources = bundle.manifest.resources.filter {
             $0.role == .source && $0.mediaType.hasPrefix("audio/")
         }
@@ -109,11 +153,17 @@ public struct OnbiiTranscriptionRun: Sendable {
             timelineInputs.append((transcript, offset: offset))
         }
 
+        let generatedAt = Date()
         guard tracks.contains(where: { !$0.segments.isEmpty }) else {
-            throw RunError.noSpeechRecognized
+            return try await recordFindingNothing(
+                on: bundle,
+                sources: sources,
+                language: language,
+                tracks: tracks,
+                occurredAt: generatedAt
+            )
         }
 
-        let generatedAt = Date()
         let anyDiarized = tracks.contains { track in
             track.segments.contains { $0.speakerID != nil }
         }
@@ -125,13 +175,67 @@ public struct OnbiiTranscriptionRun: Sendable {
         )
 
         progress(.attaching)
-        return try await attach(
-            document,
-            to: bundle,
-            sources: sources,
-            language: language,
-            tracks: tracks,
-            generatedAt: generatedAt
+        return .transcribed(
+            try await attach(
+                document,
+                to: bundle,
+                sources: sources,
+                language: language,
+                tracks: tracks,
+                generatedAt: generatedAt
+            )
+        )
+    }
+
+    // MARK: Finding nothing
+
+    /// Writes the fact that a run happened and produced nothing.
+    ///
+    /// No resource is added — there is nothing to preserve, and an empty
+    /// transcript would make the object claim to be transcribed. What goes in is
+    /// the event and its configuration, so the object can later answer "has
+    /// anyone tried, and in what language" without an application remembering
+    /// it. Recording this must never turn a quiet recording into a failure: if
+    /// the write fails, the outcome is still reported.
+    private func recordFindingNothing(
+        on bundle: OnbiiBundle,
+        sources: [OnbiiResource],
+        language: Language,
+        tracks: [OnbiiTrackTranscript],
+        occurredAt: Date
+    ) async throws -> Outcome {
+        var usedLanguages = [String]()
+        for identifier in tracks.map(\.localeIdentifier)
+        where !usedLanguages.contains(identifier) {
+            usedLanguages.append(identifier)
+        }
+        if usedLanguages.isEmpty {
+            usedLanguages = [language.locale.identifier(.bcp47)]
+        }
+        let request = OnbiiBundleEnrichmentRequest(
+            bundleURL: bundle.url,
+            artifacts: [],
+            action: OnbiiProvenanceEvent.foundNothingAction,
+            occurredAt: occurredAt,
+            agent: .init(kind: "software", name: Self.transcriberName),
+            inputResourceIDs: sources.map(\.id),
+            configuration: OnbiiDerivationConfiguration(
+                languages: usedLanguages,
+                languageSelection: language.selection
+            ),
+            recordsOutcomeOnly: true
+        )
+        let recorded = try? await Task.detached(priority: .userInitiated) {
+            try OnbiiBundleEnricher().enrich(request)
+        }.value
+
+        let spokenLanguage = OnbiiDerivationConfiguration.languageName(
+            for: usedLanguages[0]
+        )
+        return .foundNoSpeech(
+            bundle: recorded ?? bundle,
+            language: spokenLanguage,
+            secondsListened: sources.compactMap(\.durationSeconds).max() ?? 0
         )
     }
 

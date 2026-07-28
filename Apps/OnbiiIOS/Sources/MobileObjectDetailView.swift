@@ -22,8 +22,19 @@ struct MobileObjectDetailView: View {
                 Text(bundle.manifest.title)
                     .font(.onbiiSectionTitle)
                     .foregroundStyle(.onbiiPrimaryText)
-                OnbiiStatusBadge(model.indicator(for: bundle))
+                let indicator = model.indicator(for: bundle)
+                OnbiiStatusBadge(indicator)
+                // The badge fits two words. Where there is a reason, this is
+                // the place with room for it.
+                if let detail = indicator.detail {
+                    Text(detail)
+                        .font(.callout)
+                        .foregroundStyle(.onbiiSecondaryText)
+                        .textSelection(.enabled)
+                }
             }
+
+            emptyResultNote
 
             // What the person came for sits directly under the title. The
             // metadata below is available but folded away — it answers
@@ -101,6 +112,27 @@ struct MobileObjectDetailView: View {
         .task(id: bundle.manifest.objectID) {
             model.resolvePlaceNameIfNeeded(for: bundle)
             model.checkForRepairs(bundle)
+        }
+    }
+
+    /// What the object remembers about being processed and finding nothing.
+    ///
+    /// Read from provenance rather than from this session, so it is still here
+    /// tomorrow. Without it an object that has been transcribed twice in the
+    /// wrong language is indistinguishable from one nobody has opened, and the
+    /// person is left to remember which languages they already tried.
+    @ViewBuilder
+    private var emptyResultNote: some View {
+        if !bundle.manifest.hasTranscript,
+           let summary = bundle.manifest.emptyDerivationSummary {
+            Section {
+                HStack(alignment: .firstTextBaseline, spacing: OnbiiTheme.Spacing.s) {
+                    Image(systemName: "waveform.slash")
+                    Text(summary)
+                }
+                .font(.callout)
+                .foregroundStyle(.onbiiSecondaryText)
+            }
         }
     }
 

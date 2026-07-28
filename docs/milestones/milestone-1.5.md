@@ -100,8 +100,15 @@ The remaining roadmap bullets are deliberately not in this slice:
 - the **application-activation prompt** that offers to record when a chosen app
   becomes active;
 - **background processing** of new archive files (for example auto-transcription),
-  and with it a filesystem watcher — the macOS home currently refreshes after
-  every write, on archive selection, at window appearance, and on ⌘⇧R.
+  and with it a watcher on the archive — the macOS home currently refreshes after
+  every write, on archive selection, at window appearance, when the window
+  becomes active again, and on ⌘⇧R. The activation refresh was added after
+  [field test 2](../field-tests/2026-07-28-field-test-2.md), where an object made
+  on a walk was missing from a freshly launched window; it is not the whole
+  answer, because a window left in front for an hour still will not notice. The
+  archive is an iCloud container, so the right instrument is an `NSMetadataQuery`
+  rather than a local filesystem watcher, which would report nothing until a
+  remote object had already materialised.
 
 Carried over from Milestone 1 and still open: physical-device validation of the
 iPhone and Watch capture paths, and the quality gap between the two recognisers
