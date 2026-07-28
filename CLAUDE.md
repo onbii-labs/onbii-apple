@@ -212,8 +212,16 @@ Invariants that the writer/reader enforce and that new code must uphold:
 Generated from `project.yml`; sources under `Apps/<App>/Sources`.
 
 - **OnbiiMac** — macOS producer + inspector. Uses Archive, Capture,
-  Transcription. App Sandbox; access only to user-selected locations (persisted
-  via security-scoped bookmarks). Hardened runtime enabled.
+  Transcription, Processing. App Sandbox; access only to user-selected locations
+  (persisted via security-scoped bookmarks). Hardened runtime enabled.
+  It is also the *always-ready* surface: a `MenuBarExtra` for capture without a
+  window, transcription of objects that arrive while it runs, and an offer to
+  record when a chosen application becomes active. Two rules govern that last
+  pair and neither is negotiable — automatic processing only ever produces a
+  **first** transcript and never touches what was already in the archive when the
+  app opened (`0032` makes a second generation safe, but it also says
+  reprocessing is deliberate); and a capture suggestion is only ever an offer,
+  where the notification's action is the single route to a recording (`0023`).
 - **OnbiiIOS** — iPhone producer + Watch receiver. Uses Archive, Capture, and
   **embeds the Watch app as a target**. Receives original Watch recordings over
   Watch Connectivity; only the iPhone creates the `.onbii` object (the Watch
