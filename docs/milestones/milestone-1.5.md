@@ -1,8 +1,9 @@
 # Milestone 1.5: Ready To Show
 
-Status: **Feature-complete, 28 July.** Every roadmap requirement is built. What
-remains is a device pass over the always-ready half and two brand items with the
-designer — see *What Is Left*.
+Status: **Complete, 28 July.** Every roadmap requirement is built, and the
+always-ready half has been used on real devices and corrected twice by that use.
+What remains is listed under *What Was Left, And What Still Is* and is either
+deliberately deferred or belongs to another milestone.
 
 Milestone 1 proved the capture-certainty loop. Milestone 1.5 turns that loop into
 something presentable enough to put in front of early users as a public alpha —
@@ -301,22 +302,32 @@ open.
 
 ### Still outstanding
 
-**A device pass over the rest of the always-ready half.** The menu bar and the
-capture suggestion have now been used and corrected. Two things still have not
-been watched working: whether an `NSMetadataQuery` on the iCloud container
-reports an object arriving from iPhone, and whether background transcription
-picks up a Watch recording as it lands.
+**One thing built but not yet watched working: automatic background
+transcription firing on an object as it arrives.** Everything either side of it
+is confirmed — the Watch recording reaches the archive, the watcher notices it,
+and both apps list it. The transcription that should follow has not been
+observed. It is written down rather than assumed, because this milestone twice
+shipped something that looked right and did nothing: a capture suggestion with no
+notification permission, and a watcher querying a container the Mac app does not
+have.
 
-**Sweeping the archive**, inherited from 1.6: running `OnbiiObjectRepair` across
-everything rather than offering it one object at a time. Background processing
-now provides the place for it to live. Related and deliberately separate:
-transcribing the *backlog*, which automatic processing pointedly does not do —
-an explicit "transcribe everything not yet transcribed" is the honest shape.
+**Sweeping the archive** — deferred by decision, not oversight. Running
+`OnbiiObjectRepair` across everything rather than offering it one object at a
+time, inherited from 1.6; background processing now provides the place for it to
+live. Related and deliberately separate: transcribing the *backlog*, which
+automatic processing pointedly refuses to do, so it needs its own explicit
+action rather than a loosened rule.
 
-**Whether `OnbiiNotifier` becomes a shared package.** The condition 1.6 set has
-been met — the desktop background-processing caller now exists, and so does the
-capture-suggestion one. It is still app-local; the decision can now be made on
-evidence rather than deferred.
+**`OnbiiNotifier` stays app-local — decided, 28 July.** The condition 1.6 set was
+met (a background-processing caller and a capture-suggestion caller both exist),
+and the answer on the evidence is still no: both callers live in the same app,
+and the Watch already keeps a deliberate duplicate to avoid dragging
+`OnbiiArchive` onto a device that has no business reading bundles. A package
+would serve one client.
+
+**An archive picker on iPhone.** New, and it is the constraint on the property
+described above: the Mac can point at any folder, the iPhone resolves iCloud or a
+local fallback with no choice. Not this milestone's scope.
 
 **Done, with the branding pass:** the app targets are renamed `OnbiiMac` /
 `OnbiiIOS` → **`Onbii`**, with `PRODUCT_MODULE_NAME` unchanged so no Swift module
