@@ -1,9 +1,10 @@
 # Milestone 1.5: Ready To Show
 
-Status: **Complete, 28 July.** Every roadmap requirement is built, and the
-always-ready half has been used on real devices and corrected twice by that use.
-What remains is listed under *What Was Left, And What Still Is* and is either
-deliberately deferred or belongs to another milestone.
+Status: **Complete, 28 July.** Every roadmap requirement is built and confirmed
+in use on real devices — which corrected the always-ready half twice, both times
+in the same direction: something that looked right and did nothing. What remains
+is listed under *What Was Left, And What Still Is* and is either deliberately
+deferred or belongs to another milestone.
 
 Milestone 1 proved the capture-certainty loop. Milestone 1.5 turns that loop into
 something presentable enough to put in front of early users as a public alpha —
@@ -302,14 +303,15 @@ open.
 
 ### Still outstanding
 
-**One thing built but not yet watched working: automatic background
-transcription firing on an object as it arrives.** Everything either side of it
-is confirmed — the Watch recording reaches the archive, the watcher notices it,
-and both apps list it. The transcription that should follow has not been
-observed. It is written down rather than assumed, because this milestone twice
-shipped something that looked right and did nothing: a capture suggestion with no
-notification permission, and a watcher querying a container the Mac app does not
-have.
+**Nothing, on this milestone's own terms.** The always-ready half has been used
+on real devices and corrected by that use: a Watch recording reaches the archive,
+the watcher notices it, both apps list it, and the Mac transcribes it without
+being asked. Confirmed 28 July.
+
+Background transcription is **macOS only, by design** — the roadmap's wording is
+"background processing of new recordings and files *on the desktop*", and the
+iPhone deliberately gets the presentable home without the heavy background work.
+An iPhone that does not transcribe on arrival is the scope, not a gap.
 
 **Sweeping the archive** — deferred by decision, not oversight. Running
 `OnbiiObjectRepair` across everything rather than offering it one object at a
