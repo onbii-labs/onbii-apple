@@ -7,28 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08B6303B511C26E819CB4805 /* OnbiiArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 3659CA5712B7C2891008C098 /* OnbiiArchive */; };
-		141A3A06FAF12F1CAC5A7649 /* OnbiiMacQuickLook.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		21F21392C17625B1B6D9C344 /* OnbiiMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174652EF0D04236BF111E7E7 /* OnbiiMacApp.swift */; };
-		44D0E067AD96E9787A34C18D /* ObjectListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32C42FFCACB75D8D32EE7A7 /* ObjectListView.swift */; };
-		5FE64CC2A07F1C3663E19D62 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB70D45765AA7BCCE1991AD7 /* Assets.xcassets */; };
-		63D27A35A85589918A19B7F1 /* MacSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2156C83A8030443EE49F948E /* MacSettingsView.swift */; };
-		6E06593E0C8F8986157915C9 /* OnbiiUI in Frameworks */ = {isa = PBXBuildFile; productRef = 70B1687294B1869F8412E02E /* OnbiiUI */; };
-		84090A1F44058C77B3A50829 /* ImportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A3FB2C964D600AB1CE259A /* ImportViewModel.swift */; };
+		041E3F5EE86D1CE1B79D5C27 /* OnbiiUI in Frameworks */ = {isa = PBXBuildFile; productRef = F66F6BBDF7EFB499F0065815 /* OnbiiUI */; };
+		11BF2DC7A5711DD45E08B47C /* ObjectListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32C42FFCACB75D8D32EE7A7 /* ObjectListView.swift */; };
+		2639ED2DEC9D543215167F6C /* OnbiiMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174652EF0D04236BF111E7E7 /* OnbiiMacApp.swift */; };
+		491621C1F8BB81AFA720BDEE /* MacSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2156C83A8030443EE49F948E /* MacSettingsView.swift */; };
+		5CABADE2BE96B77EB75C2BAF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB70D45765AA7BCCE1991AD7 /* Assets.xcassets */; };
+		6BCFCE21CA18ED32ECF3A539 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52801286B477F2050F9F36CB /* ContentView.swift */; };
+		76E0A37AF965DF823DE5BC73 /* CaptureToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612A72BB4A022FC2F60A10E1 /* CaptureToolbar.swift */; };
+		7DC1734D0A992953721BFE73 /* OnbiiTranscription in Frameworks */ = {isa = PBXBuildFile; productRef = 8CC053D577E4464B94E0B8BA /* OnbiiTranscription */; };
 		868E20BEBADEEEF7CEF06D50 /* MarkdownPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F92E817FE8390B8CD1EB432 /* MarkdownPreview.swift */; };
-		90201373B7E86640DB04396F /* CaptureToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612A72BB4A022FC2F60A10E1 /* CaptureToolbar.swift */; };
-		AB5D1C79F475437897501244 /* OnbiiTranscription in Frameworks */ = {isa = PBXBuildFile; productRef = EB4390CDE262CEA947ACC7D9 /* OnbiiTranscription */; };
+		8EA3B30F33543BD95926F5F6 /* ImportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A3FB2C964D600AB1CE259A /* ImportViewModel.swift */; };
+		A19BBB386DB2D3B87F617770 /* OnbiiMacQuickLook.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AC713A836C87478F20E18C0C /* ObjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E35D4FB5270FF66DDA64A700 /* ObjectDetailView.swift */; };
 		B1426CE2F81F5F2B51197A2B /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD276A3C1636C835753FAAC /* PreviewViewController.swift */; };
-		B229143EBCD116918DA148BA /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = 567F509BEE64234E3F4780B3 /* OnbiiCapture */; };
-		B5E60D602F5BACA0B95413BB /* CaptureSuggestionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72393487F58B3519DF10ABF8 /* CaptureSuggestionDelegate.swift */; };
-		B761177102BE17C8DF2478F2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52801286B477F2050F9F36CB /* ContentView.swift */; };
-		CFF73E86D8A00EA2C90CC34B /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0941AA8519CDE834B2C1DD65 /* MenuBarView.swift */; };
-		DD4DC582AA7BC826150C1531 /* ObjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E35D4FB5270FF66DDA64A700 /* ObjectDetailView.swift */; };
-		F551594D228197C147937581 /* OnbiiProcessing in Frameworks */ = {isa = PBXBuildFile; productRef = 99722455BE9D04D67E07958D /* OnbiiProcessing */; };
+		BFB43641B0B040E6A8463773 /* OnbiiArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 2156444E169A505BE27712E9 /* OnbiiArchive */; };
+		C0BEF3FD966F6B26B048272F /* OnbiiProcessing in Frameworks */ = {isa = PBXBuildFile; productRef = C31A4AE159CB7609DBC2B916 /* OnbiiProcessing */; };
+		D2E211354270C10E4F5CD07C /* CaptureSuggestionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72393487F58B3519DF10ABF8 /* CaptureSuggestionDelegate.swift */; };
+		F2759D0E104BEA0088E07E19 /* OnbiiCapture in Frameworks */ = {isa = PBXBuildFile; productRef = 02089D2BC5BCDDC09A5ACBF4 /* OnbiiCapture */; };
+		FDF2EC33CFAA569283D9BE28 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0941AA8519CDE834B2C1DD65 /* MenuBarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CFDE2741A3AD85187672ADCF /* PBXContainerItemProxy */ = {
+		242608F55C73DB4DF277C4B4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C4A04460DB001E667D2250 /* Project object */;
 			proxyType = 1;
@@ -38,13 +38,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		8BAA3850A0D9BC391EB97092 /* Embed Foundation Extensions */ = {
+		060C0748AD2A5A4B53D5FD07 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				141A3A06FAF12F1CAC5A7649 /* OnbiiMacQuickLook.appex in Embed Foundation Extensions */,
+				A19BBB386DB2D3B87F617770 /* OnbiiMacQuickLook.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -57,6 +57,7 @@
 		2156C83A8030443EE49F948E /* MacSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettingsView.swift; sourceTree = "<group>"; };
 		3F92E817FE8390B8CD1EB432 /* MarkdownPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreview.swift; sourceTree = "<group>"; };
 		52801286B477F2050F9F36CB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		56C858EA55ACF3DCDEEDAAA7 /* Onbii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Onbii.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		612A72BB4A022FC2F60A10E1 /* CaptureToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureToolbar.swift; sourceTree = "<group>"; };
 		67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OnbiiMacQuickLook.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		72393487F58B3519DF10ABF8 /* CaptureSuggestionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSuggestionDelegate.swift; sourceTree = "<group>"; };
@@ -65,20 +66,19 @@
 		B32C42FFCACB75D8D32EE7A7 /* ObjectListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectListView.swift; sourceTree = "<group>"; };
 		BB70D45765AA7BCCE1991AD7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CFD276A3C1636C835753FAAC /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
-		D8507349F548EE05A973BC24 /* OnbiiMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnbiiMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E35D4FB5270FF66DDA64A700 /* ObjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3FBB7B19B82F3E46537FDD6E /* Frameworks */ = {
+		A57C0B5DFCC88C895475610F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08B6303B511C26E819CB4805 /* OnbiiArchive in Frameworks */,
-				B229143EBCD116918DA148BA /* OnbiiCapture in Frameworks */,
-				AB5D1C79F475437897501244 /* OnbiiTranscription in Frameworks */,
-				F551594D228197C147937581 /* OnbiiProcessing in Frameworks */,
-				6E06593E0C8F8986157915C9 /* OnbiiUI in Frameworks */,
+				BFB43641B0B040E6A8463773 /* OnbiiArchive in Frameworks */,
+				F2759D0E104BEA0088E07E19 /* OnbiiCapture in Frameworks */,
+				7DC1734D0A992953721BFE73 /* OnbiiTranscription in Frameworks */,
+				C0BEF3FD966F6B26B048272F /* OnbiiProcessing in Frameworks */,
+				041E3F5EE86D1CE1B79D5C27 /* OnbiiUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,7 +129,7 @@
 		EEA050FB4630763780A48451 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D8507349F548EE05A973BC24 /* OnbiiMac.app */,
+				56C858EA55ACF3DCDEEDAAA7 /* Onbii.app */,
 				67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */,
 			);
 			name = Products;
@@ -149,6 +149,32 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		06290831C13DA4E858E4FABC /* Onbii */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A4FA35471375A3C8419DD390 /* Build configuration list for PBXNativeTarget "Onbii" */;
+			buildPhases = (
+				5A186A056922B47C2852A393 /* Sources */,
+				9C2E891546084583F03E6926 /* Resources */,
+				A57C0B5DFCC88C895475610F /* Frameworks */,
+				060C0748AD2A5A4B53D5FD07 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8432EBB681C1065F99FD3B34 /* PBXTargetDependency */,
+			);
+			name = Onbii;
+			packageProductDependencies = (
+				2156444E169A505BE27712E9 /* OnbiiArchive */,
+				02089D2BC5BCDDC09A5ACBF4 /* OnbiiCapture */,
+				8CC053D577E4464B94E0B8BA /* OnbiiTranscription */,
+				C31A4AE159CB7609DBC2B916 /* OnbiiProcessing */,
+				F66F6BBDF7EFB499F0065815 /* OnbiiUI */,
+			);
+			productName = Onbii;
+			productReference = 56C858EA55ACF3DCDEEDAAA7 /* Onbii.app */;
+			productType = "com.apple.product-type.application";
+		};
 		0DA74D0547A6BF8A224C3BB0 /* OnbiiMacQuickLook */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 53502A3DD40539F0E64F3651 /* Build configuration list for PBXNativeTarget "OnbiiMacQuickLook" */;
@@ -166,32 +192,6 @@
 			productReference = 67751B59384B4C0223054BEA /* OnbiiMacQuickLook.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		7131E5621D43DFD06E629B0A /* OnbiiMac */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9FB8896C6DB7ACE602433AC5 /* Build configuration list for PBXNativeTarget "OnbiiMac" */;
-			buildPhases = (
-				513185C2B0B3E17D650B2DAF /* Sources */,
-				FFEA59B488A59DC7006A9F77 /* Resources */,
-				3FBB7B19B82F3E46537FDD6E /* Frameworks */,
-				8BAA3850A0D9BC391EB97092 /* Embed Foundation Extensions */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B76157D04F494586AAC536F0 /* PBXTargetDependency */,
-			);
-			name = OnbiiMac;
-			packageProductDependencies = (
-				3659CA5712B7C2891008C098 /* OnbiiArchive */,
-				567F509BEE64234E3F4780B3 /* OnbiiCapture */,
-				EB4390CDE262CEA947ACC7D9 /* OnbiiTranscription */,
-				99722455BE9D04D67E07958D /* OnbiiProcessing */,
-				70B1687294B1869F8412E02E /* OnbiiUI */,
-			);
-			productName = OnbiiMac;
-			productReference = D8507349F548EE05A973BC24 /* OnbiiMac.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -201,11 +201,11 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
-					0DA74D0547A6BF8A224C3BB0 = {
+					06290831C13DA4E858E4FABC = {
 						DevelopmentTeam = S52C3W4ZB8;
 						ProvisioningStyle = Automatic;
 					};
-					7131E5621D43DFD06E629B0A = {
+					0DA74D0547A6BF8A224C3BB0 = {
 						DevelopmentTeam = S52C3W4ZB8;
 						ProvisioningStyle = Automatic;
 					};
@@ -228,37 +228,37 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7131E5621D43DFD06E629B0A /* OnbiiMac */,
+				06290831C13DA4E858E4FABC /* Onbii */,
 				0DA74D0547A6BF8A224C3BB0 /* OnbiiMacQuickLook */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		FFEA59B488A59DC7006A9F77 /* Resources */ = {
+		9C2E891546084583F03E6926 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FE64CC2A07F1C3663E19D62 /* Assets.xcassets in Resources */,
+				5CABADE2BE96B77EB75C2BAF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		513185C2B0B3E17D650B2DAF /* Sources */ = {
+		5A186A056922B47C2852A393 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5E60D602F5BACA0B95413BB /* CaptureSuggestionDelegate.swift in Sources */,
-				90201373B7E86640DB04396F /* CaptureToolbar.swift in Sources */,
-				B761177102BE17C8DF2478F2 /* ContentView.swift in Sources */,
-				84090A1F44058C77B3A50829 /* ImportViewModel.swift in Sources */,
-				63D27A35A85589918A19B7F1 /* MacSettingsView.swift in Sources */,
-				CFF73E86D8A00EA2C90CC34B /* MenuBarView.swift in Sources */,
-				DD4DC582AA7BC826150C1531 /* ObjectDetailView.swift in Sources */,
-				44D0E067AD96E9787A34C18D /* ObjectListView.swift in Sources */,
-				21F21392C17625B1B6D9C344 /* OnbiiMacApp.swift in Sources */,
+				D2E211354270C10E4F5CD07C /* CaptureSuggestionDelegate.swift in Sources */,
+				76E0A37AF965DF823DE5BC73 /* CaptureToolbar.swift in Sources */,
+				6BCFCE21CA18ED32ECF3A539 /* ContentView.swift in Sources */,
+				8EA3B30F33543BD95926F5F6 /* ImportViewModel.swift in Sources */,
+				491621C1F8BB81AFA720BDEE /* MacSettingsView.swift in Sources */,
+				FDF2EC33CFAA569283D9BE28 /* MenuBarView.swift in Sources */,
+				AC713A836C87478F20E18C0C /* ObjectDetailView.swift in Sources */,
+				11BF2DC7A5711DD45E08B47C /* ObjectListView.swift in Sources */,
+				2639ED2DEC9D543215167F6C /* OnbiiMacApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,39 +274,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		B76157D04F494586AAC536F0 /* PBXTargetDependency */ = {
+		8432EBB681C1065F99FD3B34 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0DA74D0547A6BF8A224C3BB0 /* OnbiiMacQuickLook */;
-			targetProxy = CFDE2741A3AD85187672ADCF /* PBXContainerItemProxy */;
+			targetProxy = 242608F55C73DB4DF277C4B4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0872DAFE7CA557989DA92B8B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = OnbiiMac.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = S52C3W4ZB8;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii;
-				PRODUCT_MODULE_NAME = OnbiiMac;
-				PRODUCT_NAME = Onbii;
-				SDKROOT = macosx;
-			};
-			name = Release;
-		};
 		18D1E5E05AFBE6B1199D0832 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -432,6 +407,31 @@
 			};
 			name = Debug;
 		};
+		248296B306A331046589629E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OnbiiMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = S52C3W4ZB8;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yepyr.onbii;
+				PRODUCT_MODULE_NAME = OnbiiMac;
+				PRODUCT_NAME = Onbii;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
 		435986158E6001FDE4D767B5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -457,7 +457,7 @@
 			};
 			name = Debug;
 		};
-		DB8ADADD9729E9B3B8D82150 /* Debug */ = {
+		6CC2E91ACF9328A9116D2C2F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -480,7 +480,7 @@
 				PRODUCT_NAME = Onbii;
 				SDKROOT = macosx;
 			};
-			name = Debug;
+			name = Release;
 		};
 		E4F294E8A5329EBA731D65C7 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -528,11 +528,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		9FB8896C6DB7ACE602433AC5 /* Build configuration list for PBXNativeTarget "OnbiiMac" */ = {
+		A4FA35471375A3C8419DD390 /* Build configuration list for PBXNativeTarget "Onbii" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DB8ADADD9729E9B3B8D82150 /* Debug */,
-				0872DAFE7CA557989DA92B8B /* Release */,
+				248296B306A331046589629E /* Debug */,
+				6CC2E91ACF9328A9116D2C2F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -547,25 +547,25 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3659CA5712B7C2891008C098 /* OnbiiArchive */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = OnbiiArchive;
-		};
-		567F509BEE64234E3F4780B3 /* OnbiiCapture */ = {
+		02089D2BC5BCDDC09A5ACBF4 /* OnbiiCapture */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OnbiiCapture;
 		};
-		70B1687294B1869F8412E02E /* OnbiiUI */ = {
+		2156444E169A505BE27712E9 /* OnbiiArchive */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = OnbiiUI;
+			productName = OnbiiArchive;
 		};
-		99722455BE9D04D67E07958D /* OnbiiProcessing */ = {
+		8CC053D577E4464B94E0B8BA /* OnbiiTranscription */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OnbiiTranscription;
+		};
+		C31A4AE159CB7609DBC2B916 /* OnbiiProcessing */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OnbiiProcessing;
 		};
-		EB4390CDE262CEA947ACC7D9 /* OnbiiTranscription */ = {
+		F66F6BBDF7EFB499F0065815 /* OnbiiUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = OnbiiTranscription;
+			productName = OnbiiUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

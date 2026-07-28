@@ -282,16 +282,14 @@ been met — the desktop background-processing caller now exists, and so does th
 capture-suggestion one. It is still app-local; the decision can now be made on
 evidence rather than deferred.
 
-**And one piece of housekeeping that belongs with the branding pass:** rename the
-app targets `OnbiiMac` / `OnbiiIOS` to **`Onbii`**, keeping `PRODUCT_MODULE_NAME`
-so no Swift module name changes, and updating the scheme target references and
-dependencies. XcodeGen names the product file reference after the target, so with
-`PRODUCT_NAME: Onbii` set but the target still called `OnbiiMac`, Xcode goes on
-"correcting" `OnbiiMac.app` to `Onbii.app` on open. That is the last remaining
-source of churn in the generated projects — the recommended-settings and
-`LastUpgradeCheck` churn was fixed in `ab32529` with `options.xcodeVersion` and
-declared recommended settings in both `project.yml`. A person installing a public
-alpha should also just see *Onbii*, not *OnbiiMac*.
+**Done, with the branding pass:** the app targets are renamed `OnbiiMac` /
+`OnbiiIOS` → **`Onbii`**, with `PRODUCT_MODULE_NAME` unchanged so no Swift module
+name moved and no source file needed touching. XcodeGen names a target's product
+file reference after the target, so a target called `OnbiiMac` producing
+`Onbii.app` was the last thing making Xcode "correct" the generated projects on
+open — the recommended-settings and `LastUpgradeCheck` half went in `ab32529`.
+The Watch target keeps its name: it is embedded rather than installed. Bundle
+identifiers, schemes and directory names are all unchanged.
 
 Carried over from Milestone 1 and **now closed**: physical-device validation of
 the iPhone and Watch capture paths. Two field tests did it in conditions no desk

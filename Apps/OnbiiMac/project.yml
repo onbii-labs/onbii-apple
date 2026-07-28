@@ -21,7 +21,11 @@ settings:
     STRING_CATALOG_GENERATE_SYMBOLS: "YES"
 
 targets:
-  OnbiiMac:
+  # Named for what a person installs. PRODUCT_MODULE_NAME stays OnbiiMac so
+  # no Swift module name changes, and XcodeGen names the product file
+  # reference after the target — which is what stopped Xcode "correcting"
+  # OnbiiMac.app to Onbii.app on every open.
+  Onbii:
     type: application
     platform: macOS
     sources:
@@ -82,7 +86,7 @@ schemes:
   OnbiiMacApp:
     build:
       targets:
-        OnbiiMac: all
+        Onbii: all
     run:
       config: Debug
     archive:

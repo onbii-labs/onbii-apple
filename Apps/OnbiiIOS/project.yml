@@ -21,7 +21,9 @@ settings:
     STRING_CATALOG_GENERATE_SYMBOLS: "YES"
 
 targets:
-  OnbiiIOS:
+  # Named for what a person installs. PRODUCT_MODULE_NAME stays OnbiiIOS so
+  # no Swift module name changes.
+  Onbii:
     type: application
     platform: iOS
     sources:
@@ -97,7 +99,7 @@ schemes:
   OnbiiIOSApp:
     build:
       targets:
-        OnbiiIOS: all
+        Onbii: all
     run:
       config: Debug
     archive:
