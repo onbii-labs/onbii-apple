@@ -55,11 +55,16 @@ struct OnbiiMacApp: App {
             // The recording state has to be visible from the menu bar itself,
             // not only once the menu is opened. An app that is recording and
             // does not look like it is the failure Milestone 1.6 is named for.
-            Image(
-                systemName: model.isCapturing
-                    ? "record.circle.fill"
-                    : "waveform.circle"
-            )
+            // The red dot stays a system symbol on purpose — it is a platform
+            // convention rather than a brand decision, and "this machine is
+            // listening" should look the same in every app.
+            //
+            // The idle glyph is a placeholder. A menu bar image is a template:
+            // monochrome, transparent, tinted by the system for a light or dark
+            // bar. `OnbiiMark` carries its own Forest field and cannot be used
+            // here — see docs/architecture/visual-identity.md for the spec of
+            // the `OnbiiMenuBarMark` asset that replaces this.
+            Image(systemName: model.isCapturing ? "record.circle.fill" : "leaf")
         }
 
         Settings {
