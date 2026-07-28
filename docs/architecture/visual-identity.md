@@ -311,6 +311,50 @@ qualified.
   Worth checking at actual size that they stay separate from the leaf edge rather
   than merging into it.
 
+### White is not transparent — the mistake to avoid
+
+The first draft of `onbii-icon-applemenubar.svg` was a solid black droplet with
+the pip tree **painted white** on top of it. On any normal surface that is the
+right picture. In a template it is a featureless blob: `#FFFFFF` has an alpha of
+1, so the tree is exactly as opaque as the droplet and disappears into it.
+
+Anything meant to read as see-through has to be **knocked out** — a Boolean
+subtract from the droplet, leaving real transparency — not filled with the
+background colour.
+
+Two consequences for the drawing:
+
+- Once the tree is negative space it reads thinner than the same shape in
+  positive, so it may want slightly heavier strokes than the white version did.
+- The knockout is the whole design at this size. There is no second colour to
+  fall back on.
+
+### Verified about the pipeline, 28 July
+
+An SVG imports and compiles correctly on this toolchain — worth knowing, because
+the app icon could not use a modern format and it would be easy to assume the
+same here. An imageset with
+
+```json
+"properties": {
+  "preserves-vector-representation": true,
+  "template-rendering-intent": "template"
+}
+```
+
+produced no `actool` warning and compiled to `Template Mode: template`,
+`Opaque: False`, with the vector representation retained. The check, which mirrors
+the app-icon recipe above:
+
+```sh
+assetutil --info "<built>/OnbiiApple_OnbiiUI.bundle/Contents/Resources/Assets.car" \
+  | grep -A6 OnbiiMenuBarMark
+```
+
+To see what the menu bar will actually draw before shipping it, load the image
+out of the built bundle and check `isTemplate`, rather than looking at the source
+file — the source looks correct in every editor regardless.
+
 ### What stays a system symbol
 
 **Recording state does not need a second variant.** While a capture is running

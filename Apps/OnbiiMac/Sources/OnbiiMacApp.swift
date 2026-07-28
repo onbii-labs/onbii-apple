@@ -59,12 +59,11 @@ struct OnbiiMacApp: App {
             // convention rather than a brand decision, and "this machine is
             // listening" should look the same in every app.
             //
-            // The idle glyph is a placeholder. A menu bar image is a template:
-            // monochrome, transparent, tinted by the system for a light or dark
-            // bar. `OnbiiMark` carries its own Forest field and cannot be used
-            // here — see docs/architecture/visual-identity.md for the spec of
-            // the `OnbiiMenuBarMark` asset that replaces this.
-            Image(systemName: model.isCapturing ? "record.circle.fill" : "leaf")
+            if model.isCapturing {
+                Image(systemName: "record.circle.fill")
+            } else {
+                OnbiiMenuBarMark()
+            }
         }
 
         Settings {
