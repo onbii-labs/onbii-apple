@@ -107,5 +107,12 @@
 			</dict>
 		</dict>
 	</array>
+	<!-- Export compliance. Onbii makes no network calls at all: capture,
+	     transcription and storage are entirely on-device, and there is no
+	     custom cryptography. Declared here so App Store Connect stops asking
+	     the same question on every single upload. Re-check this the day
+	     anything in the app talks to a server. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

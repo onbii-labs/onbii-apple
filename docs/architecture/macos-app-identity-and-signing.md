@@ -59,6 +59,32 @@ The keychain holds three `Apple Development` certificates and **no
 development profiles. Nothing for distribution exists yet for either bundle
 identifier.
 
+### What TestFlight actually requires — and what it does not
+
+Worth separating, because the App Store's requirements are much larger than
+TestFlight's and it is easy to assume they are the same list.
+
+**Not needed for TestFlight at all:** screenshots, app previews, the App Store
+description, keywords, categories, pricing. Those belong to an App Store
+*listing* and are only demanded when submitting for release. TestFlight has its
+own, much smaller metadata.
+
+**Internal testing** — up to 100 people who hold a role on the App Store Connect
+team — needs only: the app record, a processed build, and an export-compliance
+answer. No review, no screenshots.
+
+**External testing** — up to 10,000 people by link or email — adds a **Beta App
+Review** on the first build, a beta description and "what to test" notes, a
+feedback email, and a **privacy policy URL**. Onbii does not have one yet, and
+for a local-first app it is a short document, but it has to exist.
+
+**Export compliance is declared in the repository** rather than answered by hand
+on every upload: all three `Info.plist` files carry
+`ITSAppUsesNonExemptEncryption = false`. That is accurate today — the app makes
+no network calls at all and uses no custom cryptography, verified by there being
+zero `URLSession` call sites in the whole repository. **It is a legal declaration
+about the app, so it needs re-checking the day anything talks to a server.**
+
 ### What is missing, in order
 
 1. An **Apple Distribution** certificate for the team.
