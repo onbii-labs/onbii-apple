@@ -85,19 +85,40 @@ no network calls at all and uses no custom cryptography, verified by there being
 zero `URLSession` call sites in the whole repository. **It is a legal declaration
 about the app, so it needs re-checking the day anything talks to a server.**
 
-### What is missing, in order
+### Resolved, 28 July: a distribution-signed build exists
 
-1. An **Apple Distribution** certificate for the team.
-2. **App Store provisioning profiles** for `com.yepyr.onbii` and
-   `com.yepyr.onbii.watchkitapp`. Passing `-allowProvisioningUpdates` to
-   `xcodebuild` creates both — note that this *writes* to the Apple Developer
-   account rather than only reading it.
-3. An **App Store Connect app record** for `com.yepyr.onbii`. Automatic signing
-   does not create this and an upload is rejected without it.
-4. The **iCloud container** `iCloud.com.yepyr.onbii` enabled on the App ID for
-   distribution, not only for development. The app resolves it at runtime on
-   iPhone, so a distribution profile that omits it would fail in a way that only
-   appears once installed from TestFlight.
+The certificate and both App Store profiles were created with
+`-allowProvisioningUpdates`, and the export succeeds. What it produced, verified
+rather than assumed:
+
+- signed by **`Apple Distribution: Yepyr B.V. (S52C3W4ZB8)`** — a real
+  distribution identity, not the development one the archive step used;
+- the embedded Watch app signed by the same identity as
+  `com.yepyr.onbii.watchkitapp`;
+- `beta-reports-active = true`, which is what marks it a TestFlight-capable
+  profile, and `get-task-allow = false`, correct for a shipped build;
+- **the iCloud entitlements survived into the distribution profile** —
+  `ubiquity-container-identifiers` and `icloud-container-identifiers` both carry
+  `iCloud.com.yepyr.onbii`, with `icloud-services: CloudDocuments`. This was the
+  one that would have failed silently: it works under development profiles
+  regardless, so a distribution profile missing it would only show up once
+  somebody installed from TestFlight;
+- `ITSAppUsesNonExemptEncryption = false` present in the shipped `Info.plist`.
+
+The entitlements also carry `icloud-container-environment: Production`. That key
+is a **CloudKit** concept and Onbii uses `CloudDocuments` — an iCloud Drive
+ubiquity container, which is not split into development and production stores.
+So a TestFlight build should see the same archive as a development build.
+*Should*: it has not been observed, and this document has already been wrong once
+about a mechanism that sounded certain. Check it on the first install rather than
+assuming it.
+
+### Still missing before testers exist
+
+1. The build has been **exported, not uploaded**. `destination: export` writes an
+   `.ipa` locally and contacts nothing.
+2. **A privacy policy URL**, required for *external* TestFlight only. Internal
+   testing — anyone holding a role on the App Store Connect team — needs none.
 
 The reproduction, which stays read-only and creates nothing:
 
