@@ -30,6 +30,23 @@ public enum OnbiiNotifier: Sendable {
         _ = try? await center.requestAuthorization(options: [.alert, .sound])
     }
 
+    /// Whether notifications can actually be delivered.
+    ///
+    /// A feature built on notifications has to be able to say when they are
+    /// switched off. Everything here is best-effort and silent about its own
+    /// failure, which is right for a message that is a courtesy — and wrong when
+    /// the notification *is* the feature, as it is for a capture suggestion. An
+    /// app that offers something and then does nothing is the failure Milestone
+    /// 1.6 exists to remove.
+    public static var isAllowed: Bool {
+        get async {
+            let settings = await UNUserNotificationCenter.current()
+                .notificationSettings()
+            return settings.authorizationStatus == .authorized
+                || settings.authorizationStatus == .provisional
+        }
+    }
+
     /// Posts immediately, if allowed.
     ///
     /// Deliberately no banner while the app is frontmost: that is the default

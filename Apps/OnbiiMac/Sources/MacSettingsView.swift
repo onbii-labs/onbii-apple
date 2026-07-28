@@ -19,6 +19,9 @@ struct MacSettingsView: View {
             Form { suggestionsSection }
                 .formStyle(.grouped)
                 .tabItem { Label("Suggestions", systemImage: "bell.badge") }
+                // Permission can be changed in System Settings while Onbii is
+                // running, so this is asked again rather than trusted.
+                .onAppear { model.refreshNotificationPermission() }
         }
         .frame(width: 520, height: 340)
     }
@@ -48,6 +51,24 @@ struct MacSettingsView: View {
             }
 
             Button("Add Application…") { model.chooseApplicationToWatch() }
+
+            // The suggestion *is* a notification. Without permission the whole
+            // feature does nothing at all, and saying nothing about that is the
+            // dishonesty this project keeps finding in itself.
+            if !model.notificationsAllowed, !model.watchedApplications.isEmpty {
+                HStack(spacing: OnbiiTheme.Spacing.s) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.onbiiWarning)
+                    Text(
+                        "Notifications are turned off for Onbii, so it cannot "
+                            + "ask. Turn them on in System Settings ▸ "
+                            + "Notifications ▸ Onbii."
+                    )
+                    Spacer()
+                    Button("Open") { model.openNotificationSettings() }
+                }
+                .font(.callout)
+            }
         } header: {
             Text("Offer to record when these open")
                 .onbiiSubheaderStyle()

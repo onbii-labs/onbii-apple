@@ -100,6 +100,10 @@ final class ImportViewModel {
     }
 
     private(set) var watchedApplications: [WatchedApplication] = []
+    /// Whether a suggestion could actually be delivered. Settings says so when
+    /// it could not — a feature that quietly cannot work is worse than one that
+    /// is switched off.
+    private(set) var notificationsAllowed = true
     private var activationObserver: (any NSObjectProtocol)?
     /// When each application was last offered, so switching back and forth does
     /// not produce a stream of prompts.
@@ -369,7 +373,19 @@ final class ImportViewModel {
             NSWorkspace.shared.notificationCenter.removeObserver(activationObserver)
             self.activationObserver = nil
         }
-        guard !watchedApplications.isEmpty else { return }
+        guard !watchedApplications.isEmpty else {
+            notificationsAllowed = true
+            return
+        }
+
+        // The suggestion *is* a notification, so without permission the feature
+        // silently does nothing — which is exactly what happened the first time
+        // this shipped. Ask here rather than only when a capture starts, and
+        // remember the answer so Settings can say when it is off.
+        Task { [weak self] in
+            await OnbiiNotifier.requestAuthorizationIfNeeded()
+            self?.notificationsAllowed = await OnbiiNotifier.isAllowed
+        }
 
         activationObserver = NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didActivateApplicationNotification,
@@ -442,6 +458,26 @@ final class ImportViewModel {
             )
             persistWatchedApplications()
             startWatchingApplications()
+        }
+    }
+
+    /// Takes the person straight to the switch they need, rather than describing
+    /// where it is and leaving them to find it.
+    func openNotificationSettings() {
+        guard let url = URL(
+            string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension"
+        ) else {
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+
+    /// Re-reads whether a suggestion could be delivered. Permission can be
+    /// revoked in System Settings while the app is running, so this is asked
+    /// again rather than remembered from launch.
+    func refreshNotificationPermission() {
+        Task { [weak self] in
+            self?.notificationsAllowed = await OnbiiNotifier.isAllowed
         }
     }
 
