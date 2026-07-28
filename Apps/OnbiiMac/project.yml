@@ -50,7 +50,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.yepyr.onbii
         PRODUCT_MODULE_NAME: OnbiiMac
         MARKETING_VERSION: 0.1.0
-        CURRENT_PROJECT_VERSION: 2
+        CURRENT_PROJECT_VERSION: 3
         # The app icon and the global accent colour must come from a catalog
         # compiled into this target; they cannot be served from the OnbiiUI
         # package's resource bundle. See Packages/OnbiiUI/Sources/Resources.
@@ -74,7 +74,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.yepyr.onbii.QuickLook
         PRODUCT_MODULE_NAME: OnbiiMacQuickLook
         MARKETING_VERSION: 0.1.0
-        CURRENT_PROJECT_VERSION: 2
+        CURRENT_PROJECT_VERSION: 3
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_FILE: QuickLook-Info.plist
         CODE_SIGN_ENTITLEMENTS: OnbiiMacQuickLook.entitlements
