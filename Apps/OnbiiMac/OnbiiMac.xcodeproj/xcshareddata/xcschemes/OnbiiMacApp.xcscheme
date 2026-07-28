@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7131E5621D43DFD06E629B0A"
+               BlueprintIdentifier = "06290831C13DA4E858E4FABC"
                BuildableName = "Onbii.app"
-               BlueprintName = "OnbiiMac"
+               BlueprintName = "Onbii"
                ReferencedContainer = "container:OnbiiMac.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,9 +30,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7131E5621D43DFD06E629B0A"
+            BlueprintIdentifier = "06290831C13DA4E858E4FABC"
             BuildableName = "Onbii.app"
-            BlueprintName = "OnbiiMac"
+            BlueprintName = "Onbii"
             ReferencedContainer = "container:OnbiiMac.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -53,9 +53,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7131E5621D43DFD06E629B0A"
+            BlueprintIdentifier = "06290831C13DA4E858E4FABC"
             BuildableName = "Onbii.app"
-            BlueprintName = "OnbiiMac"
+            BlueprintName = "Onbii"
             ReferencedContainer = "container:OnbiiMac.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -70,9 +70,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7131E5621D43DFD06E629B0A"
+            BlueprintIdentifier = "06290831C13DA4E858E4FABC"
             BuildableName = "Onbii.app"
-            BlueprintName = "OnbiiMac"
+            BlueprintName = "Onbii"
             ReferencedContainer = "container:OnbiiMac.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

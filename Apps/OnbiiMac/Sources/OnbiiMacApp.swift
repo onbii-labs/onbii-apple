@@ -1,4 +1,6 @@
+import OnbiiUI
 import SwiftUI
+import UserNotifications
 
 @main
 struct OnbiiMacApp: App {
@@ -6,9 +8,24 @@ struct OnbiiMacApp: App {
     /// scene is a sibling of the window, not a child of it, and both need the
     /// same archive.
     @State private var model = ImportViewModel()
+    @State private var suggestions: CaptureSuggestionDelegate
+
+    /// Named so the menu-bar item can reopen the window after it was closed.
+    static let mainWindowID = "onbii-main"
+
+    init() {
+        let model = ImportViewModel()
+        let suggestions = CaptureSuggestionDelegate { model.startCapture() }
+        _model = State(initialValue: model)
+        _suggestions = State(initialValue: suggestions)
+        // Both at launch, because a suggestion can arrive before any window has
+        // been opened — which is the whole point of it.
+        OnbiiNotifier.registerCaptureSuggestion()
+        UNUserNotificationCenter.current().delegate = suggestions
+    }
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: Self.mainWindowID) {
             ContentView(model: model)
                 .frame(minWidth: 820, minHeight: 520)
         }
@@ -28,6 +45,26 @@ struct OnbiiMacApp: App {
                 }
                 .keyboardShortcut("r", modifiers: [.command, .shift])
                 .disabled(model.archiveURL == nil)
+            }
+        }
+
+        // Always at the ready: capture without finding a window first.
+        MenuBarExtra {
+            MenuBarView(model: model)
+        } label: {
+            // The recording state has to be visible from the menu bar itself,
+            // not only once the menu is opened. An app that is recording and
+            // does not look like it is the failure Milestone 1.6 is named for.
+            // The red dot stays a system symbol on purpose — it is a platform
+            // convention rather than a brand decision, and "this machine is
+            // listening" should look the same in every app.
+            //
+            if model.isCapturing {
+                Image(systemName: "record.circle.fill")
+            } else if let mark = OnbiiMenuBarMark.image() {
+                mark
+            } else {
+                Image(systemName: "leaf")
             }
         }
 

@@ -52,6 +52,12 @@ struct MobileContentView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
                 model.verifyRecordingIsStillRunning()
+                // And re-read the archive. A Watch recording can land while
+                // this app is suspended or launched in the background, before
+                // the archive has even been resolved — so the reload that
+                // happens on receiving it can be a no-op, and nothing looked
+                // again until someone pulled to refresh.
+                model.reloadObjects()
             }
         }
         .sheet(isPresented: $showsSettings) {
@@ -97,7 +103,16 @@ struct MobileContentView: View {
                 Text("Objects")
                     .onbiiSubheaderStyle()
             } footer: {
-                Text("Stored in \(model.archiveDescription).")
+                // An object present but not yet readable is still an object.
+                // Omitting it silently presents an incomplete list as complete.
+                if model.objectsStillArriving > 0 {
+                    Text(
+                        "Stored in \(model.archiveDescription). "
+                            + arrivingDescription
+                    )
+                } else {
+                    Text("Stored in \(model.archiveDescription).")
+                }
             }
         }
         .listStyle(.insetGrouped)
@@ -153,6 +168,12 @@ struct MobileContentView: View {
         .padding(.horizontal, OnbiiTheme.Spacing.l)
         .padding(.vertical, OnbiiTheme.Spacing.m)
         .background(.bar)
+    }
+
+    private var arrivingDescription: String {
+        model.objectsStillArriving == 1
+            ? "1 object is still arriving from iCloud."
+            : "\(model.objectsStillArriving) objects are still arriving from iCloud."
     }
 
     @ViewBuilder

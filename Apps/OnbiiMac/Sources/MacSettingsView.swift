@@ -15,8 +15,76 @@ struct MacSettingsView: View {
             Form { transcriptionSection }
                 .formStyle(.grouped)
                 .tabItem { Label("Transcription", systemImage: "text.viewfinder") }
+
+            Form { suggestionsSection }
+                .formStyle(.grouped)
+                .tabItem { Label("Suggestions", systemImage: "bell.badge") }
+                // Permission can be changed in System Settings while Onbii is
+                // running, so this is asked again rather than trusted.
+                .onAppear { model.refreshNotificationPermission() }
         }
-        .frame(width: 520, height: 300)
+        .frame(width: 520, height: 340)
+    }
+
+    /// Onbii offers; it never starts.
+    ///
+    /// Spec decision `0023` allows contextual detection to *suggest* capture and
+    /// requires the capture itself to be explicit. The wording here is part of
+    /// the feature rather than decoration: someone reading this screen must come
+    /// away certain that naming an application does not mean Onbii will be
+    /// listening while it is open.
+    @ViewBuilder
+    private var suggestionsSection: some View {
+        Section {
+            if model.watchedApplications.isEmpty {
+                Text("No applications chosen.")
+                    .foregroundStyle(.onbiiSecondaryText)
+            } else {
+                ForEach(model.watchedApplications) { application in
+                    HStack {
+                        Text(application.name)
+                        Spacer()
+                        Button("Remove") { model.stopWatching(application) }
+                            .buttonStyle(.link)
+                    }
+                }
+            }
+
+            Button("Add Application…") { model.chooseApplicationToWatch() }
+
+            // The suggestion *is* a notification. Without permission the whole
+            // feature does nothing at all, and saying nothing about that is the
+            // dishonesty this project keeps finding in itself.
+            if !model.notificationsAllowed, !model.watchedApplications.isEmpty {
+                HStack(spacing: OnbiiTheme.Spacing.s) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.onbiiWarning)
+                    Text(
+                        "Notifications are turned off for Onbii, so it cannot "
+                            + "ask. Turn them on in System Settings ▸ "
+                            + "Notifications ▸ Onbii."
+                    )
+                    Spacer()
+                    Button("Open") { model.openNotificationSettings() }
+                }
+                .font(.callout)
+            }
+        } header: {
+            Text("Offer to record when these are in a call")
+                .onbiiSubheaderStyle()
+        } footer: {
+            Text(
+                "When one of these starts playing audio for more than a few "
+                    + "seconds, Onbii asks whether to record. Opening the "
+                    + "application is not enough — a window sitting open is not "
+                    + "a conversation. It never starts on its own, and it keeps "
+                    + "no audio from before you say yes: there is nothing to "
+                    + "record retrospectively from. Declining, or ignoring the "
+                    + "question, records nothing."
+            )
+            .font(.caption)
+            .foregroundStyle(.onbiiSecondaryText)
+        }
     }
 
     @ViewBuilder
@@ -89,6 +157,27 @@ struct MacSettingsView: View {
                     + "than sending your recording to a server. The language is "
                     + "recorded with each transcript, and a transcript made in "
                     + "the wrong language can always be made again."
+            )
+            .font(.caption)
+            .foregroundStyle(.onbiiSecondaryText)
+        }
+
+        Section {
+            Toggle(
+                "Transcribe new objects automatically",
+                isOn: $model.transcribesNewObjectsAutomatically
+            )
+        } footer: {
+            // Says exactly what it will and will not do. "Automatic" is a word
+            // that has to earn trust here: this app's whole argument is that it
+            // does not do things to a person's knowledge quietly.
+            Text(
+                "Applies to objects that arrive while Onbii is running — a "
+                    + "recording from iPhone or Apple Watch, or a file dropped "
+                    + "into the archive. Onbii never re-transcribes something "
+                    + "that already has a transcript, and never touches what "
+                    + "was already in the archive when it opened. It uses the "
+                    + "language above, and records that choice with the result."
             )
             .font(.caption)
             .foregroundStyle(.onbiiSecondaryText)

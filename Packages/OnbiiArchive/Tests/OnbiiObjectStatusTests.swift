@@ -185,3 +185,61 @@ private func makeEmptyRun(
         )
     )
 }
+
+// MARK: What unattended processing should pick up
+
+@Test
+func aPreservedRecordingWithNoTranscriptAwaitsOne() {
+    let manifest = makeManifest(resources: [audioSource])
+
+    #expect(manifest.awaitsFirstTranscript)
+}
+
+/// `0032` makes a second transcript safe — it supersedes and retains — but it
+/// also says reprocessing is deliberate. Safe is not the same as permitted, and
+/// nothing should produce a generation nobody asked for.
+@Test
+func anObjectThatAlreadyHasATranscriptIsNeverPickedUp() {
+    let manifest = makeManifest(resources: [
+        audioSource,
+        OnbiiResource(
+            id: "derived-transcript",
+            role: .derived,
+            path: "derived/transcript.json",
+            mediaType: "application/json"
+        ),
+    ])
+
+    #expect(!manifest.awaitsFirstTranscript)
+    #expect(manifest.status == .transcribed)
+}
+
+/// The condition that stops a loop. A quiet walk transcribes to nothing and
+/// records that it did; without this, every re-read of the archive would queue
+/// the same recording again for as long as the app was open.
+@Test
+func anObjectAlreadyFoundToHoldNoSpeechIsNotPickedUpAgain() {
+    let manifest = makeManifest(
+        resources: [audioSource],
+        provenance: [makeEmptyRun(languages: ["nl-NL"], at: 1_000_000)]
+    )
+
+    #expect(!manifest.awaitsFirstTranscript)
+    // Still awaiting a transcript as far as its status goes — it simply has
+    // nothing outstanding that running the same thing again would fix.
+    #expect(manifest.status == .awaitingTranscription)
+}
+
+@Test
+func anObjectWithNoAudioHasNothingToTranscribe() {
+    let manifest = makeManifest(resources: [
+        OnbiiResource(
+            id: "source-document",
+            role: .source,
+            path: "source/notes.pdf",
+            mediaType: "application/pdf"
+        ),
+    ])
+
+    #expect(!manifest.awaitsFirstTranscript)
+}

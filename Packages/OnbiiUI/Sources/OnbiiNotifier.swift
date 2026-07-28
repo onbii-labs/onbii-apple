@@ -30,6 +30,23 @@ public enum OnbiiNotifier: Sendable {
         _ = try? await center.requestAuthorization(options: [.alert, .sound])
     }
 
+    /// Whether notifications can actually be delivered.
+    ///
+    /// A feature built on notifications has to be able to say when they are
+    /// switched off. Everything here is best-effort and silent about its own
+    /// failure, which is right for a message that is a courtesy — and wrong when
+    /// the notification *is* the feature, as it is for a capture suggestion. An
+    /// app that offers something and then does nothing is the failure Milestone
+    /// 1.6 exists to remove.
+    public static var isAllowed: Bool {
+        get async {
+            let settings = await UNUserNotificationCenter.current()
+                .notificationSettings()
+            return settings.authorizationStatus == .authorized
+                || settings.authorizationStatus == .provisional
+        }
+    }
+
     /// Posts immediately, if allowed.
     ///
     /// Deliberately no banner while the app is frontmost: that is the default
@@ -60,6 +77,57 @@ public enum OnbiiNotifier: Sendable {
     /// A capture ended without being asked to.
     public static func captureStopped(_ reason: String) async {
         await post(title: "Recording stopped", body: reason)
+    }
+
+    /// Identifies the "an app you chose became active" suggestion and the one
+    /// action on it. An app that offers to record must never be able to start
+    /// recording by itself, so the action is the only route from here to a
+    /// capture (`0023`).
+    public static let captureSuggestionCategory = "onbii.capture-suggestion"
+    public static let startCaptureAction = "onbii.start-capture"
+
+    /// Registers the suggestion's *Record* button. Call once at launch.
+    public static func registerCaptureSuggestion() {
+        let record = UNNotificationAction(
+            identifier: startCaptureAction,
+            title: "Record",
+            options: [.foreground]
+        )
+        UNUserNotificationCenter.current().setNotificationCategories([
+            UNNotificationCategory(
+                identifier: captureSuggestionCategory,
+                actions: [record],
+                intentIdentifiers: [],
+                options: []
+            ),
+        ])
+    }
+
+    /// Offers to record because an application the person chose became active.
+    ///
+    /// An offer, and only an offer. Spec decision
+    /// `0023` allows contextual detection to *suggest* capture and requires the
+    /// capture itself to be explicit — so nothing starts until the button is
+    /// pressed, and ignoring this does nothing at all.
+    public static func suggestCapture(for applicationName: String) async {
+        let center = UNUserNotificationCenter.current()
+        let settings = await center.notificationSettings()
+        guard settings.authorizationStatus == .authorized
+            || settings.authorizationStatus == .provisional else {
+            return
+        }
+
+        let content = UNMutableNotificationContent()
+        content.title = "\(applicationName) is open"
+        content.body = "Record this conversation? Onbii only records when you say so."
+        content.categoryIdentifier = captureSuggestionCategory
+        try? await center.add(
+            UNNotificationRequest(
+                identifier: UUID().uuidString,
+                content: content,
+                trigger: nil
+            )
+        )
     }
 
     /// A Watch recording has not reached the iPhone.

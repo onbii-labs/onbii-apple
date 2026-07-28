@@ -14,6 +14,8 @@ import UniformTypeIdentifiers
 final class ImportViewModel {
     private static let archiveBookmarkKey = "selectedArchiveBookmark"
     private static let transcriptionLanguageKey = "selectedTranscriptionLanguage"
+    private static let automaticTranscriptionKey = "transcribesNewObjectsAutomatically"
+    private static let watchedApplicationsKey = "watchedApplications"
 
     enum CaptureKind: Equatable {
         case microphone
@@ -51,7 +53,84 @@ final class ImportViewModel {
     private var dualCaptureDirectory: URL?
     private var recordingStartedAt: Date?
 
-    var archiveURL: URL?
+    var archiveURL: URL? {
+        didSet {
+            guard archiveURL != oldValue else { return }
+            startWatchingArchive()
+        }
+    }
+
+    /// Objects present in the archive that could not be read yet — almost always
+    /// still arriving from another device.
+    ///
+    /// Shown rather than swallowed. An app that quietly omits an object it can
+    /// see is presenting an incomplete list as a complete one, which is the same
+    /// failure as reading the folder once and never again.
+    private(set) var objectsStillArriving = 0
+
+    private var archiveWatcher: OnbiiArchiveWatcher?
+    private var archiveWatchTask: Task<Void, Never>?
+
+    /// Whether an object that arrives while Onbii is running gets transcribed
+    /// without being asked.
+    ///
+    /// A person can turn it off, and the object records what it was transcribed
+    /// under either way (`0033`), so the result is never a mystery.
+    var transcribesNewObjectsAutomatically: Bool {
+        didSet {
+            UserDefaults.standard.set(
+                transcribesNewObjectsAutomatically,
+                forKey: Self.automaticTranscriptionKey
+            )
+            if transcribesNewObjectsAutomatically {
+                processQueueIfIdle()
+            }
+        }
+    }
+
+    /// Applications whose playing audio should prompt an offer to record.
+    ///
+    /// Stored as bundle identifiers with the name the person will read, because
+    /// an identifier is not something to show anyone and a name is not stable
+    /// enough to match on.
+    struct WatchedApplication: Codable, Equatable, Identifiable, Sendable {
+        var bundleIdentifier: String
+        var name: String
+        var id: String { bundleIdentifier }
+    }
+
+    private(set) var watchedApplications: [WatchedApplication] = []
+    /// Whether a suggestion could actually be delivered. Settings says so when
+    /// it could not — a feature that quietly cannot work is worse than one that
+    /// is switched off.
+    private(set) var notificationsAllowed = true
+    private var audioPollTask: Task<Void, Never>?
+    /// Consecutive polls each watched application has been producing audio for.
+    private var sustainedAudio: [String: Int] = [:]
+    /// How often to ask Core Audio which processes are producing output. A
+    /// property read per process, so this is cheap enough to run continuously.
+    private static let audioPollInterval: Duration = .seconds(5)
+    /// How many consecutive polls of audio count as a conversation rather than
+    /// a notification chime.
+    private static let sustainedAudioPolls = 2
+    /// When each application was last offered, so switching back and forth does
+    /// not produce a stream of prompts.
+    private var lastSuggestedAt: [String: Date] = [:]
+    /// How long an ignored offer stands before the same application may ask
+    /// again. Long enough that declining once is respected for a meeting.
+    private static let suggestionQuietPeriod: TimeInterval = 30 * 60
+
+    /// Objects seen in the archive at least once.
+    ///
+    /// Background processing works on what *arrives*, never on what was already
+    /// there. Launching Onbii should not silently start an hour of transcription
+    /// across an archive somebody built up over months — transcribing the
+    /// backlog is a deliberate act, and it has its own action.
+    private var knownObjectIDs: Set<OnbiiObjectID> = []
+    private var hasSeededKnownObjects = false
+    private var pendingAutomaticIDs: [OnbiiObjectID] = []
+    private var automaticTask: Task<Void, Never>?
+    private var backgroundActivityToken: (any NSObjectProtocol)?
 
     /// The objects in the chosen archive, newest first, plus anything the
     /// person opened from outside it.
@@ -156,7 +235,14 @@ final class ImportViewModel {
     }
 
     init() {
+        let defaults = UserDefaults.standard
+        transcribesNewObjectsAutomatically = defaults.object(
+            forKey: Self.automaticTranscriptionKey
+        ) as? Bool ?? true
         restoreArchive()
+        restoreWatchedApplications()
+        startWatchingArchive()
+        startWatchingApplications()
         reloadObjects()
         Task { await loadLanguages() }
     }
@@ -167,24 +253,324 @@ final class ImportViewModel {
     func reloadObjects() {
         guard let archiveURL else {
             archivedObjects = []
+            objectsStillArriving = 0
             rebuildObjects()
             return
         }
 
         Task {
-            let loaded = await Task.detached(priority: .userInitiated) {
+            let listing = await Task.detached(priority: .userInitiated) {
                 let hasAccess = archiveURL.startAccessingSecurityScopedResource()
                 defer {
                     if hasAccess {
                         archiveURL.stopAccessingSecurityScopedResource()
                     }
                 }
-                return OnbiiArchiveIndex().objects(in: [archiveURL])
+                let index = OnbiiArchiveIndex()
+                let listing = index.contents(in: [archiveURL])
+                // Ask for anything that is present but not downloaded. The
+                // watcher will report when it lands; nothing here waits.
+                index.requestDownload(of: listing.unreadable)
+                return listing
             }.value
 
-            archivedObjects = loaded
+            archivedObjects = listing.objects
+            objectsStillArriving = listing.unreadable.count
             rebuildObjects()
+            noteArrivals()
         }
+    }
+
+    // MARK: Processing what arrives
+
+    /// Queues anything that has just appeared and still needs a first transcript.
+    ///
+    /// What "needs one" means is `OnbiiManifest.awaitsFirstTranscript`, which
+    /// carries the reasoning. What belongs here is the other condition: **new
+    /// since Onbii started.** The first read only records what is there and
+    /// never queues it, because opening the app once should not begin
+    /// transcribing an archive somebody built up over months. Working through
+    /// the backlog is a deliberate act with its own action.
+    private func noteArrivals() {
+        let present = archivedObjects.map(\.manifest.objectID)
+        guard hasSeededKnownObjects else {
+            knownObjectIDs = Set(present)
+            hasSeededKnownObjects = true
+            return
+        }
+
+        var arrived = [OnbiiObjectID]()
+        for bundle in archivedObjects
+        where knownObjectIDs.insert(bundle.manifest.objectID).inserted
+            && bundle.manifest.awaitsFirstTranscript {
+            arrived.append(bundle.manifest.objectID)
+        }
+
+        guard transcribesNewObjectsAutomatically, !arrived.isEmpty else { return }
+        for objectID in arrived where !pendingAutomaticIDs.contains(objectID) {
+            pendingAutomaticIDs.append(objectID)
+        }
+        processQueueIfIdle()
+    }
+
+    /// Starts the queue if nothing else is using the machine.
+    ///
+    /// Deliberately yields to anything a person is doing: a capture, an import,
+    /// or a transcription they started themselves. Automatic work is the lowest
+    /// priority in the app, and it can always wait for the next reload.
+    private func processQueueIfIdle() {
+        guard automaticTask == nil, !isBusy, !pendingAutomaticIDs.isEmpty else {
+            return
+        }
+        automaticTask = Task { [weak self] in
+            await self?.drainAutomaticQueue()
+            self?.automaticTask = nil
+        }
+    }
+
+    private func drainAutomaticQueue() async {
+        guard AppleOnDeviceTranscriber.authorization == .authorized else {
+            // Never prompt for permission on Onbii's own initiative. A dialog
+            // nobody asked for, for work nobody asked for, is the opposite of
+            // what this is meant to feel like. The manual action asks properly.
+            pendingAutomaticIDs.removeAll()
+            return
+        }
+
+        beginBackgroundActivity()
+        defer { endBackgroundActivity() }
+
+        while !pendingAutomaticIDs.isEmpty {
+            guard transcribesNewObjectsAutomatically else {
+                pendingAutomaticIDs.removeAll()
+                return
+            }
+            let objectID = pendingAutomaticIDs.removeFirst()
+            guard let bundle = archivedObjects.first(
+                where: { $0.manifest.objectID == objectID }
+            ), !bundle.manifest.hasTranscript else {
+                continue
+            }
+            await performTranscription(of: bundle, in: selectedTranscriptionLocale)
+
+            // Say so, because the whole point is that nobody was watching.
+            let title = bundle.manifest.title
+            if let updated = archivedObjects.first(
+                where: { $0.manifest.objectID == objectID }
+            ), updated.manifest.hasTranscript {
+                await OnbiiNotifier.post(
+                    title: "Transcribed in the background",
+                    body: "\(title) now has an on-device transcript."
+                )
+            }
+        }
+    }
+
+    // MARK: Offering to record when a chosen application appears
+
+    /// Watches the applications a person named, and offers — never starts.
+    ///
+    /// Spec decision `0023` is the whole design of this feature: contextual
+    /// detection may *suggest* capture, and the capture itself must be explicit.
+    /// So this posts a notification with a Record button and does nothing else.
+    /// Ignoring it records nothing. There is no timer, no buffer, and no
+    /// retrospective audio anywhere in the app to make "record from when it
+    /// started" possible even if someone wanted it.
+    private func startWatchingApplications() {
+        audioPollTask?.cancel()
+        audioPollTask = nil
+        sustainedAudio.removeAll()
+
+        guard !watchedApplications.isEmpty else {
+            notificationsAllowed = true
+            return
+        }
+
+        // The suggestion *is* a notification, so without permission the feature
+        // silently does nothing — which is exactly what happened the first time
+        // this shipped. Ask here rather than only when a capture starts, and
+        // remember the answer so Settings can say when it is off.
+        Task { [weak self] in
+            await OnbiiNotifier.requestAuthorizationIfNeeded()
+            self?.notificationsAllowed = await OnbiiNotifier.isAllowed
+        }
+
+        audioPollTask = Task { [weak self] in
+            while !Task.isCancelled {
+                self?.pollWatchedApplications()
+                try? await Task.sleep(for: Self.audioPollInterval)
+            }
+        }
+    }
+
+    /// Offers when a watched application is *making sound*, not when it opens.
+    ///
+    /// Activation was the first attempt and it was too eager: launching an app
+    /// is not a conversation, and being asked every time you glance at it is
+    /// noise. An application producing output audio is much closer to what the
+    /// roadmap means by "becomes active" — a window sitting open is not a
+    /// meeting, a window making sound usually is.
+    ///
+    /// It also removed a dependency on `NSWorkspace` activation notifications
+    /// reaching a sandboxed app, which was never confirmed.
+    private func pollWatchedApplications() {
+        guard !watchedApplications.isEmpty, archiveURL != nil else { return }
+
+        let producing = Set(
+            OnbiiAudioProcessProbe.outputProducingApplications()
+                .map(\.bundleIdentifier)
+        )
+        for watched in watchedApplications {
+            let id = watched.bundleIdentifier
+            guard producing.contains(id) else {
+                sustainedAudio[id] = 0
+                continue
+            }
+            sustainedAudio[id, default: 0] += 1
+            // Require the sound to persist. A single notification chime is not
+            // a conversation, and one poll cannot tell the two apart.
+            guard sustainedAudio[id] == Self.sustainedAudioPolls else { continue }
+            suggest(watched)
+        }
+    }
+
+    private func suggest(_ watched: WatchedApplication) {
+        // Never while something is already happening. Offering to record during
+        // a recording is noise, and offering during an import is a distraction
+        // from work the person did ask for.
+        guard !isBusy else { return }
+
+        let now = Date()
+        if let last = lastSuggestedAt[watched.bundleIdentifier],
+           now.timeIntervalSince(last) < Self.suggestionQuietPeriod {
+            return
+        }
+        lastSuggestedAt[watched.bundleIdentifier] = now
+
+        let name = NSRunningApplication
+            .runningApplications(withBundleIdentifier: watched.bundleIdentifier)
+            .first?.localizedName ?? watched.name
+        Task { await OnbiiNotifier.suggestCapture(for: name) }
+    }
+
+    /// Adds an application to watch, chosen from the ones on this Mac.
+    func chooseApplicationToWatch() {
+        Task {
+            let panel = NSOpenPanel()
+            panel.title = "Choose an Application"
+            panel.prompt = "Watch This App"
+            panel.message =
+                "Onbii will offer to record when this application starts playing "
+                + "audio. It never starts recording on its own."
+            panel.canChooseDirectories = false
+            panel.canChooseFiles = true
+            panel.allowsMultipleSelection = false
+            panel.allowedContentTypes = [.application]
+            panel.directoryURL = URL(fileURLWithPath: "/Applications")
+
+            guard await present(panel) == .OK, let url = panel.url,
+                  let bundle = Bundle(url: url),
+                  let identifier = bundle.bundleIdentifier else {
+                return
+            }
+            let name = (bundle.infoDictionary?["CFBundleName"] as? String)
+                ?? url.deletingPathExtension().lastPathComponent
+            guard !watchedApplications.contains(
+                where: { $0.bundleIdentifier == identifier }
+            ) else {
+                return
+            }
+            watchedApplications.append(
+                WatchedApplication(bundleIdentifier: identifier, name: name)
+            )
+            persistWatchedApplications()
+            startWatchingApplications()
+        }
+    }
+
+    /// Takes the person straight to the switch they need, rather than describing
+    /// where it is and leaving them to find it.
+    func openNotificationSettings() {
+        guard let url = URL(
+            string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension"
+        ) else {
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+
+    /// Re-reads whether a suggestion could be delivered. Permission can be
+    /// revoked in System Settings while the app is running, so this is asked
+    /// again rather than remembered from launch.
+    func refreshNotificationPermission() {
+        Task { [weak self] in
+            self?.notificationsAllowed = await OnbiiNotifier.isAllowed
+        }
+    }
+
+    func stopWatching(_ application: WatchedApplication) {
+        watchedApplications.removeAll {
+            $0.bundleIdentifier == application.bundleIdentifier
+        }
+        persistWatchedApplications()
+        startWatchingApplications()
+    }
+
+    private func persistWatchedApplications() {
+        let data = try? JSONEncoder().encode(watchedApplications)
+        UserDefaults.standard.set(data, forKey: Self.watchedApplicationsKey)
+    }
+
+    private func restoreWatchedApplications() {
+        guard let data = UserDefaults.standard.data(
+            forKey: Self.watchedApplicationsKey
+        ) else {
+            return
+        }
+        watchedApplications =
+            (try? JSONDecoder().decode([WatchedApplication].self, from: data)) ?? []
+    }
+
+    /// The same assertion a capture holds, for the same reason: App Nap
+    /// throttles an app that is not frontmost, and transcribing a twenty-minute
+    /// recording is exactly the kind of work it would throttle.
+    private func beginBackgroundActivity() {
+        guard backgroundActivityToken == nil else { return }
+        backgroundActivityToken = ProcessInfo.processInfo.beginActivity(
+            options: [.userInitiated],
+            reason: "Transcribing a new Onbii object"
+        )
+    }
+
+    private func endBackgroundActivity() {
+        guard let backgroundActivityToken else { return }
+        ProcessInfo.processInfo.endActivity(backgroundActivityToken)
+        self.backgroundActivityToken = nil
+    }
+
+    /// Watches the chosen archive so the window stops being a snapshot.
+    ///
+    /// Reading the folder once at launch and presenting that list as *the
+    /// archive* is how a recording made on a walk was missing from a freshly
+    /// launched window (field test 2). The watcher only ever says "look again" —
+    /// the read is still the same read, and the filesystem is still the truth.
+    private func startWatchingArchive() {
+        archiveWatchTask?.cancel()
+        archiveWatchTask = nil
+        archiveWatcher?.stop()
+        archiveWatcher = nil
+
+        guard let archiveURL else { return }
+
+        let watcher = OnbiiArchiveWatcher(directoryURL: archiveURL)
+        archiveWatcher = watcher
+        archiveWatchTask = Task { [weak self] in
+            for await _ in watcher.changes {
+                guard !Task.isCancelled else { return }
+                self?.reloadObjects()
+            }
+        }
+        watcher.start()
     }
 
     /// Records a bundle this session just wrote or read, without waiting for a

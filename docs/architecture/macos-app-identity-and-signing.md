@@ -18,6 +18,22 @@ vendor-neutral namespace that matches the open spec and is independent of the
 app's `com.yepyr.*` identifier. The distribution channel (Mac App Store vs
 notarized Developer ID) remains open.
 
+**The Xcode targets are now named `Onbii`** on both macOS and iOS, superseding
+"the Xcode target and module remain `OnbiiMac`" in the Decision below. The
+*modules* still are: `PRODUCT_MODULE_NAME` stays `OnbiiMac` and `OnbiiIOS`, so no
+Swift module name changed and nothing had to be touched in any source file.
+
+Two reasons, and the second is the practical one:
+
+- A person installing a public alpha should see *Onbii*, not *OnbiiMac*.
+- XcodeGen names a target's product file reference after the target, so a target
+  called `OnbiiMac` producing `Onbii.app` left Xcode "correcting" the generated
+  project on every open. That was the last remaining source of that churn — the
+  recommended-settings and `LastUpgradeCheck` half was fixed in `ab32529`.
+
+The Watch target keeps the name `OnbiiWatch`: it is embedded rather than
+installed, and nobody ever reads it.
+
 ## Context
 
 The Milestone 1 macOS app needs a stable development identity so document-type

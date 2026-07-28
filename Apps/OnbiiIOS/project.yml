@@ -21,7 +21,9 @@ settings:
     STRING_CATALOG_GENERATE_SYMBOLS: "YES"
 
 targets:
-  OnbiiIOS:
+  # Named for what a person installs. PRODUCT_MODULE_NAME stays OnbiiIOS so
+  # no Swift module name changes.
+  Onbii:
     type: application
     platform: iOS
     sources:
@@ -47,6 +49,12 @@ targets:
         PRODUCT_MODULE_NAME: OnbiiIOS
         MARKETING_VERSION: 0.1.0
         CURRENT_PROJECT_VERSION: 2
+        # iPhone only. Left at the default of iPhone *and* iPad, the build warns
+        # that an iPad app must support all four orientations — and the honest
+        # answer is not to add the fourth but to stop claiming iPad, which this
+        # layout was never designed or tested for. Reversible: widen this and
+        # add UISupportedInterfaceOrientations~ipad when there is an iPad design.
+        TARGETED_DEVICE_FAMILY: "1"
         # The app icon and the global accent colour must come from a catalog
         # compiled into this target; they cannot be served from the OnbiiUI
         # package's resource bundle. See Packages/OnbiiUI/Sources/Resources.
@@ -97,7 +105,7 @@ schemes:
   OnbiiIOSApp:
     build:
       targets:
-        OnbiiIOS: all
+        Onbii: all
     run:
       config: Debug
     archive:

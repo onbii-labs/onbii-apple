@@ -45,12 +45,24 @@ Open questions still to answer here:
   other worse. Both are architectural questions, not tuning ones.
 - Does the Core Audio system-audio probe work reliably for the first
   meeting applications tested?
-- What should the start/stop capture surface feel like on macOS? (Milestone 1.5
-  put it in the window toolbar; the menu-bar service is still to come.)
-- Should the macOS app become a menu-bar service, and how should the
-  application-activation record prompt be presented? (Milestone 1.5, deferred.)
+- ~~What should the start/stop capture surface feel like on macOS?~~ Answered by
+  building it: the window toolbar for when a window is open, and a `MenuBarExtra`
+  for when one is not. The menu-bar icon carries the recording state.
+- ~~How should the application-activation record prompt be presented?~~ As a
+  notification with a *Record* action, not an alert — an alert would steal focus
+  from the application the person just switched to, and the action being the only
+  route to a recording is what keeps it an offer (`0023`). Built in Milestone 1.5;
+  **not yet confirmed on a device** that workspace activation notifications reach
+  a sandboxed app.
 - Should the first transcript path use Apple on-device capabilities directly, and where should future third-party or server processing settings live?
 - Where should the user's first Onbii archive live by default on Apple platforms?
+  Partly answered by building the archive watcher: iCloud is the easiest default
+  but not a requirement. The macOS watcher falls back to a plain directory watch
+  wherever the app has no ubiquity container, and a directory watch does not care
+  what puts files in the folder — so Dropbox, Syncthing, a NAS share or an
+  external disk all work. **The iPhone is the constraint**: it resolves the
+  iCloud container or a local one and offers no picker, so "any shared folder" is
+  real on the desktop and notional on iPhone.
 - What permissions, entitlements, and user-facing consent flows are required for capture, location, and transcription?
 - How should human corrections be represented before full versioning is designed?
   Partly answered for *machine* corrections: `OnbiiObjectRepair` re-derives facts

@@ -1,8 +1,10 @@
 # Milestone 1.5: Ready To Show
 
-Status: **Half delivered, resumed 28 July.** The identity-and-home half shipped;
-the always-ready half is what remains. See *What Is Left* for the order
-it should be built in.
+Status: **Complete, 28 July.** Every roadmap requirement is built and confirmed
+in use on real devices — which corrected the always-ready half twice, both times
+in the same direction: something that looked right and did nothing. What remains
+is listed under *What Was Left, And What Still Is* and is either deliberately
+deferred or belongs to another milestone.
 
 Milestone 1 proved the capture-certainty loop. Milestone 1.5 turns that loop into
 something presentable enough to put in front of early users as a public alpha —
@@ -33,17 +35,18 @@ From the roadmap:
 | Clear visual indicators of an object's status at a glance | **Done** |
 | The same presentable home and status view on iPhone | **Done** |
 | No change to the object format; the archive stays the source of truth | **Held** |
-| A macOS menu-bar service that is always at the ready | Deferred |
-| An explicit offer to record when a chosen application becomes active | Deferred |
-| Background processing of new recordings and files on the desktop | Deferred |
+| A macOS menu-bar service that is always at the ready | **Done** |
+| An explicit offer to record when a chosen application becomes active | **Done** |
+| Background processing of new recordings and files on the desktop | **Done** |
 
 Beyond the roadmap, one gap found while using it: transcription could be started
 on iPhone but the result could not be read without leaving the app. A transcript
 reader was added on both platforms.
 
-The milestone is therefore **half delivered**. What remains — the menu-bar
-service, the activation prompt, background processing — is the "always-ready"
-strand, and it is a coherent second slice rather than leftovers.
+The milestone was **half delivered** for three days: the identity-and-home half
+shipped on 25 July, and the always-ready half — menu-bar service, activation
+prompt, background processing — landed on 28 July once
+[Milestone 1.6](milestone-1.6.md) had made the pieces it needed possible.
 
 **Paused 27 July, resumed 28 July.** The first field test
 ([27 July 2026](../field-tests/2026-07-27-field-test-1.md)) found that the loop
@@ -99,9 +102,9 @@ objects that have **no** transcript and stop there. Anything that would create a
 second generation needs someone to ask for it. This is a constraint on the
 feature, not a detail of it.
 
-**The watcher is a precondition, not a nice-to-have.** Background processing
+**The watcher was a precondition, not a nice-to-have** — background processing
 cannot process what it never notices, and field test 2 showed the Mac does not
-notice. See the gap below.
+notice. It is now built; see *What Is Left*.
 
 ## Current Implementation Slice
 
@@ -148,57 +151,194 @@ The identity and home half:
   On both platforms the transcript sits directly under the title, with details
   and resources folded away.
 
-## What Is Left
+## What Was Left, And What Still Is
 
-These were not in the first slice, and they are what is left to build. In the
-order they depend on each other:
+The four that were not in the first slice, in the order they depend on each
+other. All four are built; what each one refuses to do is usually the part worth
+reading.
 
-**1. A watcher on the archive.** The macOS home currently refreshes after every
-write, on archive selection, at window appearance, when the window becomes active
-again, and on ⌘⇧R. The activation refresh was added after
-[field test 2](../field-tests/2026-07-28-field-test-2.md), where an object made on
-a walk was missing from a freshly launched window. It is not the whole answer,
-because a window left in front for an hour still will not notice — and background
-processing cannot process what it never notices, which is why this comes first.
+**1. A watcher on the archive — done.** `OnbiiArchiveWatcher` in `OnbiiArchive`
+reports that the archive may have changed; the apps re-read when it does. It
+carries no objects and holds no state about them, so `OnbiiArchiveIndex` remains
+the only thing that reads and the filesystem remains the truth every time it is
+asked. Deleting it would cost freshness and nothing else.
 
-The archive is an iCloud container, so the right instrument is an
-`NSMetadataQuery` rather than a local filesystem watcher: a filesystem watcher
-reports nothing until a remote object has already materialised, and an object
-that exists but has not been downloaded is precisely the case that needs
-handling. It should also stop the listing silently skipping an object it can see
-but cannot read — `OnbiiArchiveIndex` swallows an unreadable bundle today, which
-is right for a corrupt folder and wrong for one that is still arriving.
+It picks its mechanism by inspection rather than configuration, because an
+archive is not always one kind of place. Where the app has its **own ubiquity
+container** and the archive is inside it, `NSMetadataQuery` is right: it is the
+only API that reports an item that exists but has not been downloaded, which is
+the state an object is in shortly after another device made it. Everywhere else a
+directory watch is right. Reports are coalesced over a short quiet period,
+because iCloud narrates a single arriving object as a stream of progress updates.
 
-**2. Background processing of new archive files.** Transcribing what arrives,
-without a window. Constrained as described above: first transcript only, never an
-automatic second generation. It needs a `ProcessInfo` activity while it runs, a
-way to say what it did when nobody is looking, and a rule for what happens when
-the machine is on battery or the person is mid-recording.
+**The test is the app's container, not "is this iCloud Drive"** — and getting
+that wrong broke the Mac completely for an afternoon.
+`NSMetadataQueryUbiquitousDocumentsScope` searches the app's own container, and
+the Mac app has none: it holds no `ubiquity-container-identifiers` entitlement
+and reaches iCloud Drive purely as a user-selected folder through a
+security-scoped bookmark. A ubiquitous query there is a query over nothing. It
+never fired, so a recording that arrived from the iPhone was never noticed —
+which is the exact bug the watcher was built to fix, reintroduced by the watcher.
 
-**3. The macOS menu-bar service.** Always at the ready, which is the roadmap's
-phrase and the point of the strand: capture should not require finding a window.
-This is also where a background-processing indicator naturally lives.
+The iPhone does have the container, so it uses the query. Both are covered by
+falling back on what the app can actually see.
 
-**4. The application-activation prompt** that *offers* to record when a chosen
-app becomes active. Never hidden and never automatic — spec decision
-[`0023`](../spec/docs/decisions/0023-no-hidden-retrospective-recording.md) governs
-this one directly, and the offer is the feature.
+**The fallback turned out to be the more interesting half.** A directory watch
+does not care what is putting files in the folder. On macOS, where the archive is
+any folder a person picks, that means the always-ready behaviour works over
+Dropbox, Syncthing, a NAS share, an external disk — anything every device can
+reach. iCloud is not a requirement, it is the easiest default.
 
-**Also owed here, inherited from 1.6:** sweeping the archive with
-`OnbiiObjectRepair` rather than offering it one object at a time, and deciding
-whether `OnbiiNotifier` becomes a shared package now that a second real caller
-exists.
+That is the local-first principle earning its keep rather than being recited:
+*"the answer to 'where is my knowledge?' should be something ordinary and
+inspectable, not a vendor backend."* An implementation that only noticed changes
+inside Apple's sync would have quietly made iCloud the real home while the
+documentation said otherwise.
 
-**And one piece of housekeeping that belongs with the branding pass:** rename the
-app targets `OnbiiMac` / `OnbiiIOS` to **`Onbii`**, keeping `PRODUCT_MODULE_NAME`
-so no Swift module name changes, and updating the scheme target references and
-dependencies. XcodeGen names the product file reference after the target, so with
-`PRODUCT_NAME: Onbii` set but the target still called `OnbiiMac`, Xcode goes on
-"correcting" `OnbiiMac.app` to `Onbii.app` on open. That is the last remaining
-source of churn in the generated projects — the recommended-settings and
-`LastUpgradeCheck` churn was fixed in `ab32529` with `options.xcodeVersion` and
-declared recommended settings in both `project.yml`. A person installing a public
-alpha should also just see *Onbii*, not *OnbiiMac*.
+**The asymmetry is worth knowing, because it is the remaining constraint.** The
+Mac can point at any folder; the iPhone cannot — `prepareArchive()` resolves the
+iCloud container and falls back to a local one, with no picker. So today the
+"any shared folder" property is real on the desktop and notional on iPhone. That
+is a gap in the *archive location* feature rather than in the watcher, and it is
+not in this milestone's scope; recorded here so nobody reads the paragraph above
+as a promise the iPhone keeps.
+
+The second half of the same finding went with it: `OnbiiArchiveIndex` used to
+skip a folder it could not read, which is right for a damaged object and wrong
+for one still arriving. `contents(in:)` now returns both lists, the apps ask
+iCloud for anything present but not downloaded, and both say *"N objects are
+still arriving from iCloud"* rather than quietly presenting an incomplete list as
+a complete one.
+
+Both apps also re-read on becoming active, as a backstop that needs no
+mechanism at all. The iPhone did **not** do this before — an earlier version of
+this note claimed it did, and it only re-verified the recorder. A Watch recording
+can be preserved while the app is suspended or launched in the background, before
+the archive has even been resolved, so the reload that happens on receiving it
+can be a no-op; nothing looked again until someone pulled to refresh.
+
+**2. Background processing of new archive files — done.** An object that arrives
+while Onbii is running gets transcribed without being asked, in the language the
+person chose, with the choice recorded on the result (`0033`).
+
+What it will not do is the more important half, and all of it is a rule rather
+than a tuning choice:
+
+- **Only what arrives.** The first read of the archive records what is there and
+  queues none of it. Opening the app once must not begin transcribing an archive
+  somebody built up over months; working through a backlog is a deliberate act.
+- **Only a first transcript.** `0032` makes a second one safe — it supersedes and
+  retains — but it also says reprocessing is deliberate, and safe is not the same
+  as permitted.
+- **Never the same silence twice.** An object already transcribed and found empty
+  carries a `found-nothing` event, so it is not queued again. This is 1.6 paying
+  for itself: without that record, every re-read would queue the same quiet walk
+  forever.
+- **Never a permission prompt on Onbii's own initiative.** If speech recognition
+  has not been authorised, the queue is dropped rather than a dialog raised for
+  work nobody asked for.
+- **Always yielding.** It waits for any capture, import or transcription a person
+  started themselves, and it holds a `ProcessInfo` activity while it runs so App
+  Nap does not throttle a twenty-minute recording.
+
+The rule for what needs work is `OnbiiManifest.awaitsFirstTranscript` in
+`OnbiiArchive`, so it is one definition and tested. A Settings toggle turns the
+whole thing off, and each finished object sends a notification, because the
+premise is that nobody was watching.
+
+**3. The macOS menu-bar service — done.** A `MenuBarExtra` alongside the window,
+not instead of it: the window is the inspector, the menu bar is the always-ready
+capture surface. Starting a recording never requires finding an app first, which
+matters because a conversation does not wait while somebody hunts through Mission
+Control.
+
+It is a view over the same view model, not a second app — one archive access, one
+set of security-scoped bookmarks, one answer to what Onbii is doing. The menu-bar
+icon itself shows the recording state, because an app that is recording and does
+not look like it is the failure Milestone 1.6 is named for. Closing the window no
+longer means quitting; the menu-bar item brings it back.
+
+**4. The application-activation prompt — done.** Naming an application in
+Settings means Onbii *offers* to record when it starts playing audio. It posts a
+notification with a Record button and does nothing else: ignoring it records
+nothing, and there is no buffer anywhere in the app to record retrospectively
+from even if someone wanted it.
+
+Spec decision
+[`0023`](../spec/docs/decisions/0023-no-hidden-retrospective-recording.md) is the
+design rather than a constraint on it — "contextual detection may suggest
+capture, but actual audio capture should be explicit". Three consequences worth
+keeping:
+
+- **The notification action is the only route from a suggestion to a recording.**
+  A delegate that started on delivery rather than on the press would quietly turn
+  a suggestion into surveillance.
+- **A notification rather than an alert**, because an alert would steal focus
+  from the application the person just switched to.
+- **An ignored offer stands for half an hour** before the same application asks
+  again, and nothing is offered while a capture, import or transcription is
+  already running.
+
+**The trigger is audio, not activation, and that was a correction.** The first
+build offered whenever a watched application became frontmost, which meant being
+asked on launch and on every glance. A window sitting open is not a conversation;
+a window making sound usually is. `OnbiiAudioProcessProbe` — already built for
+dual-source call capture — is polled every five seconds, and a watched
+application has to be producing output audio across two consecutive polls before
+anything is offered, so a single notification chime does not count as a meeting.
+
+That also removed a dependency that was never confirmed: whether
+`NSWorkspace.didActivateApplicationNotification` reaches a sandboxed app. It is
+no longer used.
+
+**The suggestion is a notification, so it needs permission to exist at all.**
+Asked when watching starts rather than only when a capture does — the first build
+asked in the wrong place, and setting up a watched application without ever
+having recorded left the feature silently doing nothing. Settings now says so
+when notifications are off, with a shortcut to the switch.
+
+The Settings wording is part of the feature: someone reading it must come away
+certain that naming an application does not mean Onbii is listening while it is
+open.
+
+### Still outstanding
+
+**Nothing, on this milestone's own terms.** The always-ready half has been used
+on real devices and corrected by that use: a Watch recording reaches the archive,
+the watcher notices it, both apps list it, and the Mac transcribes it without
+being asked. Confirmed 28 July.
+
+Background transcription is **macOS only, by design** — the roadmap's wording is
+"background processing of new recordings and files *on the desktop*", and the
+iPhone deliberately gets the presentable home without the heavy background work.
+An iPhone that does not transcribe on arrival is the scope, not a gap.
+
+**Sweeping the archive** — deferred by decision, not oversight. Running
+`OnbiiObjectRepair` across everything rather than offering it one object at a
+time, inherited from 1.6; background processing now provides the place for it to
+live. Related and deliberately separate: transcribing the *backlog*, which
+automatic processing pointedly refuses to do, so it needs its own explicit
+action rather than a loosened rule.
+
+**`OnbiiNotifier` stays app-local — decided, 28 July.** The condition 1.6 set was
+met (a background-processing caller and a capture-suggestion caller both exist),
+and the answer on the evidence is still no: both callers live in the same app,
+and the Watch already keeps a deliberate duplicate to avoid dragging
+`OnbiiArchive` onto a device that has no business reading bundles. A package
+would serve one client.
+
+**An archive picker on iPhone.** New, and it is the constraint on the property
+described above: the Mac can point at any folder, the iPhone resolves iCloud or a
+local fallback with no choice. Not this milestone's scope.
+
+**Done, with the branding pass:** the app targets are renamed `OnbiiMac` /
+`OnbiiIOS` → **`Onbii`**, with `PRODUCT_MODULE_NAME` unchanged so no Swift module
+name moved and no source file needed touching. XcodeGen names a target's product
+file reference after the target, so a target called `OnbiiMac` producing
+`Onbii.app` was the last thing making Xcode "correct" the generated projects on
+open — the recommended-settings and `LastUpgradeCheck` half went in `ab32529`.
+The Watch target keeps its name: it is embedded rather than installed. Bundle
+identifiers, schemes and directory names are all unchanged.
 
 Carried over from Milestone 1 and **now closed**: physical-device validation of
 the iPhone and Watch capture paths. Two field tests did it in conditions no desk

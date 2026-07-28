@@ -76,9 +76,32 @@ struct ObjectListView: View {
                 Spacer()
             }
             .padding(.horizontal, OnbiiTheme.Spacing.m)
-            .padding(.bottom, OnbiiTheme.Spacing.s)
+            .padding(.bottom, model.objectsStillArriving > 0 ? 0 : OnbiiTheme.Spacing.s)
+
+            // An object that is in the archive but not yet readable is still an
+            // object. Omitting it silently would present an incomplete list as a
+            // complete one — the same failure as never re-reading the folder.
+            if model.objectsStillArriving > 0 {
+                HStack(spacing: OnbiiTheme.Spacing.s) {
+                    Image(systemName: "arrow.down.circle")
+                        .foregroundStyle(.onbiiSecondaryText)
+                    Text(arrivingDescription)
+                        .font(.caption)
+                        .foregroundStyle(.onbiiSecondaryText)
+                        .lineLimit(2)
+                    Spacer()
+                }
+                .padding(.horizontal, OnbiiTheme.Spacing.m)
+                .padding(.bottom, OnbiiTheme.Spacing.s)
+            }
         }
         .background(.bar)
+    }
+
+    private var arrivingDescription: String {
+        model.objectsStillArriving == 1
+            ? "1 object is still arriving from iCloud."
+            : "\(model.objectsStillArriving) objects are still arriving from iCloud."
     }
 }
 

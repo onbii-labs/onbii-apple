@@ -260,6 +260,110 @@ are still the pre-correction Copper `#CB9D6B` while the rest of the word and the
 `ii` dots are `#C99663`. That is ΔE 3.4 between adjacent flat areas of the same
 word, which most people can see. It does not affect the app icon.
 
+## The menu bar mark: a template, and why it must be a third asset
+
+The macOS menu-bar item added in Milestone 1.5 cannot use `OnbiiMark`. A menu bar
+image is a **template**: macOS discards every colour channel and uses the alpha
+alone as a mask, painting the glyph black on a light menu bar, white on a dark
+one, and inverting it while the menu is open. Handing it the supplied mark puts a
+Forest tile in the menu bar that ignores all three states.
+
+**Monochrome and see-through is the standard here, not a compromise.** Every
+first-party menu bar glyph on macOS is a template, and a coloured tile is what
+dates an app on sight. The constraint and the preference point the same way, so
+there is nothing to trade off.
+
+Note this is a *different* question from the app icon, which stays full-colour —
+see [App icons](#app-icons-classic-appiconset-and-what-we-measured). Modern macOS
+wants a colourful icon in the Dock and a monochrome glyph in the menu bar; the
+Liquid Glass light / dark / clear / tinted variants belong to the former and are
+tracked there as an upgrade path, not here.
+
+This is *not* the mistake recorded above under
+[Champagne does not survive at hairline widths](#champagne-does-not-survive-at-hairline-widths).
+That one was a transparent Watch variant invented to fix a seam that did not
+exist. Here the variant is forced by the platform, and the same reasoning that
+produced the Watch's solid-fill mark applies more strongly: the menu bar is
+18 pt where the Watch mark is 120 pt.
+
+It is a **separate imageset**, not a second slot on `OnbiiMark`. The brand
+imagesets set `"template-rendering-intent": "original"` as deliberate insurance,
+and this one needs the opposite; keeping them apart means neither has to be
+qualified.
+
+### The spec
+
+- **Name:** `OnbiiMenuBarMark`, in `OnbiiUI`'s `OnbiiBrand.xcassets`.
+- **Format:** PDF or SVG with vector data preserved — one file at any scale
+  beats maintaining `@1x`/`@2x`. PNG is acceptable as `18×18` and `36×36`.
+- **Canvas:** 18 × 18 pt, the standard menu bar glyph size.
+- **Glyph area:** about 16 × 16 pt, leaving roughly 1 pt of breathing room.
+  Centre the *optical* mass of the droplet, not its bounding box.
+- **Colour:** pure black, `#000000`, everywhere the glyph is opaque. The value is
+  discarded, but black is the convention and keeps the file readable.
+- **Background:** fully transparent. No Forest field, no rounded rectangle — the
+  rounded tile belongs to the app icon and reads as a foreign object in a menu
+  bar.
+- **Weight:** the outline mark is 3% coverage and will disappear at this size.
+  Treat it like the Watch mark — solid fill or substantially thickened strokes,
+  with a minimum stroke of roughly 1.5 pt at 18 pt (about 8% of the width).
+- **The two copper dots** lose their colour here and join the same silhouette.
+  Worth checking at actual size that they stay separate from the leaf edge rather
+  than merging into it.
+
+### White is not transparent — the mistake to avoid
+
+The first draft of `onbii-icon-applemenubar.svg` was a solid black droplet with
+the pip tree **painted white** on top of it. On any normal surface that is the
+right picture. In a template it is a featureless blob: `#FFFFFF` has an alpha of
+1, so the tree is exactly as opaque as the droplet and disappears into it.
+
+Anything meant to read as see-through has to be **knocked out** — a Boolean
+subtract from the droplet, leaving real transparency — not filled with the
+background colour.
+
+Two consequences for the drawing:
+
+- Once the tree is negative space it reads thinner than the same shape in
+  positive, so it may want slightly heavier strokes than the white version did.
+- The knockout is the whole design at this size. There is no second colour to
+  fall back on.
+
+### Verified about the pipeline, 28 July
+
+An SVG imports and compiles correctly on this toolchain — worth knowing, because
+the app icon could not use a modern format and it would be easy to assume the
+same here. An imageset with
+
+```json
+"properties": {
+  "preserves-vector-representation": true,
+  "template-rendering-intent": "template"
+}
+```
+
+produced no `actool` warning and compiled to `Template Mode: template`,
+`Opaque: False`, with the vector representation retained. The check, which mirrors
+the app-icon recipe above:
+
+```sh
+assetutil --info "<built>/OnbiiApple_OnbiiUI.bundle/Contents/Resources/Assets.car" \
+  | grep -A6 OnbiiMenuBarMark
+```
+
+To see what the menu bar will actually draw before shipping it, load the image
+out of the built bundle and check `isTemplate`, rather than looking at the source
+file — the source looks correct in every editor regardless.
+
+### What stays a system symbol
+
+**Recording state does not need a second variant.** While a capture is running
+the menu bar shows the system's red record dot, for the reason already settled
+elsewhere in the apps: a red record dot is a platform convention, not a brand
+decision, and it stays red. The mark says *Onbii is here*; the record dot says
+*this machine is listening*, and that second statement should look the same in
+every app on the system.
+
 ## The other two rendering surfaces
 
 **`OnbiiContentMarkdown.swift` is deliberately untouched.** It writes `content.md`
