@@ -177,11 +177,34 @@ a complete one.
 
 The Mac's activation refresh from 1.6 stays as a cheap backstop.
 
-**2. Background processing of new archive files.** Transcribing what arrives,
-without a window. Constrained as described above: first transcript only, never an
-automatic second generation. It needs a `ProcessInfo` activity while it runs, a
-way to say what it did when nobody is looking, and a rule for what happens when
-the machine is on battery or the person is mid-recording.
+**2. Background processing of new archive files — done.** An object that arrives
+while Onbii is running gets transcribed without being asked, in the language the
+person chose, with the choice recorded on the result (`0033`).
+
+What it will not do is the more important half, and all of it is a rule rather
+than a tuning choice:
+
+- **Only what arrives.** The first read of the archive records what is there and
+  queues none of it. Opening the app once must not begin transcribing an archive
+  somebody built up over months; working through a backlog is a deliberate act.
+- **Only a first transcript.** `0032` makes a second one safe — it supersedes and
+  retains — but it also says reprocessing is deliberate, and safe is not the same
+  as permitted.
+- **Never the same silence twice.** An object already transcribed and found empty
+  carries a `found-nothing` event, so it is not queued again. This is 1.6 paying
+  for itself: without that record, every re-read would queue the same quiet walk
+  forever.
+- **Never a permission prompt on Onbii's own initiative.** If speech recognition
+  has not been authorised, the queue is dropped rather than a dialog raised for
+  work nobody asked for.
+- **Always yielding.** It waits for any capture, import or transcription a person
+  started themselves, and it holds a `ProcessInfo` activity while it runs so App
+  Nap does not throttle a twenty-minute recording.
+
+The rule for what needs work is `OnbiiManifest.awaitsFirstTranscript` in
+`OnbiiArchive`, so it is one definition and tested. A Settings toggle turns the
+whole thing off, and each finished object sends a notification, because the
+premise is that nobody was watching.
 
 **3. The macOS menu-bar service.** Always at the ready, which is the roadmap's
 phrase and the point of the strand: capture should not require finding a window.

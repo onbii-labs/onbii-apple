@@ -14,6 +14,7 @@ import UniformTypeIdentifiers
 final class ImportViewModel {
     private static let archiveBookmarkKey = "selectedArchiveBookmark"
     private static let transcriptionLanguageKey = "selectedTranscriptionLanguage"
+    private static let automaticTranscriptionKey = "transcribesNewObjectsAutomatically"
 
     enum CaptureKind: Equatable {
         case microphone
@@ -68,6 +69,35 @@ final class ImportViewModel {
 
     private var archiveWatcher: OnbiiArchiveWatcher?
     private var archiveWatchTask: Task<Void, Never>?
+
+    /// Whether an object that arrives while Onbii is running gets transcribed
+    /// without being asked.
+    ///
+    /// A person can turn it off, and the object records what it was transcribed
+    /// under either way (`0033`), so the result is never a mystery.
+    var transcribesNewObjectsAutomatically: Bool {
+        didSet {
+            UserDefaults.standard.set(
+                transcribesNewObjectsAutomatically,
+                forKey: Self.automaticTranscriptionKey
+            )
+            if transcribesNewObjectsAutomatically {
+                processQueueIfIdle()
+            }
+        }
+    }
+
+    /// Objects seen in the archive at least once.
+    ///
+    /// Background processing works on what *arrives*, never on what was already
+    /// there. Launching Onbii should not silently start an hour of transcription
+    /// across an archive somebody built up over months — transcribing the
+    /// backlog is a deliberate act, and it has its own action.
+    private var knownObjectIDs: Set<OnbiiObjectID> = []
+    private var hasSeededKnownObjects = false
+    private var pendingAutomaticIDs: [OnbiiObjectID] = []
+    private var automaticTask: Task<Void, Never>?
+    private var backgroundActivityToken: (any NSObjectProtocol)?
 
     /// The objects in the chosen archive, newest first, plus anything the
     /// person opened from outside it.
@@ -172,6 +202,10 @@ final class ImportViewModel {
     }
 
     init() {
+        let defaults = UserDefaults.standard
+        transcribesNewObjectsAutomatically = defaults.object(
+            forKey: Self.automaticTranscriptionKey
+        ) as? Bool ?? true
         restoreArchive()
         startWatchingArchive()
         reloadObjects()
@@ -208,7 +242,110 @@ final class ImportViewModel {
             archivedObjects = listing.objects
             objectsStillArriving = listing.unreadable.count
             rebuildObjects()
+            noteArrivals()
         }
+    }
+
+    // MARK: Processing what arrives
+
+    /// Queues anything that has just appeared and still needs a first transcript.
+    ///
+    /// What "needs one" means is `OnbiiManifest.awaitsFirstTranscript`, which
+    /// carries the reasoning. What belongs here is the other condition: **new
+    /// since Onbii started.** The first read only records what is there and
+    /// never queues it, because opening the app once should not begin
+    /// transcribing an archive somebody built up over months. Working through
+    /// the backlog is a deliberate act with its own action.
+    private func noteArrivals() {
+        let present = archivedObjects.map(\.manifest.objectID)
+        guard hasSeededKnownObjects else {
+            knownObjectIDs = Set(present)
+            hasSeededKnownObjects = true
+            return
+        }
+
+        var arrived = [OnbiiObjectID]()
+        for bundle in archivedObjects
+        where knownObjectIDs.insert(bundle.manifest.objectID).inserted
+            && bundle.manifest.awaitsFirstTranscript {
+            arrived.append(bundle.manifest.objectID)
+        }
+
+        guard transcribesNewObjectsAutomatically, !arrived.isEmpty else { return }
+        for objectID in arrived where !pendingAutomaticIDs.contains(objectID) {
+            pendingAutomaticIDs.append(objectID)
+        }
+        processQueueIfIdle()
+    }
+
+    /// Starts the queue if nothing else is using the machine.
+    ///
+    /// Deliberately yields to anything a person is doing: a capture, an import,
+    /// or a transcription they started themselves. Automatic work is the lowest
+    /// priority in the app, and it can always wait for the next reload.
+    private func processQueueIfIdle() {
+        guard automaticTask == nil, !isBusy, !pendingAutomaticIDs.isEmpty else {
+            return
+        }
+        automaticTask = Task { [weak self] in
+            await self?.drainAutomaticQueue()
+            self?.automaticTask = nil
+        }
+    }
+
+    private func drainAutomaticQueue() async {
+        guard AppleOnDeviceTranscriber.authorization == .authorized else {
+            // Never prompt for permission on Onbii's own initiative. A dialog
+            // nobody asked for, for work nobody asked for, is the opposite of
+            // what this is meant to feel like. The manual action asks properly.
+            pendingAutomaticIDs.removeAll()
+            return
+        }
+
+        beginBackgroundActivity()
+        defer { endBackgroundActivity() }
+
+        while !pendingAutomaticIDs.isEmpty {
+            guard transcribesNewObjectsAutomatically else {
+                pendingAutomaticIDs.removeAll()
+                return
+            }
+            let objectID = pendingAutomaticIDs.removeFirst()
+            guard let bundle = archivedObjects.first(
+                where: { $0.manifest.objectID == objectID }
+            ), !bundle.manifest.hasTranscript else {
+                continue
+            }
+            await performTranscription(of: bundle, in: selectedTranscriptionLocale)
+
+            // Say so, because the whole point is that nobody was watching.
+            let title = bundle.manifest.title
+            if let updated = archivedObjects.first(
+                where: { $0.manifest.objectID == objectID }
+            ), updated.manifest.hasTranscript {
+                await OnbiiNotifier.post(
+                    title: "Transcribed in the background",
+                    body: "\(title) now has an on-device transcript."
+                )
+            }
+        }
+    }
+
+    /// The same assertion a capture holds, for the same reason: App Nap
+    /// throttles an app that is not frontmost, and transcribing a twenty-minute
+    /// recording is exactly the kind of work it would throttle.
+    private func beginBackgroundActivity() {
+        guard backgroundActivityToken == nil else { return }
+        backgroundActivityToken = ProcessInfo.processInfo.beginActivity(
+            options: [.userInitiated],
+            reason: "Transcribing a new Onbii object"
+        )
+    }
+
+    private func endBackgroundActivity() {
+        guard let backgroundActivityToken else { return }
+        ProcessInfo.processInfo.endActivity(backgroundActivityToken)
+        self.backgroundActivityToken = nil
     }
 
     /// Watches the chosen archive so the window stops being a snapshot.

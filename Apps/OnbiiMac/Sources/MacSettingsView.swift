@@ -93,6 +93,27 @@ struct MacSettingsView: View {
             .font(.caption)
             .foregroundStyle(.onbiiSecondaryText)
         }
+
+        Section {
+            Toggle(
+                "Transcribe new objects automatically",
+                isOn: $model.transcribesNewObjectsAutomatically
+            )
+        } footer: {
+            // Says exactly what it will and will not do. "Automatic" is a word
+            // that has to earn trust here: this app's whole argument is that it
+            // does not do things to a person's knowledge quietly.
+            Text(
+                "Applies to objects that arrive while Onbii is running — a "
+                    + "recording from iPhone or Apple Watch, or a file dropped "
+                    + "into the archive. Onbii never re-transcribes something "
+                    + "that already has a transcript, and never touches what "
+                    + "was already in the archive when it opened. It uses the "
+                    + "language above, and records that choice with the result."
+            )
+            .font(.caption)
+            .foregroundStyle(.onbiiSecondaryText)
+        }
     }
 }
 

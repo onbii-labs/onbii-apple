@@ -105,6 +105,27 @@ public extension OnbiiManifest {
         generations(of: OnbiiProvenanceEvent.foundNothingAction)
     }
 
+    /// Whether unattended processing has anything to do with this object.
+    ///
+    /// Deliberately narrower than "could be transcribed". Three conditions, each
+    /// of which is a rule rather than an optimisation:
+    ///
+    /// - **There is audio to work from.** Otherwise there is nothing to do.
+    /// - **There is no transcript.** `0032` makes a second transcript safe — it
+    ///   supersedes and retains rather than overwriting — but it also says
+    ///   reprocessing is *deliberate*. A generation nobody asked for is what
+    ///   that rules out, and safety is not the same as permission.
+    /// - **It has not already been transcribed and found empty.** An object that
+    ///   holds a `found-nothing` event has been through this and there was no
+    ///   speech in it. Without this condition every re-read would queue the same
+    ///   silent recording again, forever.
+    ///
+    /// Whether to act on it is still the application's call — this only says
+    /// there is work outstanding.
+    var awaitsFirstTranscript: Bool {
+        hasTranscribableAudio && !hasTranscript && emptyDerivations.isEmpty
+    }
+
     /// One sentence for everything this object has been through that produced
     /// nothing, or `nil` if it has been through none.
     ///
