@@ -13,6 +13,12 @@
 			<string>Onbii Knowledge Object</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<!-- Onbii exports org.onbii.bundle, so it is the owner of the type
+			     rather than one of several apps that can open it. Viewer plus
+			     Owner is the honest pair: it defines the format and reads it,
+			     and it is not the only thing allowed to. -->
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>org.onbii.bundle</string>
