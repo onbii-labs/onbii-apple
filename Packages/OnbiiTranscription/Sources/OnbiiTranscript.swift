@@ -186,103 +186,17 @@ public enum OnbiiTranscriptMarkdown {
     /// The speaker-turn body without the document header. Reused as the
     /// object's `content.md` transcript section so the two views share exactly
     /// the same turn rendering.
+    ///
+    /// Turn shaping lives in ``OnbiiTranscriptTurns`` because the in-app
+    /// transcript view needs exactly the same answer, and when each of them
+    /// shaped turns for itself they drifted.
     public static func body(_ document: OnbiiTranscriptDocument) -> String {
-        let labels = displayLabels(for: document.timeline)
-        let lines = turns(from: document.timeline).map { turn in
-            "**\(timestamp(turn.startSeconds)) \(labels[turn.key] ?? "Recording"):** "
-                + turn.text
+        let lines = OnbiiTranscriptTurns.turns(in: document.timeline).map { turn in
+            "**\(OnbiiTranscriptTurns.timestamp(turn.startSeconds)) "
+                + "\(turn.speaker):** \(turn.text)"
         }
         return lines.isEmpty ? "_No speech was recognized._" : lines.joined(
             separator: "\n\n"
         )
-    }
-
-    private struct Turn {
-        var key: String
-        var startSeconds: TimeInterval
-        var text: String
-    }
-
-    /// Groups the timeline into speaker turns. A new turn begins only when the
-    /// speaker changes — never on a pause. This means a single speaker who
-    /// pauses stays in one block instead of looking like a different person
-    /// resumed. When the recording has been diarized, the grouping key is the
-    /// opaque speaker ID; before diarization it falls back to the capture track,
-    /// which is honest source attribution rather than an inferred speaker.
-    private static func turns(
-        from segments: [OnbiiTranscriptSegment]
-    ) -> [Turn] {
-        var result = [Turn]()
-        for segment in segments {
-            let key = groupingKey(for: segment)
-            if var current = result.last, current.key == key {
-                result.removeLast()
-                current.text = append(segment.text, to: current.text)
-                result.append(current)
-            } else {
-                result.append(
-                    Turn(
-                        key: key,
-                        startSeconds: segment.startSeconds,
-                        text: segment.text
-                    )
-                )
-            }
-        }
-        return result
-    }
-
-    private static func groupingKey(for segment: OnbiiTranscriptSegment) -> String {
-        if let speakerID = segment.speakerID {
-            return "speaker:\(speakerID)"
-        }
-        return "role:\(segment.sourceRole)"
-    }
-
-    /// Maps each grouping key to a display label. Diarized speakers become
-    /// `Speaker 1`, `Speaker 2`, … numbered by first appearance; undiarized
-    /// tracks keep their source label.
-    private static func displayLabels(
-        for segments: [OnbiiTranscriptSegment]
-    ) -> [String: String] {
-        var labels = [String: String]()
-        var speakerCount = 0
-        for segment in segments {
-            let key = groupingKey(for: segment)
-            guard labels[key] == nil else {
-                continue
-            }
-            if segment.speakerID != nil {
-                speakerCount += 1
-                labels[key] = "Speaker \(speakerCount)"
-            } else {
-                labels[key] = roleLabel(segment.sourceRole)
-            }
-        }
-        return labels
-    }
-
-    private static func append(_ text: String, to existing: String) -> String {
-        let punctuation = CharacterSet.punctuationCharacters
-        if let first = text.unicodeScalars.first, punctuation.contains(first) {
-            return existing + text
-        }
-        return existing + " " + text
-    }
-
-    private static func timestamp(_ seconds: TimeInterval) -> String {
-        let value = max(0, Int(seconds.rounded(.down)))
-        return String(format: "%02d:%02d", value / 60, value % 60)
-    }
-
-    private static func roleLabel(_ role: String) -> String {
-        switch role {
-        case "system-audio":
-            "System audio"
-        case "microphone":
-            "Microphone"
-        default:
-            "Recording"
-        }
     }
 }

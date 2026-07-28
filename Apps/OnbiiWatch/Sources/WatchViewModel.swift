@@ -21,9 +21,14 @@ final class WatchViewModel: NSObject {
     private let recorder = OnbiiMicrophoneRecorder()
     private let session: WCSession?
     private var durationTask: Task<Void, Never>?
+    private var interruptionTask: Task<Void, Never>?
+    private var stalledTransferTask: Task<Void, Never>?
     private var recordingStartedAt: Date?
     private var pendingURL: URL?
     private var pendingMetadata: OnbiiWatchRecordingMetadata?
+    /// Set when a recording ended without being asked to; shown until the next
+    /// recording starts.
+    private var pendingInterruption: String?
     private let locationProvider = OnbiiLocationProvider()
     private var pendingCaptureLocation: OnbiiCapturedLocation?
 
@@ -111,7 +116,20 @@ final class WatchViewModel: NSObject {
         return String(format: "%02d:%02d", seconds / 60, seconds % 60)
     }
 
+    /// What is true right now.
+    ///
+    /// An interruption is announced *in front of* whatever the app is doing
+    /// next, and keeps being announced while the audio is saved and handed to
+    /// the iPhone — the recording still ended early, and the transfer
+    /// succeeding does not make that less true.
     var statusText: String {
+        guard let pendingInterruption else {
+            return baseStatusText
+        }
+        return "\(pendingInterruption) \(baseStatusText)"
+    }
+
+    private var baseStatusText: String {
         switch state {
         case .connecting:
             "Connecting to iPhone…"
@@ -132,11 +150,30 @@ final class WatchViewModel: NSObject {
         }
     }
 
-    func startRecording() {
-        guard state == .idle || state == .transferred else {
+    /// Re-checks a recording the app believes is running.
+    ///
+    /// Called every time the app becomes active. watchOS suspending this app is
+    /// invisible from inside it — no callback runs while the process does not —
+    /// so returning to the foreground is the first honest chance to notice. This
+    /// is the check that was missing when twenty-five minutes of a walk went
+    /// unrecorded behind a screen that said "Recording is visibly active".
+    func verifyRecordingIsStillRunning() {
+        guard state == .recording,
+              let interruption = recorder.verifyStillRecording() else {
             return
         }
+        handle(interruption)
+    }
+
+    func startRecording() {
+        guard canUsePrimaryAction, !isRecording else {
+            return
+        }
+        pendingInterruption = nil
         state = .preparing
+        // Asked here rather than at launch: a permission prompt makes sense next
+        // to the thing it is for. Never blocks the recording.
+        Task { await WatchNotifier.requestAuthorizationIfNeeded() }
 
         Task {
             guard await recorder.requestPermission() else {
@@ -160,6 +197,7 @@ final class WatchViewModel: NSObject {
                 state = .recording
                 WKInterfaceDevice.current().play(.start)
                 beginDurationUpdates()
+                observeInterruptions()
             } catch {
                 recordingStartedAt = nil
                 state = .failed(error.localizedDescription)
@@ -171,11 +209,20 @@ final class WatchViewModel: NSObject {
         guard state == .recording else {
             return
         }
+        finishRecording(interruption: nil)
+    }
 
+    /// Preserves and transfers whatever reached the file, whether the person
+    /// asked for the stop or the system did. An interruption is not a reason to
+    /// discard audio — it is a reason to say so.
+    private func finishRecording(interruption: String?) {
         state = .stopping
         WKInterfaceDevice.current().play(.stop)
         durationTask?.cancel()
         durationTask = nil
+        interruptionTask?.cancel()
+        interruptionTask = nil
+        pendingInterruption = interruption
 
         let finalDuration = recorder.duration
         guard let finalizedURL = recorder.stopRecording() else {
@@ -203,6 +250,30 @@ final class WatchViewModel: NSObject {
         queuePendingTransfer()
     }
 
+    /// Listens for the recording dying while the app is running. The other half
+    /// of the problem — the app not running at all — is
+    /// ``verifyRecordingIsStillRunning()``.
+    private func observeInterruptions() {
+        interruptionTask?.cancel()
+        interruptionTask = Task { [weak self] in
+            guard let interruptions = self?.recorder.interruptions else { return }
+            for await interruption in interruptions {
+                guard let self, state == .recording else { return }
+                handle(interruption)
+                return
+            }
+        }
+    }
+
+    private func handle(_ interruption: OnbiiCaptureInterruption) {
+        WKInterfaceDevice.current().play(.failure)
+        // The haptic says something happened; this says what. On a walk with the
+        // app in the background, that is the difference between turning around
+        // and carrying on believing you are recording.
+        Task { await WatchNotifier.captureStopped(interruption.message) }
+        finishRecording(interruption: interruption.message)
+    }
+
     private func queuePendingTransfer() {
         guard let session,
               session.activationState == .activated,
@@ -220,7 +291,32 @@ final class WatchViewModel: NSObject {
             metadata: pendingMetadata.propertyList
         )
         state = .queued
+        watchForStalledTransfer()
     }
+
+    /// Says so when a transfer has not completed in a reasonable time.
+    ///
+    /// Watch Connectivity queues a file and delivers it when it can, which is
+    /// usually fine and occasionally never. Until then the audio is safe on the
+    /// Watch — but the person's mental model is that a recording they finished is
+    /// already in their archive, and nothing corrects that. This is the transfer
+    /// half of "the app must say when capture or transfer fails".
+    ///
+    /// Deliberately a plain wait rather than a guess at the cause. It reports
+    /// that it has not arrived, which is the fact; why is Watch Connectivity's
+    /// business.
+    private func watchForStalledTransfer() {
+        stalledTransferTask?.cancel()
+        stalledTransferTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.transferPatienceSeconds))
+            guard !Task.isCancelled, let self, state == .queued else { return }
+            await WatchNotifier.transferOutstanding()
+        }
+    }
+
+    /// Long enough that an ordinary transfer finishes first, short enough that
+    /// someone still on the same walk hears about it.
+    private static let transferPatienceSeconds = 180.0
 
     private func makeRecordingURL() throws -> URL {
         let directory = FileManager.default.urls(
@@ -278,10 +374,19 @@ extension WatchViewModel: WCSessionDelegate {
             guard let self else {
                 return
             }
+            stalledTransferTask?.cancel()
+            stalledTransferTask = nil
             if let error {
                 state = .failed(
                     "Transfer failed: \(error.localizedDescription)"
                 )
+                Task {
+                    await WatchNotifier.captureStopped(
+                        "The recording could not be sent to your iPhone: "
+                            + "\(error.localizedDescription) It is still on this "
+                            + "Watch."
+                    )
+                }
                 return
             }
             try? FileManager.default.removeItem(at: transferredURL)

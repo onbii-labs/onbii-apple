@@ -106,7 +106,7 @@ thin UI shells.
 
 ## Package architecture
 
-Four libraries in `Packages/` (swift-tools 6.0, Swift 6 language mode; macOS 14 /
+Six libraries in `Packages/` (swift-tools 6.0, Swift 6 language mode; macOS 14 /
 iOS 17 / watchOS 10):
 
 - **`OnbiiCore`** — the logical model only: `OnbiiManifest`, `OnbiiResource`,
@@ -119,8 +119,22 @@ iOS 17 / watchOS 10):
 - **`OnbiiCapture`** (no deps) — the **acquisition boundary**: microphone
   recorder, Core Audio system-audio tap/probe, the dual-source capture session,
   and Watch recording metadata. Much of it is `#if os(macOS)`-gated.
-- **`OnbiiTranscription`** (no deps) — the **replaceable processing boundary**:
-  Apple on-device `Speech` transcription. Gated `#if os(macOS) || os(iOS)`.
+- **`OnbiiTranscription`** (no deps) — the **replaceable recognition boundary**:
+  Apple on-device `Speech` transcription, rough speaker turns, and the transcript
+  document model. Knows nothing about bundles. Gated `#if os(macOS) || os(iOS)`.
+- **`OnbiiProcessing`** (depends on `OnbiiCore`, `OnbiiArchive`,
+  `OnbiiTranscription`) — the **processing pipeline**: the one place allowed to
+  know both recognition and storage. Holds `OnbiiTranscriptionRun` (recognise →
+  diarize → render → attach with provenance), which previously existed twice, once
+  in each app's view model. Put orchestration here rather than in an app, and keep
+  `OnbiiTranscription` free of bundles and `OnbiiArchive` free of recognition.
+- **`OnbiiUI`** (depends on `OnbiiCore`, `OnbiiArchive`) — the shared **presentation
+  layer** for Mac and iPhone: the adaptive brand palette, the Prata display face,
+  the object-status badge, the brand mark, the shared empty state. Contains no
+  knowledge of how objects are written. App icons and each app's global accent
+  colour cannot live here (see
+  `docs/architecture/visual-identity.md`); the Watch deliberately does not depend
+  on it.
 
 These boundaries are deliberate: capture adapters *acquire* media, source
 adapters *normalize* it, the archive *preserves* it, transcription *derives*
@@ -158,9 +172,40 @@ Invariants that the writer/reader enforce and that new code must uphold:
   manifest and that every declared resource exists; malformed/incomplete bundles
   are errors, never partially trusted.
 - **Provenance is recorded for every action** (`imported`, `captured`,
-  `rendered`, later `transcribed`). Provenance may only reference resources
-  declared in the same manifest; resource paths must be safe bundle-relative
-  paths (validated in `OnbiiCore`).
+  `rendered`, `transcribed`, `superseded`). Provenance may only reference
+  resources declared in the same manifest; resource paths must be safe
+  bundle-relative paths (validated in `OnbiiCore`).
+- **The writer measures rather than believes.** `durationSeconds` is re-derived
+  from the preserved file, overriding whatever capture reported, and a
+  disagreement is returned to the caller rather than silently corrected. A
+  capture timer is a claim; the file is a fact.
+- **Reprocessing supersedes, it never overwrites** (spec `0032`). A second
+  transcript takes the stable path and resource ID so every existing reader finds
+  it unchanged, while the earlier generation is retained under
+  `superseded/<timestamp>/` and a `superseded` provenance event says which
+  replaced which. Retention is the default, not a setting.
+- **Derived results record what determined them** (spec `0033`). Language(s),
+  whether they were chosen or detected, and the model identity live in the
+  object's provenance — not only inside `derived/transcript.json`. Each
+  generation keeps the configuration it was made with.
+- **Processing that finds nothing is an outcome, not an error.** A run that
+  completes and produces no result records a `found-nothing` provenance event
+  carrying the configuration it ran under, declares no resource, and leaves the
+  object's status alone. No empty artifact is ever written — an empty transcript
+  would make the object claim to be transcribed. `OnbiiTranscriptionRun` returns
+  an `Outcome` rather than throwing, and an app that renders it as damage is
+  describing a quiet recording as a defect.
+- **Absent and empty are the same thing** for best-effort fields, and the check
+  belongs where the value is produced. Read them through `resolvedName`-style
+  accessors, never `?? fallback` on a raw optional.
+- **Correcting a recorded fact is not superseding a derived result.**
+  `OnbiiObjectRepair` re-derives what an object says about itself — a duration
+  the preserved file contradicts, a place name never resolved — and writes it
+  under a `corrected` provenance event. It only ever fills gaps and fixes
+  demonstrable falsehoods; a place name already present is never replaced,
+  because a person may have typed it (spec `0010`). Manifest corrections go
+  through the enricher's typed `OnbiiRecordedFactCorrections`, never an
+  open-ended manifest edit.
 
 ## Apps
 

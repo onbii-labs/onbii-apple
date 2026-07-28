@@ -1,329 +1,94 @@
-import OnbiiArchive
-import OnbiiTranscription
+import OnbiiUI
 import SwiftUI
 
+/// The window shell: the archive on the left, one object on the right, capture
+/// in the toolbar. The window is a view over the person's folder — everything
+/// it shows is read back from there, and nothing it shows lives only here.
 struct ContentView: View {
-    @State private var model = ImportViewModel()
+    @Bindable var model: ImportViewModel
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Onbii")
-                    .font(.largeTitle.weight(.semibold))
-                Text("Preserve a recording as a knowledge object you control.")
-                    .foregroundStyle(.secondary)
-            }
-
-            GroupBox("Archive") {
-                HStack(spacing: 12) {
-                    Image(systemName: "archivebox")
-                        .foregroundStyle(.secondary)
-
-                    Text(model.archiveDisplayName)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    Button(model.archiveURL == nil ? "Choose…" : "Change…") {
-                        model.chooseArchive()
-                    }
-                    .disabled(
-                        model.isImporting
-                            || model.isPreparingCapture
-                            || model.isCapturing
-                            || model.isTranscribing
-                    )
-                }
-                .padding(.vertical, 4)
-
-                Text(
-                    "To share objects with iPhone, choose "
-                        + "iCloud Drive → Onbii → Onbii Archive."
-                )
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 12) {
-                Button {
-                    model.importAudio()
-                } label: {
-                    Label("Import Audio", systemImage: "square.and.arrow.down")
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                    .disabled(
-                        model.archiveURL == nil
-                            || model.isImporting
-                            || model.isPreparingCapture
-                            || model.isCapturing
-                            || model.isTranscribing
-                    )
-
-                if model.isCapturing, model.captureKind == .microphone {
-                    Button {
-                        model.stopCapture()
-                    } label: {
-                        Label("Stop Capture", systemImage: "stop.circle.fill")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
-                    .controlSize(.large)
-                } else {
-                    Button {
-                        model.startCapture()
-                    } label: {
-                        Label("Start Capture", systemImage: "record.circle")
-                    }
-                    .controlSize(.large)
-                    .disabled(
-                        model.archiveURL == nil
-                            || model.isImporting
-                        || model.isPreparingCapture
-                        || model.isCapturing
-                        || model.isTranscribing
-                    )
-                }
-
-                if model.isImporting {
-                    ProgressView()
-                        .controlSize(.small)
-                }
-            }
-
-            statusView
-
-            GroupBox("Call Capture") {
-                HStack(spacing: 16) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Record everything currently audible on the Mac")
-                        Text(
-                            "System output and the default microphone are preserved "
-                                + "as separate source tracks."
-                        )
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    }
-
-                    Spacer()
-
-                    if model.isCapturing,
-                       case .call = model.captureKind
-                    {
-                        Button {
-                            model.stopCapture()
-                        } label: {
-                            Label("Stop Call Capture", systemImage: "stop.circle.fill")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.red)
-                    } else {
-                        Button {
-                            model.startCallCapture()
-                        } label: {
-                            Label("Start Call Capture", systemImage: "person.2.wave.2")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(
-                            model.archiveURL == nil
-                                || model.isImporting
-                                || model.isPreparingCapture
-                                || model.isCapturing
-                                || model.isTranscribing
-                        )
-                    }
-                }
-                .padding(.vertical, 4)
-            }
-
+        NavigationSplitView {
+            ObjectListView(model: model)
+                .navigationSplitViewColumnWidth(min: 260, ideal: 300, max: 420)
+        } detail: {
             if let bundle = model.selectedBundle {
-                BundleInspectorView(
-                    bundle: bundle,
-                    languages: model.availableLanguages,
-                    selectedLanguageID: Bindable(model).selectedLanguageID,
-                    reveal: model.revealSelectedBundle,
-                    transcribe: model.transcribeSelectedBundle
-                )
-                .environment(\.isEnabled, !model.isTranscribing)
+                ObjectDetailView(bundle: bundle, model: model)
+            } else {
+                emptyDetail
+                    .background(Color.onbiiBackground)
             }
-
-            Spacer()
         }
-        .padding(28)
+        .navigationTitle("Onbii")
+        .navigationSubtitle(model.archiveShortName)
+        .toolbar {
+            CaptureToolbar(model: model)
+        }
         .onOpenURL { url in
             model.openBundle(url)
+        }
+        .task {
+            model.reloadObjects()
+        }
+        // An object can arrive while this window sits open — from a walk, over
+        // iCloud, or because someone moved a folder in Finder. Reading the
+        // archive once at launch and then presenting that list as *the archive*
+        // is how a recording made an hour earlier was missing from it (field
+        // test 2). Coming back to the window is the first honest moment to look
+        // again, and it is what the iPhone already does.
+        //
+        // It is not the whole answer: a window left in front for an hour still
+        // will not notice. Watching an iCloud container properly means an
+        // `NSMetadataQuery`, which belongs with Milestone 1.5's always-ready
+        // strand rather than here.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                model.reloadObjects()
+            }
         }
     }
 
     @ViewBuilder
-    private var statusView: some View {
-        switch model.state {
-        case .idle:
-            Text(
-                model.archiveURL == nil
-                    ? "Choose an archive folder, then import audio or start capture."
-                    : "Import audio or start capture."
-            )
-                .foregroundStyle(.secondary)
-
-        case .importing(let filename):
-            Label("Preserving \(filename)…", systemImage: "waveform")
-                .foregroundStyle(.secondary)
-
-        case .preparingCapture:
-            Label("Preparing audio capture…", systemImage: "waveform")
-                .foregroundStyle(.secondary)
-
-        case .capturing:
-            HStack(spacing: 8) {
-                Image(systemName: "record.circle.fill")
-                    .foregroundStyle(.red)
-                Text("Recording \(model.captureDurationText)")
-                    .monospacedDigit()
-                Text(captureDescription)
-                    .foregroundStyle(.secondary)
-            }
-
-        case .transcribing(let message):
-            HStack(spacing: 8) {
-                ProgressView()
-                    .controlSize(.small)
-                Text(message)
-                    .foregroundStyle(.secondary)
-            }
-
-        case .completed(let bundleURL):
-            HStack {
-                Label(
-                    "\(bundleURL.lastPathComponent) is safely in your archive.",
-                    systemImage: "checkmark.circle.fill"
-                )
-                .foregroundStyle(.green)
-
-                Spacer()
-
-                Button("Reveal in Finder") {
-                    model.revealSelectedBundle()
+    private var emptyDetail: some View {
+        if model.archiveURL == nil {
+            OnbiiEmptyState(
+                title: "Choose where your knowledge lives.",
+                message: "Onbii writes ordinary folders you own. Pick one, and "
+                    + "everything you record or import is preserved there."
+            ) {
+                Button("Choose Archive…") {
+                    model.chooseArchive()
                 }
+                .buttonStyle(.onbiiProminent)
             }
-
-        case .transcribed(let bundleURL):
-            Label(
-                "\(bundleURL.lastPathComponent) now contains an on-device transcript.",
-                systemImage: "text.badge.checkmark"
+        } else if model.objects.isEmpty {
+            OnbiiEmptyState(
+                title: "Nothing preserved yet.",
+                message: "Record a conversation or import audio you already "
+                    + "have. The original is kept, never replaced."
+            ) {
+                Button("Import Audio…") {
+                    model.importAudio()
+                }
+                .buttonStyle(.onbiiProminent)
+                .disabled(model.isBusy)
+            }
+        } else {
+            OnbiiEmptyState(
+                title: "Your knowledge, preserved.",
+                message: "Select an object to inspect what it holds."
             )
-            .foregroundStyle(.green)
-
-        case .opened(let bundleURL):
-            Label(
-                "\(bundleURL.lastPathComponent) is open for inspection.",
-                systemImage: "doc.text.magnifyingglass"
-            )
-            .foregroundStyle(.secondary)
-
-        case .failed(let message):
-            Label(message, systemImage: "exclamationmark.triangle.fill")
-                .foregroundStyle(.red)
-                .textSelection(.enabled)
-        }
-    }
-
-    private var captureDescription: String {
-        switch model.captureKind {
-        case .microphone:
-            "Microphone capture is visibly active."
-        case .call:
-            "System output and default microphone capture are visibly active."
-        case nil:
-            "Audio capture is visibly active."
         }
     }
 }
 
-private struct BundleInspectorView: View {
-    let bundle: OnbiiBundle
-    let languages: [OnbiiTranscriptionLanguage]
-    @Binding var selectedLanguageID: String
-    let reveal: () -> Void
-    let transcribe: () -> Void
+#Preview("Light") {
+    ContentView(model: ImportViewModel())
+        .preferredColorScheme(.light)
+}
 
-    private var hasTranscript: Bool {
-        bundle.manifest.resources.contains { $0.id == "derived-transcript" }
-    }
-
-    var body: some View {
-        GroupBox("Knowledge Object") {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Text(bundle.manifest.title)
-                        .font(.title3.weight(.semibold))
-                    Spacer()
-                    if !hasTranscript {
-                        if !languages.isEmpty {
-                            Picker("Language", selection: $selectedLanguageID) {
-                                ForEach(languages) { language in
-                                    Text(
-                                        language.isInstalled
-                                            ? language.displayName
-                                            : "\(language.displayName) — download"
-                                    )
-                                    .tag(language.id)
-                                }
-                            }
-                            .labelsHidden()
-                            .frame(maxWidth: 220)
-                        }
-                        Button("Transcribe On Device", action: transcribe)
-                    }
-                    Button("Reveal in Finder", action: reveal)
-                }
-
-                Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 6) {
-                    GridRow {
-                        Text("Type")
-                            .foregroundStyle(.secondary)
-                        Text(bundle.manifest.objectType)
-                    }
-                    GridRow {
-                        Text("Created")
-                            .foregroundStyle(.secondary)
-                        Text(
-                            bundle.manifest.createdAt.formatted(
-                                date: .abbreviated,
-                                time: .shortened
-                            )
-                        )
-                    }
-                    GridRow {
-                        Text("Object ID")
-                            .foregroundStyle(.secondary)
-                        Text(bundle.manifest.objectID.rawValue)
-                            .textSelection(.enabled)
-                    }
-                }
-
-                Divider()
-
-                Text("Resources")
-                    .font(.headline)
-
-                ForEach(bundle.manifest.resources, id: \.id) { resource in
-                    HStack(spacing: 10) {
-                        Text(resource.role.rawValue.capitalized)
-                            .font(.caption.weight(.medium))
-                            .padding(.horizontal, 7)
-                            .padding(.vertical, 3)
-                            .background(.quaternary, in: Capsule())
-
-                        Text(resource.path)
-                            .font(.system(.body, design: .monospaced))
-                            .textSelection(.enabled)
-
-                        Spacer()
-                    }
-                }
-            }
-            .padding(.vertical, 4)
-        }
-    }
+#Preview("Dark") {
+    ContentView(model: ImportViewModel())
+        .preferredColorScheme(.dark)
 }

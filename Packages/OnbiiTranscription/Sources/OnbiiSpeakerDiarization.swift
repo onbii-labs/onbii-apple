@@ -37,17 +37,26 @@ public protocol OnbiiSpeakerEmbedder: Sendable {
 public struct OnbiiSpeakerWindow: Equatable, Sendable {
     /// Indices into the track's segment array that fall in this window.
     public var segmentIndices: [Int]
+    /// The span of the words themselves. This is what gets a speaker label.
     public var startSeconds: TimeInterval
     public var endSeconds: TimeInterval
+    /// The span of *audio* the embedder should read, which may be wider than
+    /// the words. See ``OnbiiSpeakerWindowing/windows(for:minWindowSeconds:maxGapSeconds:)``.
+    public var embedStartSeconds: TimeInterval
+    public var embedEndSeconds: TimeInterval
 
     public init(
         segmentIndices: [Int],
         startSeconds: TimeInterval,
-        endSeconds: TimeInterval
+        endSeconds: TimeInterval,
+        embedStartSeconds: TimeInterval? = nil,
+        embedEndSeconds: TimeInterval? = nil
     ) {
         self.segmentIndices = segmentIndices
         self.startSeconds = startSeconds
         self.endSeconds = endSeconds
+        self.embedStartSeconds = embedStartSeconds ?? startSeconds
+        self.embedEndSeconds = embedEndSeconds ?? endSeconds
     }
 }
 
@@ -56,8 +65,18 @@ public enum OnbiiSpeakerWindowing {
     /// split into runs of contiguous speech wherever a silence exceeds
     /// `maxGapSeconds` — a pause is where a speaker change is most likely. Then
     /// each run is greedily pooled into windows of at least `minWindowSeconds`,
-    /// and any too-short remainder is folded into the run's previous window, so
-    /// no window is orphaned too short to embed reliably.
+    /// and any too-short remainder is folded into the run's previous window.
+    ///
+    /// A run can still be shorter than `minWindowSeconds` on its own: an
+    /// isolated short word bounded by long pauses is a run of one, with nothing
+    /// to fold into. Rather than hand the embedder a fragment it will refuse
+    /// (0.18 s of "nu" comes back `nil`, the word keeps no speaker, and the
+    /// renderer then breaks a sentence in half), such a window carries a wider
+    /// **embed range**: the same words, but more audio around them.
+    ///
+    /// The widening stops at the neighbouring words on either side, so it only
+    /// ever reaches into the silence of the pause — never into another speaker's
+    /// voice, which would be a worse answer than no answer.
     public static func windows(
         for segments: [OnbiiTranscriptSegment],
         minWindowSeconds: TimeInterval,
@@ -108,7 +127,66 @@ public enum OnbiiSpeakerWindowing {
             runStart = index
         }
         flushRun(runStart..<segments.count)
-        return windows
+
+        return windows.map { window in
+            var widened = window
+            guard let first = window.segmentIndices.min(),
+                  let last = window.segmentIndices.max() else {
+                return window
+            }
+            // Only the silence between this window and its neighbouring words is
+            // available. Past the ends of the track, allow a bounded amount of
+            // trailing audio; the embedder clamps to what the file holds.
+            let lowerBound = first > 0 ? end(of: first - 1) : 0
+            let upperBound = last < segments.count - 1
+                ? segments[last + 1].startSeconds
+                : window.endSeconds + minWindowSeconds
+            let range = embedRange(
+                start: window.startSeconds,
+                end: window.endSeconds,
+                lowerBound: lowerBound,
+                upperBound: upperBound,
+                minWindowSeconds: minWindowSeconds
+            )
+            widened.embedStartSeconds = range.start
+            widened.embedEndSeconds = range.end
+            return widened
+        }
+    }
+
+    /// Grows `[start, end)` towards `minWindowSeconds` without crossing the
+    /// bounds, taking evenly from both sides first and then spending whatever
+    /// remains on whichever side still has room. Returns the span unchanged when
+    /// it is already long enough, and returns the best available span — not
+    /// nothing — when the bounds cannot accommodate the full width.
+    static func embedRange(
+        start: TimeInterval,
+        end: TimeInterval,
+        lowerBound: TimeInterval,
+        upperBound: TimeInterval,
+        minWindowSeconds: TimeInterval
+    ) -> (start: TimeInterval, end: TimeInterval) {
+        var deficit = minWindowSeconds - (end - start)
+        guard deficit > 0 else { return (start, end) }
+
+        var low = start
+        var high = end
+        let evenly = deficit / 2
+        let before = min(evenly, max(0, start - lowerBound))
+        let after = min(evenly, max(0, upperBound - end))
+        low -= before
+        high += after
+        deficit -= before + after
+
+        if deficit > 0 {
+            let extra = min(deficit, max(0, low - lowerBound))
+            low -= extra
+            deficit -= extra
+        }
+        if deficit > 0 {
+            high += min(deficit, max(0, upperBound - high))
+        }
+        return (low, high)
     }
 }
 
@@ -340,9 +418,11 @@ public struct OnbiiSpeakerDiarizer: Sendable {
 
         var embeddedWindows = [(window: OnbiiSpeakerWindow, embedding: [Float])]()
         for window in windows {
+            // The embed range, not the word span: a short window borrows the
+            // surrounding silence so the embedder has something to work with.
             if let embedding = try await embedder.embedding(
-                from: window.startSeconds,
-                to: window.endSeconds
+                from: window.embedStartSeconds,
+                to: window.embedEndSeconds
             ) {
                 embeddedWindows.append((window, embedding))
             }

@@ -1,0 +1,1710 @@
+{
+  "generatedAt" : "2026-07-27T07:00:40Z",
+  "speakerModel" : "3D-Speaker CAM++ (VoxCeleb) on-device",
+  "timeline" : [
+    {
+      "confidence" : 0.63878924,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 8.4,
+      "text" : "Ik"
+    },
+    {
+      "confidence" : 0.4728867,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 8.55,
+      "text" : "heb"
+    },
+    {
+      "confidence" : 0.510172,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 8.67,
+      "text" : "nu"
+    },
+    {
+      "confidence" : 0.45950228,
+      "durationSeconds" : 0.09,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 8.79,
+      "text" : "m'n"
+    },
+    {
+      "confidence" : 0.80316925,
+      "durationSeconds" : 0.51,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 8.88,
+      "text" : "telefoon"
+    },
+    {
+      "confidence" : 0.6228596,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 9.39,
+      "text" : "in"
+    },
+    {
+      "confidence" : 0.593699,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 9.54,
+      "text" : "het"
+    },
+    {
+      "confidence" : 0.7640097,
+      "durationSeconds" : 0.6,
+      "sourceRole" : "recording",
+      "startSeconds" : 11.25,
+      "text" : "Nederlands"
+    },
+    {
+      "confidence" : 0.45555726,
+      "durationSeconds" : 0.57,
+      "sourceRole" : "recording",
+      "startSeconds" : 13.14,
+      "text" : "gezet"
+    },
+    {
+      "confidence" : 0.06445971,
+      "durationSeconds" : 0.75,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 30.63,
+      "text" : "je"
+    },
+    {
+      "confidence" : 0.07617608,
+      "durationSeconds" : 0.72,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 31.38,
+      "text" : "bent"
+    },
+    {
+      "confidence" : 0.047754914,
+      "durationSeconds" : 1.44,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 32.1,
+      "text" : "want"
+    },
+    {
+      "confidence" : 0.7889174,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 34.26,
+      "text" : "soms"
+    },
+    {
+      "confidence" : 0.7132249,
+      "durationSeconds" : 0.45,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 34.68,
+      "text" : "gaan"
+    },
+    {
+      "confidence" : 0.6593593,
+      "durationSeconds" : 0.63,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 35.28,
+      "text" : "Nederlandse"
+    },
+    {
+      "confidence" : 0.5525657,
+      "durationSeconds" : 0.87,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 35.91,
+      "text" : "Engelse"
+    },
+    {
+      "confidence" : 0.5363648,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 36.78,
+      "text" : "gesprekken"
+    },
+    {
+      "confidence" : 0.6987947,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 37.26,
+      "text" : "door"
+    },
+    {
+      "confidence" : 0.39103585,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 37.5,
+      "text" : "elkaar"
+    },
+    {
+      "confidence" : 0.5936595,
+      "durationSeconds" : 0.27,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 37.74,
+      "text" : "heen"
+    },
+    {
+      "confidence" : 0.6157736,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 38.4,
+      "text" : "vooral"
+    },
+    {
+      "confidence" : 0.56234455,
+      "durationSeconds" : 0.21,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 38.64,
+      "text" : "met"
+    },
+    {
+      "confidence" : 0.14278245,
+      "durationSeconds" : 0.81,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 38.97,
+      "text" : "videos"
+    },
+    {
+      "confidence" : 0.97006106,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "startSeconds" : 42.03,
+      "text" : "en"
+    },
+    {
+      "confidence" : 0.94286346,
+      "durationSeconds" : 0.39,
+      "sourceRole" : "recording",
+      "startSeconds" : 42.18,
+      "text" : "andere"
+    },
+    {
+      "confidence" : 0.972345,
+      "durationSeconds" : 0.39,
+      "sourceRole" : "recording",
+      "startSeconds" : 42.57,
+      "text" : "talen"
+    },
+    {
+      "confidence" : 0.10825747,
+      "durationSeconds" : 0.84,
+      "sourceRole" : "recording",
+      "startSeconds" : 68.97,
+      "text" : "staat"
+    },
+    {
+      "confidence" : 0.63383245,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 73.14,
+      "text" : "helemaal"
+    },
+    {
+      "confidence" : 0.4428289,
+      "durationSeconds" : 0.21,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 73.44,
+      "text" : "niks"
+    },
+    {
+      "confidence" : 0.56697893,
+      "durationSeconds" : 0.27,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 73.77,
+      "text" : "weg"
+    },
+    {
+      "confidence" : 0.6966413,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 74.04,
+      "text" : "om"
+    },
+    {
+      "confidence" : 0.533219,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 74.22,
+      "text" : "het"
+    },
+    {
+      "confidence" : 0.52509075,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 74.37,
+      "text" : "op"
+    },
+    {
+      "confidence" : 0.4358517,
+      "durationSeconds" : 0.39,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 74.55,
+      "text" : "jouw"
+    },
+    {
+      "confidence" : 0.72612375,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 75.39,
+      "text" : "telefoon"
+    },
+    {
+      "confidence" : 0.52015054,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 76.05,
+      "text" : "op"
+    },
+    {
+      "confidence" : 0.17073062,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 76.23,
+      "text" : "de"
+    },
+    {
+      "confidence" : 0.5219885,
+      "durationSeconds" : 0.09,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 76.47,
+      "text" : "op"
+    },
+    {
+      "confidence" : 0.65029335,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 76.56,
+      "text" : "te"
+    },
+    {
+      "confidence" : 0.6558105,
+      "durationSeconds" : 0.51,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 76.71,
+      "text" : "zetten"
+    },
+    {
+      "confidence" : 0.8679529,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 81.51,
+      "text" : "en"
+    },
+    {
+      "confidence" : 0.85317874,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 81.57,
+      "text" : "dan"
+    },
+    {
+      "confidence" : 0.8264994,
+      "durationSeconds" : 0.21,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 81.72,
+      "text" : "kan"
+    },
+    {
+      "confidence" : 0.78338826,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 81.93,
+      "text" : "dat"
+    },
+    {
+      "confidence" : 0.6341715,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 82.11,
+      "text" : "gewoon"
+    },
+    {
+      "confidence" : 0.6906336,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 82.5,
+      "text" : "weer"
+    },
+    {
+      "confidence" : 0.8687132,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 83.04,
+      "text" : "opnieuw"
+    },
+    {
+      "confidence" : 0.2329081,
+      "durationSeconds" : 0.39,
+      "sourceRole" : "recording",
+      "startSeconds" : 85.44,
+      "text" : "proces"
+    },
+    {
+      "confidence" : 0.16095263,
+      "durationSeconds" : 0.33,
+      "sourceRole" : "recording",
+      "startSeconds" : 85.83,
+      "text" : "worden"
+    },
+    {
+      "confidence" : 0.5019522,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 112.47,
+      "text" : "met"
+    },
+    {
+      "confidence" : 0.7763214,
+      "durationSeconds" : 0.51,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 112.65,
+      "text" : "meerdere"
+    },
+    {
+      "confidence" : 0.79855645,
+      "durationSeconds" : 0.09,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 113.16,
+      "text" : "die"
+    },
+    {
+      "confidence" : 0.52218634,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 113.25,
+      "text" : "je"
+    },
+    {
+      "confidence" : 0.391054,
+      "durationSeconds" : 0.39,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 113.43,
+      "text" : "hebt"
+    },
+    {
+      "confidence" : 0.3811034,
+      "durationSeconds" : 0.27,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 113.82,
+      "text" : "want"
+    },
+    {
+      "confidence" : 0.8490601,
+      "durationSeconds" : 0.21,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 115.11,
+      "text" : "heb"
+    },
+    {
+      "confidence" : 0.6384024,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 115.32,
+      "text" : "je"
+    },
+    {
+      "confidence" : 0.41310924,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 115.38,
+      "text" : "hier"
+    },
+    {
+      "confidence" : 0.4847351,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 115.5,
+      "text" : "microfoon"
+    },
+    {
+      "confidence" : 0.42220157,
+      "durationSeconds" : 0.69,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 116.28,
+      "text" : "systeem"
+    },
+    {
+      "confidence" : 0.50638795,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 117.51,
+      "text" : "dat"
+    },
+    {
+      "confidence" : 0.58454084,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 117.75,
+      "text" : "soort"
+    },
+    {
+      "confidence" : 0.50263923,
+      "durationSeconds" : 0.21,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 117.87,
+      "text" : "dingen"
+    },
+    {
+      "confidence" : 0.3379606,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 120.39,
+      "text" : "op"
+    },
+    {
+      "confidence" : 0.12896669,
+      "durationSeconds" : 0.96,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 120.45,
+      "text" : "deze"
+    },
+    {
+      "confidence" : 0.08454475,
+      "durationSeconds" : 0.96,
+      "sourceRole" : "recording",
+      "startSeconds" : 124.05,
+      "text" : "en"
+    },
+    {
+      "confidence" : 0.46584177,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 127.65,
+      "text" : "dan"
+    },
+    {
+      "confidence" : 0.38116568,
+      "durationSeconds" : 0.21,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 127.89,
+      "text" : "heb"
+    },
+    {
+      "confidence" : 0.3770953,
+      "durationSeconds" : 0.09,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 128.1,
+      "text" : "je"
+    },
+    {
+      "confidence" : 0.40821707,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 128.19,
+      "text" : "ook"
+    },
+    {
+      "confidence" : 0.43384272,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 128.31,
+      "text" : "nog"
+    },
+    {
+      "confidence" : 0.3491847,
+      "durationSeconds" : 0.54,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 128.43,
+      "text" : "wat"
+    },
+    {
+      "confidence" : 0.58768886,
+      "durationSeconds" : 0.33,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 128.97,
+      "text" : "data"
+    },
+    {
+      "confidence" : 0.5826118,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 129.3,
+      "text" : "bij"
+    },
+    {
+      "confidence" : 0.7960586,
+      "durationSeconds" : 0.27,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 129.6,
+      "text" : "dus"
+    },
+    {
+      "confidence" : 0.7992871,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 129.87,
+      "text" : "van"
+    },
+    {
+      "confidence" : 0.7025604,
+      "durationSeconds" : 0.42,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 130.71,
+      "text" : "van"
+    },
+    {
+      "confidence" : 0.48187423,
+      "durationSeconds" : 0.21,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 131.13,
+      "text" : "tot"
+    },
+    {
+      "confidence" : 0.46242142,
+      "durationSeconds" : 0.36,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 131.34,
+      "text" : "wanneer"
+    },
+    {
+      "confidence" : 0.8804029,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 132.18,
+      "text" : "is"
+    },
+    {
+      "confidence" : 0.6421131,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 132.33,
+      "text" : "dit"
+    },
+    {
+      "confidence" : 0.6712147,
+      "durationSeconds" : 0.72,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 132.45,
+      "text" : "opgenomen"
+    },
+    {
+      "confidence" : 0.5671367,
+      "durationSeconds" : 0.24,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 133.92,
+      "text" : "welke"
+    },
+    {
+      "confidence" : 0.8562167,
+      "durationSeconds" : 0.48,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 134.16,
+      "text" : "locatie"
+    },
+    {
+      "confidence" : 0.8972391,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 134.64,
+      "text" : "is"
+    },
+    {
+      "confidence" : 0.7580011,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 134.79,
+      "text" : "het"
+    },
+    {
+      "confidence" : 0.81149083,
+      "durationSeconds" : 0.66,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 134.91,
+      "text" : "opgenomen"
+    },
+    {
+      "confidence" : 0.91799843,
+      "durationSeconds" : 0.39,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 135.57,
+      "text" : "dat"
+    },
+    {
+      "confidence" : 0.9299605,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 135.96,
+      "text" : "dat"
+    },
+    {
+      "confidence" : 0.91159236,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 136.11,
+      "text" : "soort"
+    },
+    {
+      "confidence" : 0.925841,
+      "durationSeconds" : 0.33,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 136.29,
+      "text" : "dingen"
+    },
+    {
+      "confidence" : 0.8001374,
+      "durationSeconds" : 0.15,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 136.98,
+      "text" : "die"
+    },
+    {
+      "confidence" : 0.51164365,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 137.13,
+      "text" : "daarbij"
+    },
+    {
+      "confidence" : 0.8724299,
+      "durationSeconds" : 0.33,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 137.43,
+      "text" : "zijn"
+    },
+    {
+      "confidence" : 0.8954853,
+      "durationSeconds" : 0.12,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 138.3,
+      "text" : "en"
+    },
+    {
+      "confidence" : 0.735611,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 138.42,
+      "text" : "dan"
+    },
+    {
+      "confidence" : 0.38513845,
+      "durationSeconds" : 0.09,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 140.4,
+      "text" : "kan"
+    },
+    {
+      "confidence" : 0.57013494,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 140.49,
+      "text" : "je"
+    },
+    {
+      "confidence" : 0.6685614,
+      "durationSeconds" : 0.09,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 140.55,
+      "text" : "heel"
+    },
+    {
+      "confidence" : 0.7372585,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 140.64,
+      "text" : "veel"
+    },
+    {
+      "confidence" : 0.3856938,
+      "durationSeconds" : 0.09,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 140.82,
+      "text" : "nu"
+    },
+    {
+      "confidence" : 0.36258608,
+      "durationSeconds" : 0.21,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 141.39,
+      "text" : "zullen"
+    },
+    {
+      "confidence" : 0.4787117,
+      "durationSeconds" : 0.06,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 141.6,
+      "text" : "we"
+    },
+    {
+      "confidence" : 0.5781027,
+      "durationSeconds" : 0.09,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 141.66,
+      "text" : "eens"
+    },
+    {
+      "confidence" : 0.7994174,
+      "durationSeconds" : 0.3,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 141.75,
+      "text" : "kijken"
+    },
+    {
+      "confidence" : 0.82253516,
+      "durationSeconds" : 0.27,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 142.05,
+      "text" : "van"
+    },
+    {
+      "confidence" : 0.6311126,
+      "durationSeconds" : 0.18,
+      "sourceRole" : "recording",
+      "speakerID" : "t0s1",
+      "startSeconds" : 142.83,
+      "text" : "we"
+    }
+  ],
+  "tracks" : [
+    {
+      "formattedText" : "Ik heb nu m'n telefoon in het Nederlands gezet je bent want soms gaan Nederlandse Engelse gesprekken door elkaar heen vooral met videos en andere talen staat helemaal niks weg om het op jouw telefoon op de op te zetten en dan kan dat gewoon weer opnieuw proces worden met meerdere die je hebt want heb je hier microfoon systeem dat soort dingen  op deze en dan heb je ook nog wat data bij dus van van tot wanneer is dit opgenomen welke locatie is het opgenomen dat dat soort dingen die daarbij zijn en dan kan je heel veel nu zullen we eens kijken van we",
+      "localeIdentifier" : "nl-NL",
+      "segments" : [
+        {
+          "confidence" : 0.63878924,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 8.4,
+          "text" : "Ik"
+        },
+        {
+          "confidence" : 0.4728867,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 8.55,
+          "text" : "heb"
+        },
+        {
+          "confidence" : 0.510172,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 8.67,
+          "text" : "nu"
+        },
+        {
+          "confidence" : 0.45950228,
+          "durationSeconds" : 0.09,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 8.79,
+          "text" : "m'n"
+        },
+        {
+          "confidence" : 0.80316925,
+          "durationSeconds" : 0.51,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 8.88,
+          "text" : "telefoon"
+        },
+        {
+          "confidence" : 0.6228596,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 9.39,
+          "text" : "in"
+        },
+        {
+          "confidence" : 0.593699,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 9.54,
+          "text" : "het"
+        },
+        {
+          "confidence" : 0.7640097,
+          "durationSeconds" : 0.6,
+          "sourceRole" : "recording",
+          "startSeconds" : 11.25,
+          "text" : "Nederlands"
+        },
+        {
+          "confidence" : 0.45555726,
+          "durationSeconds" : 0.57,
+          "sourceRole" : "recording",
+          "startSeconds" : 13.14,
+          "text" : "gezet"
+        },
+        {
+          "confidence" : 0.06445971,
+          "durationSeconds" : 0.75,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 30.63,
+          "text" : "je"
+        },
+        {
+          "confidence" : 0.07617608,
+          "durationSeconds" : 0.72,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 31.38,
+          "text" : "bent"
+        },
+        {
+          "confidence" : 0.047754914,
+          "durationSeconds" : 1.44,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 32.1,
+          "text" : "want"
+        },
+        {
+          "confidence" : 0.7889174,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 34.26,
+          "text" : "soms"
+        },
+        {
+          "confidence" : 0.7132249,
+          "durationSeconds" : 0.45,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 34.68,
+          "text" : "gaan"
+        },
+        {
+          "confidence" : 0.6593593,
+          "durationSeconds" : 0.63,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 35.28,
+          "text" : "Nederlandse"
+        },
+        {
+          "confidence" : 0.5525657,
+          "durationSeconds" : 0.87,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 35.91,
+          "text" : "Engelse"
+        },
+        {
+          "confidence" : 0.5363648,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 36.78,
+          "text" : "gesprekken"
+        },
+        {
+          "confidence" : 0.6987947,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 37.26,
+          "text" : "door"
+        },
+        {
+          "confidence" : 0.39103585,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 37.5,
+          "text" : "elkaar"
+        },
+        {
+          "confidence" : 0.5936595,
+          "durationSeconds" : 0.27,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 37.74,
+          "text" : "heen"
+        },
+        {
+          "confidence" : 0.6157736,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 38.4,
+          "text" : "vooral"
+        },
+        {
+          "confidence" : 0.56234455,
+          "durationSeconds" : 0.21,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 38.64,
+          "text" : "met"
+        },
+        {
+          "confidence" : 0.14278245,
+          "durationSeconds" : 0.81,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 38.97,
+          "text" : "videos"
+        },
+        {
+          "confidence" : 0.97006106,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "startSeconds" : 42.03,
+          "text" : "en"
+        },
+        {
+          "confidence" : 0.94286346,
+          "durationSeconds" : 0.39,
+          "sourceRole" : "recording",
+          "startSeconds" : 42.18,
+          "text" : "andere"
+        },
+        {
+          "confidence" : 0.972345,
+          "durationSeconds" : 0.39,
+          "sourceRole" : "recording",
+          "startSeconds" : 42.57,
+          "text" : "talen"
+        },
+        {
+          "confidence" : 0.10825747,
+          "durationSeconds" : 0.84,
+          "sourceRole" : "recording",
+          "startSeconds" : 68.97,
+          "text" : "staat"
+        },
+        {
+          "confidence" : 0.63383245,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 73.14,
+          "text" : "helemaal"
+        },
+        {
+          "confidence" : 0.4428289,
+          "durationSeconds" : 0.21,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 73.44,
+          "text" : "niks"
+        },
+        {
+          "confidence" : 0.56697893,
+          "durationSeconds" : 0.27,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 73.77,
+          "text" : "weg"
+        },
+        {
+          "confidence" : 0.6966413,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 74.04,
+          "text" : "om"
+        },
+        {
+          "confidence" : 0.533219,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 74.22,
+          "text" : "het"
+        },
+        {
+          "confidence" : 0.52509075,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 74.37,
+          "text" : "op"
+        },
+        {
+          "confidence" : 0.4358517,
+          "durationSeconds" : 0.39,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 74.55,
+          "text" : "jouw"
+        },
+        {
+          "confidence" : 0.72612375,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 75.39,
+          "text" : "telefoon"
+        },
+        {
+          "confidence" : 0.52015054,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 76.05,
+          "text" : "op"
+        },
+        {
+          "confidence" : 0.17073062,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 76.23,
+          "text" : "de"
+        },
+        {
+          "confidence" : 0.5219885,
+          "durationSeconds" : 0.09,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 76.47,
+          "text" : "op"
+        },
+        {
+          "confidence" : 0.65029335,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 76.56,
+          "text" : "te"
+        },
+        {
+          "confidence" : 0.6558105,
+          "durationSeconds" : 0.51,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 76.71,
+          "text" : "zetten"
+        },
+        {
+          "confidence" : 0.8679529,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 81.51,
+          "text" : "en"
+        },
+        {
+          "confidence" : 0.85317874,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 81.57,
+          "text" : "dan"
+        },
+        {
+          "confidence" : 0.8264994,
+          "durationSeconds" : 0.21,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 81.72,
+          "text" : "kan"
+        },
+        {
+          "confidence" : 0.78338826,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 81.93,
+          "text" : "dat"
+        },
+        {
+          "confidence" : 0.6341715,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 82.11,
+          "text" : "gewoon"
+        },
+        {
+          "confidence" : 0.6906336,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 82.5,
+          "text" : "weer"
+        },
+        {
+          "confidence" : 0.8687132,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 83.04,
+          "text" : "opnieuw"
+        },
+        {
+          "confidence" : 0.2329081,
+          "durationSeconds" : 0.39,
+          "sourceRole" : "recording",
+          "startSeconds" : 85.44,
+          "text" : "proces"
+        },
+        {
+          "confidence" : 0.16095263,
+          "durationSeconds" : 0.33,
+          "sourceRole" : "recording",
+          "startSeconds" : 85.83,
+          "text" : "worden"
+        },
+        {
+          "confidence" : 0.5019522,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 112.47,
+          "text" : "met"
+        },
+        {
+          "confidence" : 0.7763214,
+          "durationSeconds" : 0.51,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 112.65,
+          "text" : "meerdere"
+        },
+        {
+          "confidence" : 0.79855645,
+          "durationSeconds" : 0.09,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 113.16,
+          "text" : "die"
+        },
+        {
+          "confidence" : 0.52218634,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 113.25,
+          "text" : "je"
+        },
+        {
+          "confidence" : 0.391054,
+          "durationSeconds" : 0.39,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 113.43,
+          "text" : "hebt"
+        },
+        {
+          "confidence" : 0.3811034,
+          "durationSeconds" : 0.27,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 113.82,
+          "text" : "want"
+        },
+        {
+          "confidence" : 0.8490601,
+          "durationSeconds" : 0.21,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 115.11,
+          "text" : "heb"
+        },
+        {
+          "confidence" : 0.6384024,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 115.32,
+          "text" : "je"
+        },
+        {
+          "confidence" : 0.41310924,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 115.38,
+          "text" : "hier"
+        },
+        {
+          "confidence" : 0.4847351,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 115.5,
+          "text" : "microfoon"
+        },
+        {
+          "confidence" : 0.42220157,
+          "durationSeconds" : 0.69,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 116.28,
+          "text" : "systeem"
+        },
+        {
+          "confidence" : 0.50638795,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 117.51,
+          "text" : "dat"
+        },
+        {
+          "confidence" : 0.58454084,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 117.75,
+          "text" : "soort"
+        },
+        {
+          "confidence" : 0.50263923,
+          "durationSeconds" : 0.21,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 117.87,
+          "text" : "dingen"
+        },
+        {
+          "confidence" : 0.3379606,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 120.39,
+          "text" : "op"
+        },
+        {
+          "confidence" : 0.12896669,
+          "durationSeconds" : 0.96,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 120.45,
+          "text" : "deze"
+        },
+        {
+          "confidence" : 0.08454475,
+          "durationSeconds" : 0.96,
+          "sourceRole" : "recording",
+          "startSeconds" : 124.05,
+          "text" : "en"
+        },
+        {
+          "confidence" : 0.46584177,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 127.65,
+          "text" : "dan"
+        },
+        {
+          "confidence" : 0.38116568,
+          "durationSeconds" : 0.21,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 127.89,
+          "text" : "heb"
+        },
+        {
+          "confidence" : 0.3770953,
+          "durationSeconds" : 0.09,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 128.1,
+          "text" : "je"
+        },
+        {
+          "confidence" : 0.40821707,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 128.19,
+          "text" : "ook"
+        },
+        {
+          "confidence" : 0.43384272,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 128.31,
+          "text" : "nog"
+        },
+        {
+          "confidence" : 0.3491847,
+          "durationSeconds" : 0.54,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 128.43,
+          "text" : "wat"
+        },
+        {
+          "confidence" : 0.58768886,
+          "durationSeconds" : 0.33,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 128.97,
+          "text" : "data"
+        },
+        {
+          "confidence" : 0.5826118,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 129.3,
+          "text" : "bij"
+        },
+        {
+          "confidence" : 0.7960586,
+          "durationSeconds" : 0.27,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 129.6,
+          "text" : "dus"
+        },
+        {
+          "confidence" : 0.7992871,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 129.87,
+          "text" : "van"
+        },
+        {
+          "confidence" : 0.7025604,
+          "durationSeconds" : 0.42,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 130.71,
+          "text" : "van"
+        },
+        {
+          "confidence" : 0.48187423,
+          "durationSeconds" : 0.21,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 131.13,
+          "text" : "tot"
+        },
+        {
+          "confidence" : 0.46242142,
+          "durationSeconds" : 0.36,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 131.34,
+          "text" : "wanneer"
+        },
+        {
+          "confidence" : 0.8804029,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 132.18,
+          "text" : "is"
+        },
+        {
+          "confidence" : 0.6421131,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 132.33,
+          "text" : "dit"
+        },
+        {
+          "confidence" : 0.6712147,
+          "durationSeconds" : 0.72,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 132.45,
+          "text" : "opgenomen"
+        },
+        {
+          "confidence" : 0.5671367,
+          "durationSeconds" : 0.24,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 133.92,
+          "text" : "welke"
+        },
+        {
+          "confidence" : 0.8562167,
+          "durationSeconds" : 0.48,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 134.16,
+          "text" : "locatie"
+        },
+        {
+          "confidence" : 0.8972391,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 134.64,
+          "text" : "is"
+        },
+        {
+          "confidence" : 0.7580011,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 134.79,
+          "text" : "het"
+        },
+        {
+          "confidence" : 0.81149083,
+          "durationSeconds" : 0.66,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 134.91,
+          "text" : "opgenomen"
+        },
+        {
+          "confidence" : 0.91799843,
+          "durationSeconds" : 0.39,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 135.57,
+          "text" : "dat"
+        },
+        {
+          "confidence" : 0.9299605,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 135.96,
+          "text" : "dat"
+        },
+        {
+          "confidence" : 0.91159236,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 136.11,
+          "text" : "soort"
+        },
+        {
+          "confidence" : 0.925841,
+          "durationSeconds" : 0.33,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 136.29,
+          "text" : "dingen"
+        },
+        {
+          "confidence" : 0.8001374,
+          "durationSeconds" : 0.15,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 136.98,
+          "text" : "die"
+        },
+        {
+          "confidence" : 0.51164365,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 137.13,
+          "text" : "daarbij"
+        },
+        {
+          "confidence" : 0.8724299,
+          "durationSeconds" : 0.33,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 137.43,
+          "text" : "zijn"
+        },
+        {
+          "confidence" : 0.8954853,
+          "durationSeconds" : 0.12,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 138.3,
+          "text" : "en"
+        },
+        {
+          "confidence" : 0.735611,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 138.42,
+          "text" : "dan"
+        },
+        {
+          "confidence" : 0.38513845,
+          "durationSeconds" : 0.09,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 140.4,
+          "text" : "kan"
+        },
+        {
+          "confidence" : 0.57013494,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 140.49,
+          "text" : "je"
+        },
+        {
+          "confidence" : 0.6685614,
+          "durationSeconds" : 0.09,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 140.55,
+          "text" : "heel"
+        },
+        {
+          "confidence" : 0.7372585,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 140.64,
+          "text" : "veel"
+        },
+        {
+          "confidence" : 0.3856938,
+          "durationSeconds" : 0.09,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 140.82,
+          "text" : "nu"
+        },
+        {
+          "confidence" : 0.36258608,
+          "durationSeconds" : 0.21,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 141.39,
+          "text" : "zullen"
+        },
+        {
+          "confidence" : 0.4787117,
+          "durationSeconds" : 0.06,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 141.6,
+          "text" : "we"
+        },
+        {
+          "confidence" : 0.5781027,
+          "durationSeconds" : 0.09,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 141.66,
+          "text" : "eens"
+        },
+        {
+          "confidence" : 0.7994174,
+          "durationSeconds" : 0.3,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 141.75,
+          "text" : "kijken"
+        },
+        {
+          "confidence" : 0.82253516,
+          "durationSeconds" : 0.27,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 142.05,
+          "text" : "van"
+        },
+        {
+          "confidence" : 0.6311126,
+          "durationSeconds" : 0.18,
+          "sourceRole" : "recording",
+          "speakerID" : "t0s1",
+          "startSeconds" : 142.83,
+          "text" : "we"
+        }
+      ],
+      "sourceResourceID" : "source-recording",
+      "sourceRole" : "recording"
+    }
+  ]
+}

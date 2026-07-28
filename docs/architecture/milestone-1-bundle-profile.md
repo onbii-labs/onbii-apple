@@ -146,6 +146,94 @@ mixdown; a multi-track container remains an option for providers that can use
 channel separation. Either form must retain provenance back to both originals
 and must not replace them.
 
+## Retained Generations
+
+Spec decision [`0032`](../spec/docs/decisions/0032-reprocessing-supersedes-and-retains.md)
+requires reprocessing to **supersede**: the newest result becomes current, and
+earlier results are retained with their own provenance. It deliberately leaves
+the on-disk representation open under
+[`0025`](../spec/docs/decisions/0025-onbii-package-format-open.md).
+
+This profile makes the smallest reversible choice. The incoming generation takes
+the **stable path and resource ID**, and the outgoing one is moved aside into a
+mirror of the object's own layout:
+
+```text
+20260727-0802 Recording.onbii/
+  manifest.json
+  content.md              # current
+  transcript.md           # current
+  derived/
+    transcript.json       # current
+  source/
+    recording.m4a
+  superseded/
+    20260727T065217Z/     # what the object looked like before
+      content.md
+      transcript.md
+      derived/
+        transcript.json
+```
+
+Why this shape:
+
+- **Current results never move.** Finder, Quick Look, Obsidian, a CLI and both
+  apps go on finding the current transcript exactly where they already look,
+  with no change at all. That is "applications are views" doing its job, and it
+  is also how a reader tells which generation is current without guessing.
+- **A retained generation is inspectable as what it was.** Opening the package
+  shows the earlier object, laid out the way objects are laid out, rather than a
+  pile of suffixed files.
+- **No generation numbers anywhere.** Ordering is expressed by provenance
+  timestamps, which the manifest already has. A `generation: 2` field would
+  imply an ordering the shared specification has not settled.
+- **Retired resource IDs are prefixed** (`superseded-20260727T065217Z-…`) so they
+  cannot be mistaken for a current result. `OnbiiObjectStatus` matches the
+  current identifiers exactly, and an object holding only superseded transcripts
+  is not a transcribed object.
+
+Provenance carries a `superseded` event whose inputs are the retired resource
+IDs and whose outputs are the ones that replaced them, plus — per
+[`0033`](../spec/docs/decisions/0033-derived-results-record-their-configuration.md)
+— the configuration each generation was produced under, on the event that
+produced it. Putting configuration on the event rather than the resource is what
+makes a retained generation keep the assumptions it was made with instead of
+inheriting the current ones.
+
+Retention is the default. Compressing or pruning old generations is a size
+optimisation available later and is never in itself a reason to discard.
+
+**None of this is promoted to the shared specification.** It is one concrete
+Milestone 1 profile choice, and `0025` remains open.
+
+## Processing That Produced Nothing
+
+Not every run has a result. A recording of a quiet walk, transcribed in the
+right language by a working model, can legitimately yield no words at all —
+which is what [field test 2](../field-tests/2026-07-28-field-test-2.md) found.
+
+The object records that as a **`found-nothing`** provenance event: the action,
+when it happened, the sources it read, and — the part that matters — the
+configuration it ran under. It declares no resource, and its `outputResourceIDs`
+are empty.
+
+- **No empty artefact is written.** An empty `derived/transcript.json` would make
+  the object claim to be transcribed, and `content.md` would show a transcript
+  heading with nothing under it. Neither is true.
+- **The object's status is unchanged.** It is still awaiting transcription,
+  because it is.
+- **The language is the useful part.** Without it, an object that has been
+  through Dutch twice is indistinguishable from one nobody has opened, and the
+  person is left to remember what they already ruled out. This is `0033`'s
+  reasoning applied to the case where there is no result to attach it to.
+- **It is not an error.** Nothing failed and nothing needs attention. An
+  application that presents it as damage is describing the situation as a defect
+  in the recording.
+
+`OnbiiBundleEnricher` accepts such a request only when the caller sets
+`recordsOutcomeOnly` — an enrichment that changes nothing is otherwise a caller
+mistake worth surfacing rather than an empty event worth writing.
+
 ## Deferred Questions
 
 This profile does not settle:

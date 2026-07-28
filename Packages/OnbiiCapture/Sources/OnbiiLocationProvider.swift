@@ -116,11 +116,25 @@ public final class OnbiiLocationProvider: NSObject, CLLocationManagerDelegate {
         }
         // `.full` always includes the country ("Amsterdam, Netherlands"), where
         // the default context omits it when it matches the device's region.
-        return item.addressRepresentations?.cityWithContext(.full)
-            ?? item.addressRepresentations?.cityName
-            ?? item.address?.shortAddress
-            ?? item.name
+        //
+        // Each fallback is filtered for emptiness, not just nil. A successful
+        // geocode can return an empty label — coordinates in a park resolve to a
+        // map item with no city name — and a plain `??` chain short-circuits on
+        // that empty string, so the remaining fallbacks never run and the
+        // recording is stamped with `""`. For a best-effort field, absent and
+        // empty are the same thing, and the check belongs here, where the value
+        // is produced.
+        return nonEmpty(item.addressRepresentations?.cityWithContext(.full))
+            ?? nonEmpty(item.addressRepresentations?.cityName)
+            ?? nonEmpty(item.address?.shortAddress)
+            ?? nonEmpty(item.name)
         #endif
+    }
+
+    private static func nonEmpty(_ value: String?) -> String? {
+        guard let value else { return nil }
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 
     // MARK: CLLocationManagerDelegate

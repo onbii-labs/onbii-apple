@@ -1,0 +1,11 @@
+object                             captured by       floor  speech  missed
+20260726-2349 Recording            Apple Watch       -60.0     67%     12%
+20260725-1448 Recording            macOS             -58.5     35%      0%
+20260724-2338 Recording            macOS             -58.3     77%     17%
+20260725-1453 Recording            macOS             -56.9     54%      0%
+20260724-2242 Recording            macOS             -56.0     50%      0%
+20260726-2347 Recording            iPhone            -53.4     48%      0%
+20260724-2349 Recording            iPhone            -50.4     73%     12%
+20260727-0802 Recording            Apple Watch       -44.3     45%     58%
+20260727-0857 Recording            Apple Watch       -42.3     56%     54%
+20260727-0902 Recording            iPhone            -31.3     60%     66%

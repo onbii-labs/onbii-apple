@@ -29,6 +29,22 @@ extension OnbiiBundleWriterError: LocalizedError {
     }
 }
 
+/// What the writer produced, and anything it noticed while producing it.
+public struct OnbiiBundleWriteResult: Sendable {
+    public var manifest: OnbiiManifest
+    /// Sources whose capture-reported duration disagreed with the file that was
+    /// preserved. A recording that died without the app noticing surfaces here.
+    public var durationMismatches: [OnbiiSourceDurationMismatch]
+
+    public init(
+        manifest: OnbiiManifest,
+        durationMismatches: [OnbiiSourceDurationMismatch] = []
+    ) {
+        self.manifest = manifest
+        self.durationMismatches = durationMismatches
+    }
+}
+
 /// Writes the Milestone 1 draft directory representation of an Onbii object.
 ///
 /// The bundle is assembled beside its destination and moved into place only
@@ -36,8 +52,17 @@ extension OnbiiBundleWriterError: LocalizedError {
 public struct OnbiiBundleWriter: Sendable {
     public init() {}
 
+    /// Writes the bundle and returns its manifest.
+    ///
+    /// Kept for callers that only need the manifest. Prefer ``preserve(_:)``
+    /// where the caller can act on what the writer noticed.
     @discardableResult
     public func write(_ request: OnbiiImportRequest) throws -> OnbiiManifest {
+        try preserve(request).manifest
+    }
+
+    @discardableResult
+    public func preserve(_ request: OnbiiImportRequest) throws -> OnbiiBundleWriteResult {
         let fileManager = FileManager.default
         try validateRequest(request, fileManager: fileManager)
 
@@ -62,6 +87,7 @@ public struct OnbiiBundleWriter: Sendable {
         )
 
         var sourceResources = [OnbiiResource]()
+        var durationMismatches = [OnbiiSourceDurationMismatch]()
         for source in request.sources {
             let storedSourceURL = sourceDirectory.appendingPathComponent(
                 source.storedFilename
@@ -71,6 +97,30 @@ public struct OnbiiBundleWriter: Sendable {
             let attributes = try fileManager.attributesOfItem(
                 atPath: storedSourceURL.path
             )
+
+            // Prefer the file over the capture side's word for it. The measured
+            // value is the only one the writer can verify, and trusting the
+            // claim once put `durationSeconds: 0` on a twenty-minute recording.
+            // Measurement is best-effort: an unreadable file still gets
+            // preserved, keeping whatever the caller reported.
+            var durationSeconds = source.durationSeconds
+            if OnbiiSourceDuration.isMeasurable(mediaType: source.mediaType),
+               let measured = OnbiiSourceDuration.seconds(of: storedSourceURL) {
+                if OnbiiSourceDuration.disagrees(
+                    reported: source.durationSeconds,
+                    measured: measured
+                ), let reported = source.durationSeconds {
+                    durationMismatches.append(
+                        OnbiiSourceDurationMismatch(
+                            resourceID: source.resourceID,
+                            reportedSeconds: reported,
+                            measuredSeconds: measured
+                        )
+                    )
+                }
+                durationSeconds = measured
+            }
+
             sourceResources.append(
                 OnbiiResource(
                     id: source.resourceID,
@@ -80,7 +130,7 @@ public struct OnbiiBundleWriter: Sendable {
                     byteCount: (attributes[.size] as? NSNumber)?.int64Value,
                     originalFilename: source.sourceURL.lastPathComponent,
                     captureStartedAt: source.captureStartedAt,
-                    durationSeconds: source.durationSeconds
+                    durationSeconds: durationSeconds
                 )
             )
         }
@@ -139,7 +189,10 @@ public struct OnbiiBundleWriter: Sendable {
         )
 
         try fileManager.moveItem(at: stagingURL, to: request.destinationBundleURL)
-        return manifest
+        return OnbiiBundleWriteResult(
+            manifest: manifest,
+            durationMismatches: durationMismatches
+        )
     }
 
     private func validateRequest(

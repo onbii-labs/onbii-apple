@@ -105,3 +105,25 @@ private func makeManifest() -> OnbiiManifest {
         ]
     )
 }
+
+// MARK: - Best-effort fields (field test 1, finding 2)
+
+/// All three field-test objects carry good coordinates and `"name": ""`. The
+/// reverse geocode succeeded and returned an empty label, and every reader that
+/// checked only for `nil` rendered a blank row.
+@Test
+func anEmptyPlaceNameReadsAsAbsent() {
+    func location(named name: String?) -> OnbiiLocation {
+        OnbiiLocation(latitude: 51.5818, longitude: 4.7770, name: name)
+    }
+
+    #expect(
+        location(named: "Breda, Netherlands").resolvedName == "Breda, Netherlands"
+    )
+    #expect(location(named: nil).resolvedName == nil)
+    #expect(location(named: "").resolvedName == nil)
+    #expect(location(named: "   ").resolvedName == nil)
+    // The stored value is untouched; only reading it is tolerant, so objects
+    // already written keep saying exactly what they said.
+    #expect(location(named: "").name == "")
+}

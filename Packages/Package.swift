@@ -14,6 +14,8 @@ let package = Package(
         .library(name: "OnbiiArchive", targets: ["OnbiiArchive"]),
         .library(name: "OnbiiCapture", targets: ["OnbiiCapture"]),
         .library(name: "OnbiiTranscription", targets: ["OnbiiTranscription"]),
+        .library(name: "OnbiiProcessing", targets: ["OnbiiProcessing"]),
+        .library(name: "OnbiiUI", targets: ["OnbiiUI"]),
     ],
     targets: [
         .target(
@@ -34,6 +36,36 @@ let package = Package(
             path: "OnbiiTranscription/Sources",
             resources: [.copy("Resources/CAMPlusEmbedder.mlmodelc")]
         ),
+        // The processing pipeline: the stage that reads an object's sources,
+        // derives from them, and hands the result back to the archive. It is the
+        // one place allowed to know both `OnbiiTranscription` and
+        // `OnbiiArchive`, which is why it exists — `OnbiiTranscription` stays
+        // free of any knowledge of bundles, and `OnbiiArchive` stays free of any
+        // knowledge of recognition.
+        .target(
+            name: "OnbiiProcessing",
+            dependencies: ["OnbiiCore", "OnbiiArchive", "OnbiiTranscription"],
+            path: "OnbiiProcessing/Sources"
+        ),
+        // The shared presentation layer for the Mac and iPhone apps. App icons
+        // and the global accent colour cannot live here — those build settings
+        // only resolve against a catalog compiled into the app target itself —
+        // so each app keeps a minimal catalog of its own.
+        .target(
+            name: "OnbiiUI",
+            // OnbiiTranscription is here only for its document model: a view
+            // that reads derived data has to know the shape it was written in.
+            // Nothing in OnbiiUI runs recognition.
+            dependencies: ["OnbiiCore", "OnbiiArchive", "OnbiiTranscription"],
+            path: "OnbiiUI/Sources",
+            exclude: ["Resources/README.md"],
+            resources: [
+                .process("Resources/OnbiiBrand.xcassets"),
+                // .copy, not .process: the SIL Open Font License requires
+                // OFL.txt to travel with the font file it covers.
+                .copy("Resources/Fonts"),
+            ]
+        ),
         .testTarget(
             name: "OnbiiCoreTests",
             dependencies: ["OnbiiCore"],
@@ -53,6 +85,18 @@ let package = Package(
             name: "OnbiiCaptureTests",
             dependencies: ["OnbiiCapture"],
             path: "OnbiiCapture/Tests"
+        ),
+        .testTarget(
+            name: "OnbiiProcessingTests",
+            dependencies: [
+                "OnbiiProcessing", "OnbiiArchive", "OnbiiCore", "OnbiiTranscription",
+            ],
+            path: "OnbiiProcessing/Tests"
+        ),
+        .testTarget(
+            name: "OnbiiUITests",
+            dependencies: ["OnbiiUI", "OnbiiArchive", "OnbiiCore", "OnbiiTranscription"],
+            path: "OnbiiUI/Tests"
         ),
     ]
 )

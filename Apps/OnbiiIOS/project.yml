@@ -26,6 +26,7 @@ targets:
     platform: iOS
     sources:
       - path: Sources
+      - path: Resources
     dependencies:
       - package: OnbiiApple
         product: OnbiiArchive
@@ -33,6 +34,10 @@ targets:
         product: OnbiiCapture
       - package: OnbiiApple
         product: OnbiiTranscription
+      - package: OnbiiApple
+        product: OnbiiProcessing
+      - package: OnbiiApple
+        product: OnbiiUI
       - target: OnbiiWatch
     settings:
       base:
@@ -42,6 +47,11 @@ targets:
         PRODUCT_MODULE_NAME: OnbiiIOS
         MARKETING_VERSION: 0.1.0
         CURRENT_PROJECT_VERSION: 2
+        # The app icon and the global accent colour must come from a catalog
+        # compiled into this target; they cannot be served from the OnbiiUI
+        # package's resource bundle. See Packages/OnbiiUI/Sources/Resources.
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_FILE: Info.plist
         CODE_SIGN_ENTITLEMENTS: OnbiiIOS.entitlements
@@ -59,6 +69,7 @@ targets:
     deploymentTarget: "10.0"
     sources:
       - path: ../OnbiiWatch/Sources
+      - path: ../OnbiiWatch/Resources
     dependencies:
       - package: OnbiiApple
         product: OnbiiCapture
@@ -69,13 +80,17 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.yepyr.onbii.watchkitapp
         PRODUCT_MODULE_NAME: OnbiiWatch
         MARKETING_VERSION: 0.1.0
-        CURRENT_PROJECT_VERSION: 1
-        GENERATE_INFOPLIST_FILE: true
-        INFOPLIST_KEY_CFBundleDisplayName: Onbii
-        INFOPLIST_KEY_NSMicrophoneUsageDescription: Onbii records audio only after you tap Record, then transfers the original recording to your iPhone.
-        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: Onbii records where a recording was captured, so you can remember where a conversation happened. Location is optional and travels with the recording to your iPhone.
-        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.yepyr.onbii
-        INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp: false
+        CURRENT_PROJECT_VERSION: 2
+        # The Watch takes no OnbiiUI dependency: an accent colour set is enough
+        # to brand `Color.accentColor` in WatchContentView, with no Swift change.
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        # An authored Info.plist rather than INFOPLIST_KEY_* settings, because
+        # the runtime claim a Watch recording needs — WKBackgroundModes — is an
+        # array. See Apps/OnbiiWatch/Info.plist, which explains what goes in it
+        # and why nothing is declared yet.
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_FILE: ../OnbiiWatch/Info.plist
         CODE_SIGN_STYLE: Automatic
 
 schemes:

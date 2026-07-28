@@ -45,10 +45,15 @@ final class WatchRecordingReceiver: NSObject, @unchecked Sendable {
         return destinationURL
     }
 
+    /// - Returns: where the object landed, and anything the archive noticed
+    ///   while preserving it. The Watch reports its own duration, and a Watch
+    ///   app that watchOS suspended mid-recording reports one the file does not
+    ///   bear out — which is exactly how a twenty-minute walk was filed as zero
+    ///   seconds, silently.
     private func preserve(
         stagedURL: URL,
         metadata: OnbiiWatchRecordingMetadata
-    ) async throws -> URL {
+    ) async throws -> (bundleURL: URL, warning: String?) {
         let archiveURL: URL
         do {
             archiveURL = try OnbiiCloudArchive().directoryURL()
@@ -95,9 +100,12 @@ final class WatchRecordingReceiver: NSObject, @unchecked Sendable {
             sourceAgentName: "Apple Watch microphone capture",
             location: location
         )
-        try OnbiiBundleWriter().write(request)
+        let result = try OnbiiBundleWriter().preserve(request)
         try FileManager.default.removeItem(at: stagedURL)
-        return destinationURL
+        return (
+            destinationURL,
+            result.durationMismatches.first?.recordedDescription
+        )
     }
 
     private func localArchiveDirectory() throws -> URL {
@@ -135,10 +143,15 @@ final class WatchRecordingReceiver: NSObject, @unchecked Sendable {
         return destinationURL
     }
 
-    private func notify(bundleURL: URL? = nil, error: (any Error)? = nil) {
+    private func notify(
+        bundleURL: URL? = nil,
+        warning: String? = nil,
+        error: (any Error)? = nil
+    ) {
         Task { @MainActor in
             var userInfo = [String: Any]()
             userInfo["bundleURL"] = bundleURL
+            userInfo["warning"] = warning
             userInfo["errorMessage"] = error?.localizedDescription
             NotificationCenter.default.post(
                 name: .onbiiWatchRecordingReceived,
@@ -186,11 +199,14 @@ extension WatchRecordingReceiver: WCSessionDelegate {
 
         Task.detached(priority: .utility) { [self] in
             do {
-                let bundleURL = try await preserve(
+                let preserved = try await preserve(
                     stagedURL: stagedURL,
                     metadata: metadata
                 )
-                notify(bundleURL: bundleURL)
+                notify(
+                    bundleURL: preserved.bundleURL,
+                    warning: preserved.warning
+                )
             } catch {
                 notify(error: error)
             }

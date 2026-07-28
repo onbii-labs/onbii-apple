@@ -1,0 +1,16 @@
+20260727-0802 Recording.onbii
+  1200 s of audio, ambient floor -44.3 dBFS, 45% speech-level
+
+  [20260727T125853Z]
+    language        not recorded (not recorded)
+    words           372
+    speech missed   71%  (382 s)
+    speakers        {'t0s1': 54, 't0s2': 311}
+    unplaced words  7
+
+  [current]
+    language        nl-NL (chosen)
+    words           531
+    speech missed   58%  (308 s)
+    speakers        {'t0s1': 226, 't0s2': 298, 't0s3': 7}
+    unplaced words  0

@@ -2,18 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSUbiquitousContainers</key>
-	<dict>
-		<key>iCloud.com.yepyr.onbii</key>
-		<dict>
-			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
-			<true/>
-			<key>NSUbiquitousContainerName</key>
-			<string>Onbii</string>
-			<key>NSUbiquitousContainerSupportedFolderLevels</key>
-			<string>Any</string>
-		</dict>
-	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -57,10 +45,42 @@
 	<string>Onbii records audio only after you tap Record, so it can preserve the recording as an object you control.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Onbii transcribes your recordings entirely on this device after you tap Transcribe. Audio is never sent to a server.</string>
+	<!--
+		A recording has to survive the ordinary things people do while talking:
+		the screen locking itself, and looking something up mid-conversation.
+		Without this the system suspends the app and the recorder stops — which
+		is why the first field test's 09:02 recording is 44 seconds long and
+		nothing said so.
+
+		`audio` is exactly what this mode is for, and Onbii's use of it is
+		literal: it records audio, only after someone taps Record (spec decision
+		0023 — recording is always explicit, never hidden).
+	-->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>iCloud.com.yepyr.onbii</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerName</key>
+			<string>Onbii</string>
+			<key>NSUbiquitousContainerSupportedFolderLevels</key>
+			<string>Any</string>
+		</dict>
+	</dict>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchScreen</key>
-	<dict/>
+	<dict>
+		<key>UIColorName</key>
+		<string>OnbiiForest</string>
+		<key>UIImageName</key>
+		<string>OnbiiWordmark</string>
+	</dict>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

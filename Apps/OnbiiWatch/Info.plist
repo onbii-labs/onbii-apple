@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+	The Watch target used to generate this file from INFOPLIST_KEY_* build
+	settings. It is authored now because the runtime claim a Watch recording
+	needs — WKBackgroundModes — is an array, and an array is awkward to express
+	as a build setting. See docs/milestones/milestone-1.6.md, spike A.
+
+	CFBundleIcons and NSAccentColorName are deliberately absent: the asset
+	catalog compiler injects both from ASSETCATALOG_COMPILER_APPICON_NAME and
+	ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME. That injection is what lets
+	the Champagne accent reach the Watch with no Swift change at all (see
+	docs/architecture/visual-identity.md), so if the accent ever disappears from
+	the Watch, check the built Info.plist for NSAccentColorName before touching
+	any code.
+-->
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Onbii</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Onbii records where a recording was captured, so you can remember where a conversation happened. Location is optional and travels with the recording to your iPhone.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Onbii records audio only after you tap Record, then transfers the original recording to your iPhone.</string>
+	<!--
+		WKBackgroundModes is deliberately absent, and that appears to be fine.
+
+		Measured on watchOS 27, 27 July 2026: with no background mode declared at
+		all, leaving the app leaves the microphone live and recording, with the
+		system's own indicator showing. Siri and a timer did not disturb it.
+
+		This corrects the first field test's reasoning, which assumed that
+		without a declared mode watchOS "was entitled to suspend it". Entitled
+		perhaps; it does not appear to exercise that. The recording that morning
+		did stop after 1200 s, and the likelier cause is that the Workout app
+		took over — which is a specific collision to solve, not a missing claim
+		on runtime. See docs/field-tests/2026-07-27-field-test-1.md.
+
+		So do not add a mode speculatively. Two that were considered are
+		rejected on the merits rather than untested: `mindfulness` and
+		`self-care` back WKExtendedRuntimeSession, which describes a bounded
+		stationary practice — a reflection walk is not one, and stretching the
+		definition to fit would be a claim this project should not make.
+
+		`audio` remains the only plausible addition, and only if a recording is
+		found to die in the background for want of it. Giving the Watch a longer
+		or stronger claim on runtime is a *feature* — an HKWorkoutSession for a
+		walk that is genuinely happening, saved as a workout — and belongs in
+		docs/architecture/watch-capture-modes.md, not here.
+	-->
+	<key>WKApplication</key>
+	<true/>
+	<key>WKCompanionAppBundleIdentifier</key>
+	<string>com.yepyr.onbii</string>
+	<key>WKRunsIndependentlyOfCompanionApp</key>
+	<false/>
+</dict>
+</plist>
