@@ -181,6 +181,26 @@ which is the exact bug the watcher was built to fix, reintroduced by the watcher
 The iPhone does have the container, so it uses the query. Both are covered by
 falling back on what the app can actually see.
 
+**The fallback turned out to be the more interesting half.** A directory watch
+does not care what is putting files in the folder. On macOS, where the archive is
+any folder a person picks, that means the always-ready behaviour works over
+Dropbox, Syncthing, a NAS share, an external disk — anything every device can
+reach. iCloud is not a requirement, it is the easiest default.
+
+That is the local-first principle earning its keep rather than being recited:
+*"the answer to 'where is my knowledge?' should be something ordinary and
+inspectable, not a vendor backend."* An implementation that only noticed changes
+inside Apple's sync would have quietly made iCloud the real home while the
+documentation said otherwise.
+
+**The asymmetry is worth knowing, because it is the remaining constraint.** The
+Mac can point at any folder; the iPhone cannot — `prepareArchive()` resolves the
+iCloud container and falls back to a local one, with no picker. So today the
+"any shared folder" property is real on the desktop and notional on iPhone. That
+is a gap in the *archive location* feature rather than in the watcher, and it is
+not in this milestone's scope; recorded here so nobody reads the paragraph above
+as a promise the iPhone keeps.
+
 The second half of the same finding went with it: `OnbiiArchiveIndex` used to
 skip a folder it could not read, which is right for a damaged object and wrong
 for one still arriving. `contents(in:)` now returns both lists, the apps ask

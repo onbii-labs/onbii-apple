@@ -56,6 +56,13 @@ Open questions still to answer here:
   a sandboxed app.
 - Should the first transcript path use Apple on-device capabilities directly, and where should future third-party or server processing settings live?
 - Where should the user's first Onbii archive live by default on Apple platforms?
+  Partly answered by building the archive watcher: iCloud is the easiest default
+  but not a requirement. The macOS watcher falls back to a plain directory watch
+  wherever the app has no ubiquity container, and a directory watch does not care
+  what puts files in the folder — so Dropbox, Syncthing, a NAS share or an
+  external disk all work. **The iPhone is the constraint**: it resolves the
+  iCloud container or a local one and offers no picker, so "any shared folder" is
+  real on the desktop and notional on iPhone.
 - What permissions, entitlements, and user-facing consent flows are required for capture, location, and transcription?
 - How should human corrections be represented before full versioning is designed?
   Partly answered for *machine* corrections: `OnbiiObjectRepair` re-derives facts
