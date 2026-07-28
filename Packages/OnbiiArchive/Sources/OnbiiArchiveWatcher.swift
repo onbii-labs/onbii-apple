@@ -68,7 +68,7 @@ public final class OnbiiArchiveWatcher {
         // and it is a harmless `false` for a URL that never needed it.
         accessedSecurityScope = directoryURL.startAccessingSecurityScopedResource()
 
-        if Self.isInICloud(directoryURL) {
+        if Self.canQueryMetadata(for: directoryURL) {
             startMetadataQuery()
         } else {
             startDirectoryWatch()
@@ -177,19 +177,21 @@ public final class OnbiiArchiveWatcher {
         }
     }
 
-    /// Whether this directory is inside iCloud Drive.
+    /// Whether *this app* can watch this directory with an `NSMetadataQuery`.
     ///
-    /// Asked of the filesystem rather than assumed from the path: a person can
-    /// point Onbii at their own folder inside iCloud Drive, which is neither the
-    /// app's container nor an ordinary local folder, and it still wants the
-    /// metadata query.
-    static func isInICloud(_ url: URL) -> Bool {
-        let values = try? url.resourceValues(forKeys: [.isUbiquitousItemKey])
-        if values?.isUbiquitousItem == true {
-            return true
-        }
-        // A directory in a ubiquity container does not always report itself as a
-        // ubiquitous *item*; the container root is the reliable comparison.
+    /// Not "is it in iCloud Drive" — that was the first version of this check
+    /// and it was wrong in a way that broke the Mac completely.
+    /// `NSMetadataQueryUbiquitousDocumentsScope` searches the app's **own**
+    /// ubiquity container, so it needs the app to have one. The Mac app does not:
+    /// it holds no `com.apple.developer.ubiquity-container-identifiers`
+    /// entitlement and reaches iCloud Drive purely as a user-selected folder
+    /// through a security-scoped bookmark. Asking it for a ubiquitous query
+    /// produced a query over nothing, which never fired, so an object arriving
+    /// from the iPhone was never noticed.
+    ///
+    /// A directory watch works there instead, and works well: iCloud
+    /// materialises a file into the folder, and the folder changes.
+    static func canQueryMetadata(for url: URL) -> Bool {
         guard let container = FileManager.default.url(
             forUbiquityContainerIdentifier: OnbiiCloudArchive.containerIdentifier
         ) else {

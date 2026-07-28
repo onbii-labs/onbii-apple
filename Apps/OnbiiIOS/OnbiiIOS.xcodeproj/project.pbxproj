@@ -401,7 +401,7 @@
 				PRODUCT_NAME = Onbii;
 				PROVISIONING_PROFILE_SPECIFIER = "Onbii development";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -526,7 +526,7 @@
 				PRODUCT_MODULE_NAME = OnbiiIOS;
 				PRODUCT_NAME = Onbii;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

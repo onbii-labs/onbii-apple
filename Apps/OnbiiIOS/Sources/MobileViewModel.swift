@@ -219,7 +219,15 @@ final class MobileViewModel {
             Task { await OnbiiNotifier.captureStopped(errorMessage) }
             return
         }
-        reloadObjects()
+        // The receiver resolves the archive for itself, so a transfer can be
+        // preserved before this view model has one — a background launch does
+        // exactly that. Reloading without an archive is a no-op that leaves the
+        // object invisible, so resolve first if it has not happened yet.
+        if archiveURL == nil {
+            Task { await prepareArchive() }
+        } else {
+            reloadObjects()
+        }
         if let bundleURL = notification.userInfo?["bundleURL"] as? URL {
             state = .completed(
                 bundleURL.lastPathComponent,
@@ -523,8 +531,8 @@ final class MobileViewModel {
                 on: bundle,
                 language: .init(locale: locale)
             ) { progress in
-                Task { @MainActor [weak self] in
-                    self?.beginTranscribing(Self.describe(progress), for: bundle)
+                Task { @MainActor in
+                    self.beginTranscribing(Self.describe(progress), for: bundle)
                 }
             }
             await loadLanguages()

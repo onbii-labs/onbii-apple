@@ -52,6 +52,12 @@ struct MobileContentView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
                 model.verifyRecordingIsStillRunning()
+                // And re-read the archive. A Watch recording can land while
+                // this app is suspended or launched in the background, before
+                // the archive has even been resolved — so the reload that
+                // happens on receiving it can be a no-op, and nothing looked
+                // again until someone pulled to refresh.
+                model.reloadObjects()
             }
         }
         .sheet(isPresented: $showsSettings) {

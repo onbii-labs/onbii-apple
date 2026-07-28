@@ -162,13 +162,24 @@ the only thing that reads and the filesystem remains the truth every time it is
 asked. Deleting it would cost freshness and nothing else.
 
 It picks its mechanism by inspection rather than configuration, because an
-archive is not always one kind of place. The default archive lives in the app's
-iCloud Drive container, where objects arrive from other devices and exist before
-they are downloaded — that needs `NSMetadataQuery`, the only API that reports an
-item the filesystem cannot yet open. A person may equally point Onbii at an
-ordinary folder, where there is no sync and a directory watch is exactly right.
-Reports are coalesced over a short quiet period, because iCloud narrates a single
-arriving object as a stream of progress updates.
+archive is not always one kind of place. Where the app has its **own ubiquity
+container** and the archive is inside it, `NSMetadataQuery` is right: it is the
+only API that reports an item that exists but has not been downloaded, which is
+the state an object is in shortly after another device made it. Everywhere else a
+directory watch is right. Reports are coalesced over a short quiet period,
+because iCloud narrates a single arriving object as a stream of progress updates.
+
+**The test is the app's container, not "is this iCloud Drive"** — and getting
+that wrong broke the Mac completely for an afternoon.
+`NSMetadataQueryUbiquitousDocumentsScope` searches the app's own container, and
+the Mac app has none: it holds no `ubiquity-container-identifiers` entitlement
+and reaches iCloud Drive purely as a user-selected folder through a
+security-scoped bookmark. A ubiquitous query there is a query over nothing. It
+never fired, so a recording that arrived from the iPhone was never noticed —
+which is the exact bug the watcher was built to fix, reintroduced by the watcher.
+
+The iPhone does have the container, so it uses the query. Both are covered by
+falling back on what the app can actually see.
 
 The second half of the same finding went with it: `OnbiiArchiveIndex` used to
 skip a folder it could not read, which is right for a damaged object and wrong
@@ -177,7 +188,12 @@ iCloud for anything present but not downloaded, and both say *"N objects are
 still arriving from iCloud"* rather than quietly presenting an incomplete list as
 a complete one.
 
-The Mac's activation refresh from 1.6 stays as a cheap backstop.
+Both apps also re-read on becoming active, as a backstop that needs no
+mechanism at all. The iPhone did **not** do this before — an earlier version of
+this note claimed it did, and it only re-verified the recorder. A Watch recording
+can be preserved while the app is suspended or launched in the background, before
+the archive has even been resolved, so the reload that happens on receiving it
+can be a no-op; nothing looked again until someone pulled to refresh.
 
 **2. Background processing of new archive files — done.** An object that arrives
 while Onbii is running gets transcribed without being asked, in the language the
