@@ -221,7 +221,7 @@ not look like it is the failure Milestone 1.6 is named for. Closing the window n
 longer means quitting; the menu-bar item brings it back.
 
 **4. The application-activation prompt — done.** Naming an application in
-Settings means Onbii *offers* to record when it becomes active. It posts a
+Settings means Onbii *offers* to record when it starts playing audio. It posts a
 notification with a Record button and does nothing else: ignoring it records
 nothing, and there is no buffer anywhere in the app to record retrospectively
 from even if someone wanted it.
@@ -241,23 +241,35 @@ keeping:
   again, and nothing is offered while a capture, import or transcription is
   already running.
 
+**The trigger is audio, not activation, and that was a correction.** The first
+build offered whenever a watched application became frontmost, which meant being
+asked on launch and on every glance. A window sitting open is not a conversation;
+a window making sound usually is. `OnbiiAudioProcessProbe` — already built for
+dual-source call capture — is polled every five seconds, and a watched
+application has to be producing output audio across two consecutive polls before
+anything is offered, so a single notification chime does not count as a meeting.
+
+That also removed a dependency that was never confirmed: whether
+`NSWorkspace.didActivateApplicationNotification` reaches a sandboxed app. It is
+no longer used.
+
+**The suggestion is a notification, so it needs permission to exist at all.**
+Asked when watching starts rather than only when a capture does — the first build
+asked in the wrong place, and setting up a watched application without ever
+having recorded left the feature silently doing nothing. Settings now says so
+when notifications are off, with a shortcut to the switch.
+
 The Settings wording is part of the feature: someone reading it must come away
 certain that naming an application does not mean Onbii is listening while it is
 open.
 
-*Needs a device check rather than a test:* whether
-`NSWorkspace.didActivateApplicationNotification` reports other applications from
-inside the sandbox. It builds and it is the documented API; it has not been
-watched working.
-
 ### Still outstanding
 
-**A device pass over the always-ready half.** Everything above builds and the
-package logic is tested, but three things can only be confirmed by using them:
-whether `NSWorkspace.didActivateApplicationNotification` reports other
-applications from inside the sandbox, whether an `NSMetadataQuery` on the iCloud
-container reports an object arriving from iPhone, and whether the menu-bar item
-behaves once the window is closed. None is exotic; none has been watched working.
+**A device pass over the rest of the always-ready half.** The menu bar and the
+capture suggestion have now been used and corrected. Two things still have not
+been watched working: whether an `NSMetadataQuery` on the iCloud container
+reports an object arriving from iPhone, and whether background transcription
+picks up a Watch recording as it lands.
 
 **Sweeping the archive**, inherited from 1.6: running `OnbiiObjectRepair` across
 everything rather than offering it one object at a time. Background processing

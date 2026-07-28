@@ -70,15 +70,17 @@ struct MacSettingsView: View {
                 .font(.callout)
             }
         } header: {
-            Text("Offer to record when these open")
+            Text("Offer to record when these are in a call")
                 .onbiiSubheaderStyle()
         } footer: {
             Text(
-                "When one of these becomes the active application, Onbii asks "
-                    + "whether to record. It never starts on its own, and it "
-                    + "keeps no audio from before you say yes — there is nothing "
-                    + "to record retrospectively from. Declining, or ignoring "
-                    + "the question, records nothing."
+                "When one of these starts playing audio for more than a few "
+                    + "seconds, Onbii asks whether to record. Opening the "
+                    + "application is not enough — a window sitting open is not "
+                    + "a conversation. It never starts on its own, and it keeps "
+                    + "no audio from before you say yes: there is nothing to "
+                    + "record retrospectively from. Declining, or ignoring the "
+                    + "question, records nothing."
             )
             .font(.caption)
             .foregroundStyle(.onbiiSecondaryText)

@@ -88,7 +88,7 @@ final class ImportViewModel {
         }
     }
 
-    /// Applications whose becoming frontmost should prompt an offer to record.
+    /// Applications whose playing audio should prompt an offer to record.
     ///
     /// Stored as bundle identifiers with the name the person will read, because
     /// an identifier is not something to show anyone and a name is not stable
@@ -104,7 +104,15 @@ final class ImportViewModel {
     /// it could not — a feature that quietly cannot work is worse than one that
     /// is switched off.
     private(set) var notificationsAllowed = true
-    private var activationObserver: (any NSObjectProtocol)?
+    private var audioPollTask: Task<Void, Never>?
+    /// Consecutive polls each watched application has been producing audio for.
+    private var sustainedAudio: [String: Int] = [:]
+    /// How often to ask Core Audio which processes are producing output. A
+    /// property read per process, so this is cheap enough to run continuously.
+    private static let audioPollInterval: Duration = .seconds(5)
+    /// How many consecutive polls of audio count as a conversation rather than
+    /// a notification chime.
+    private static let sustainedAudioPolls = 2
     /// When each application was last offered, so switching back and forth does
     /// not produce a stream of prompts.
     private var lastSuggestedAt: [String: Date] = [:]
@@ -360,7 +368,7 @@ final class ImportViewModel {
 
     // MARK: Offering to record when a chosen application appears
 
-    /// Watches for the applications a person named, and offers — never starts.
+    /// Watches the applications a person named, and offers — never starts.
     ///
     /// Spec decision `0023` is the whole design of this feature: contextual
     /// detection may *suggest* capture, and the capture itself must be explicit.
@@ -369,10 +377,10 @@ final class ImportViewModel {
     /// retrospective audio anywhere in the app to make "record from when it
     /// started" possible even if someone wanted it.
     private func startWatchingApplications() {
-        if let activationObserver {
-            NSWorkspace.shared.notificationCenter.removeObserver(activationObserver)
-            self.activationObserver = nil
-        }
+        audioPollTask?.cancel()
+        audioPollTask = nil
+        sustainedAudio.removeAll()
+
         guard !watchedApplications.isEmpty else {
             notificationsAllowed = true
             return
@@ -387,42 +395,61 @@ final class ImportViewModel {
             self?.notificationsAllowed = await OnbiiNotifier.isAllowed
         }
 
-        activationObserver = NSWorkspace.shared.notificationCenter.addObserver(
-            forName: NSWorkspace.didActivateApplicationNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] notification in
-            guard let application = notification.userInfo?[
-                NSWorkspace.applicationUserInfoKey
-            ] as? NSRunningApplication else {
-                return
-            }
-            MainActor.assumeIsolated {
-                self?.considerSuggesting(for: application)
+        audioPollTask = Task { [weak self] in
+            while !Task.isCancelled {
+                self?.pollWatchedApplications()
+                try? await Task.sleep(for: Self.audioPollInterval)
             }
         }
     }
 
-    private func considerSuggesting(for application: NSRunningApplication) {
-        guard let bundleIdentifier = application.bundleIdentifier,
-              let watched = watchedApplications.first(
-                  where: { $0.bundleIdentifier == bundleIdentifier }
-              ) else {
-            return
+    /// Offers when a watched application is *making sound*, not when it opens.
+    ///
+    /// Activation was the first attempt and it was too eager: launching an app
+    /// is not a conversation, and being asked every time you glance at it is
+    /// noise. An application producing output audio is much closer to what the
+    /// roadmap means by "becomes active" — a window sitting open is not a
+    /// meeting, a window making sound usually is.
+    ///
+    /// It also removed a dependency on `NSWorkspace` activation notifications
+    /// reaching a sandboxed app, which was never confirmed.
+    private func pollWatchedApplications() {
+        guard !watchedApplications.isEmpty, archiveURL != nil else { return }
+
+        let producing = Set(
+            OnbiiAudioProcessProbe.outputProducingApplications()
+                .map(\.bundleIdentifier)
+        )
+        for watched in watchedApplications {
+            let id = watched.bundleIdentifier
+            guard producing.contains(id) else {
+                sustainedAudio[id] = 0
+                continue
+            }
+            sustainedAudio[id, default: 0] += 1
+            // Require the sound to persist. A single notification chime is not
+            // a conversation, and one poll cannot tell the two apart.
+            guard sustainedAudio[id] == Self.sustainedAudioPolls else { continue }
+            suggest(watched)
         }
+    }
+
+    private func suggest(_ watched: WatchedApplication) {
         // Never while something is already happening. Offering to record during
         // a recording is noise, and offering during an import is a distraction
         // from work the person did ask for.
-        guard !isBusy, archiveURL != nil else { return }
+        guard !isBusy else { return }
 
         let now = Date()
-        if let last = lastSuggestedAt[bundleIdentifier],
+        if let last = lastSuggestedAt[watched.bundleIdentifier],
            now.timeIntervalSince(last) < Self.suggestionQuietPeriod {
             return
         }
-        lastSuggestedAt[bundleIdentifier] = now
+        lastSuggestedAt[watched.bundleIdentifier] = now
 
-        let name = application.localizedName ?? watched.name
+        let name = NSRunningApplication
+            .runningApplications(withBundleIdentifier: watched.bundleIdentifier)
+            .first?.localizedName ?? watched.name
         Task { await OnbiiNotifier.suggestCapture(for: name) }
     }
 
@@ -433,8 +460,8 @@ final class ImportViewModel {
             panel.title = "Choose an Application"
             panel.prompt = "Watch This App"
             panel.message =
-                "Onbii will offer to record when this application becomes active. "
-                + "It never starts recording on its own."
+                "Onbii will offer to record when this application starts playing "
+                + "audio. It never starts recording on its own."
             panel.canChooseDirectories = false
             panel.canChooseFiles = true
             panel.allowsMultipleSelection = false
