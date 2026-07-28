@@ -61,8 +61,10 @@ struct OnbiiMacApp: App {
             //
             if model.isCapturing {
                 Image(systemName: "record.circle.fill")
+            } else if let mark = OnbiiMenuBarMark.image() {
+                mark
             } else {
-                OnbiiMenuBarMark()
+                Image(systemName: "leaf")
             }
         }
 
