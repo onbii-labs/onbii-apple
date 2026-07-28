@@ -34,6 +34,59 @@ Two reasons, and the second is the practical one:
 The Watch target keeps the name `OnbiiWatch`: it is embedded rather than
 installed, and nobody ever reads it.
 
+## What it takes to distribute — measured 28 July
+
+Milestone 1.5 finished, so "can this go to TestFlight" stopped being rhetorical.
+It was checked rather than assumed, and the answer is *not yet, for two specific
+reasons*.
+
+**An archive succeeds and proves nothing.** `xcodebuild archive` on the iOS
+scheme in Release reports `ARCHIVE SUCCEEDED` — and signs with
+**Apple Development** and the *iOS Team Provisioning Profile*. That is a
+development signature. It is exactly the case this document's own rule was
+written for: a build is not distributable merely because it archives locally.
+
+**The export is the real test, and it fails.** Exporting that archive with
+`method: app-store-connect` gives:
+
+```
+error: exportArchive No profiles for 'com.yepyr.onbii' were found
+error: exportArchive No profiles for 'com.yepyr.onbii.watchkitapp' were found
+```
+
+The keychain holds three `Apple Development` certificates and **no
+`Apple Distribution` certificate**, and all six installed profiles are
+development profiles. Nothing for distribution exists yet for either bundle
+identifier.
+
+### What is missing, in order
+
+1. An **Apple Distribution** certificate for the team.
+2. **App Store provisioning profiles** for `com.yepyr.onbii` and
+   `com.yepyr.onbii.watchkitapp`. Passing `-allowProvisioningUpdates` to
+   `xcodebuild` creates both — note that this *writes* to the Apple Developer
+   account rather than only reading it.
+3. An **App Store Connect app record** for `com.yepyr.onbii`. Automatic signing
+   does not create this and an upload is rejected without it.
+4. The **iCloud container** `iCloud.com.yepyr.onbii` enabled on the App ID for
+   distribution, not only for development. The app resolves it at runtime on
+   iPhone, so a distribution profile that omits it would fail in a way that only
+   appears once installed from TestFlight.
+
+The reproduction, which stays read-only and creates nothing:
+
+```sh
+xcodebuild -workspace OnbiiApple.xcworkspace -scheme OnbiiIOSApp \
+  -destination 'generic/platform=iOS' -configuration Release \
+  -archivePath /tmp/Onbii.xcarchive archive
+xcodebuild -exportArchive -archivePath /tmp/Onbii.xcarchive \
+  -exportOptionsPlist ExportOptions.plist -exportPath /tmp/export
+```
+
+with `method: app-store-connect`, `signingStyle: automatic`,
+`destination: export`. Leaving `-allowProvisioningUpdates` off is what keeps it a
+diagnosis instead of a change.
+
 ## Context
 
 The Milestone 1 macOS app needs a stable development identity so document-type
