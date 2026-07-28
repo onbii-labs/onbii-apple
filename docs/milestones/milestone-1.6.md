@@ -171,11 +171,21 @@ run read all nineteen minutes and there was nothing to find.
 ### Still to do
 
 - **A decision, not a task: should a foreign interruption end a recording or
-  pause it?** Field test 2 answered the runtime question and raised this one. See
-  its [Unanswered](../field-tests/2026-07-28-field-test-2.md#unanswered) section —
+  continue it?** Field test 2 answered the runtime question and raised this one.
   Fitness announces a split roughly every kilometre, so "stop honestly" cuts a
-  reflection walk at the first one. The options differ in kind, and one of them
-  runs straight into *preserve sources*.
+  reflection walk at the first one.
+
+  The recommendation is **segmented continuation**: keep the walk as one object
+  and start a *new source resource* when the session comes back, rather than
+  appending across an undeclared seam. Onbii is already shaped for it — dual-source
+  call capture puts two sources in one object, and `OnbiiTranscriptionRun` already
+  merges several tracks by `captureStartedAt`. What is missing is the capture
+  side. Reasoning in the field test's
+  [Unanswered](../field-tests/2026-07-28-field-test-2.md#unanswered) section.
+
+  **It does not block this milestone.** What ships — preserve, stop, say so — is
+  honest. Segmented continuation is capture work on three platforms plus its own
+  field test, and it should be built deliberately rather than to close 1.6.
 
 ## The spikes
 
@@ -333,10 +343,18 @@ The learnings live where they belong rather than as a milestone item:
 That work is its own thing, and it starts from the architecture question rather
 than from a knob.
 
-Field test 2 added a second thing that is not a knob either: **Dutch is not among
-`SpeechTranscriber`'s supported locales at all**, so every Dutch transcript Onbii
-has produced came from `DictationTranscriber` instead. That is a structural
-property of the recognition boundary and it belongs to the same thread.
+Field test 2 sharpened it in two ways, both in the same thread and neither here:
+
+- **The recogniser, not the situation, can be the whole story.** On a quiet walk,
+  `DictationTranscriber` returned nothing where `SpeechTranscriber` returned six
+  words *on the same file in the same language*. It stops emitting below a
+  threshold rather than degrading, and Dutch is on that model permanently — so a
+  Dutch speaker gets a silent failure where an English speaker gets a poor
+  transcript they can see is poor.
+- **A treatment stage has its first evidence, and its first warning.** Level
+  normalisation and a 16 kHz speech band recovered words the untreated audio never
+  produced; denoising destroyed them, and every treatment made the *better*
+  recogniser worse. Whatever gets built there cannot be one fixed chain.
 
 ## Deliberately not yet
 

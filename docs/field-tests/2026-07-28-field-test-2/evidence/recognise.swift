@@ -24,6 +24,11 @@
 //      build directory in beside the binary; `codesign --force --deep --sign -`.
 //   3. open -n -W Foo.app --args <object.onbii> <bcp47> <logfile>
 //
+// A second form of this took the audio path and the module directly —
+// `<audio> <bcp47> speech|dictation <logfile>` — which is what produced
+// recognition-treatments.txt. Forcing the module is the run that matters: it is
+// the only way to ask whether an empty result is the language or the model.
+//
 // Remove the target afterwards. It must not ship.
 
 // Temporary diagnostic harness — not part of the shipped product.

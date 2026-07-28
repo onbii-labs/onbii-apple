@@ -14,9 +14,11 @@ use revealed.
   and announced itself when another app took the microphone, which closed the
   watchOS runtime question. Found that an empty recognition result is reported
   as a broken object, and that the Mac reads the archive once and then never
-  again. It also put a first measurement on the known Dutch recogniser gap, and
-  it leaves an open decision: whether an interruption should end a recording or
-  pause it.
+  again. Eight runs over one source established that the recogniser rather than
+  the language produced the empty result, and gave a treatment stage its first
+  evidence — and its first warning, since the filters that rescued one recogniser
+  damaged another. It leaves one open decision: whether an interruption should
+  end a recording or continue it into a new segment.
 
 ## Why these are kept
 

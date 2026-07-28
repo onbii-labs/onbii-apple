@@ -48,6 +48,40 @@ confirms it independently: 531 words across 1200 seconds is 0.44 words per
 second, against the 2.3 per second the same recogniser managed in the stretches
 it did cover. Real speech is being lost, not just wind being counted.
 
+## First measurement of a treatment stage — 28 July
+
+[Field test 2](../field-tests/2026-07-28-field-test-2.md#2-it-is-the-module-not-the-language--and-level-matters-more-than-cleaning)
+ran one quiet nineteen-minute walk through the same recogniser eight times,
+varying only the audio treatment and the module. It is the first evidence this
+note has that the direction is real rather than plausible, and it arrived with a
+warning attached.
+
+**What helped.** Normalising the level alone took the Dutch path from 0 words to
+2. Resampling to a 16 kHz speech band with a 90 Hz high-pass and dynamic
+normalisation produced the single best result of any run — the actual word
+*Goedemorgen*, in Dutch, which the untreated audio never yielded.
+
+**What hurt, and this is the part to design against.** Every treatment made the
+*better* recogniser worse: `SpeechTranscriber` went 6 → 5 words with
+normalisation and 6 → 3 with denoising. The denoiser also took the Dutch path
+back to zero, undoing what normalisation had gained.
+
+Three things follow for the design:
+
+- **A treatment stage cannot be a fixed pipeline.** The same filter chain rescued
+  one recogniser and damaged another, on identical audio. Treatment is not a
+  property of the audio alone; it is a property of the pairing.
+- **Level is the cheap, safe end and denoising is the expensive, risky end.**
+  Gain and band-limiting are close to reversible in effect; spectral subtraction
+  removes information the recogniser was demonstrably using.
+- **This is a second axis, not a second name for the situation axis.** A
+  situation predicts what the audio will be like; a recogniser determines what to
+  do about it. A profile has to be chosen for the pair.
+
+**The sample is tiny** — six recognisable words in nineteen minutes, so every
+figure is a single-digit count. It establishes that the effect exists and has a
+sign, not how large it is.
+
 ## What this asks of the architecture
 
 A walk, a desk, a table on a terrace, and a call-centre floor are different
@@ -138,15 +172,12 @@ knows what the recording will contain.
 - **How would a profile be evaluated?** The archive is the test set, and
   `archive-coverage.py` is the beginning of a way to see whether a change helps
   overall or only helps one situation at the expense of another.
-- **Are two languages even comparable?** Dutch is not among `SpeechTranscriber`'s
-  supported locales, so it falls through to `DictationTranscriber` while English
-  gets the long-form model — a gap
-  [Milestone 1.5](../milestones/milestone-1.5.md#known-milestone-gaps) already
-  noted and [field test 2](../field-tests/2026-07-28-field-test-2.md#2-dutch-never-gets-the-better-recogniser--known-now-measured)
-  first measured on a real object. A profile tuned against Dutch fixtures is
-  tuned against a different recogniser than the English ones use, and an
-  evaluation that mixes them will read a model difference as a situation
-  difference.
+- **Are two recognisers even comparable?** Dutch is not among
+  `SpeechTranscriber`'s supported locales, so it falls through to
+  `DictationTranscriber` while English gets the long-form model. A profile tuned
+  against Dutch fixtures is tuned against a different recogniser than the English
+  ones use, and an evaluation that mixes them will read a model difference as a
+  situation difference.
 
 ## Where this came from
 
